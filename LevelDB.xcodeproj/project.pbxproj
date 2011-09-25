@@ -1,0 +1,323 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		2795DEB3142FAAB9008D9F83 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2795DEB2142FAAB9008D9F83 /* UIKit.framework */; };
+		2795DEB5142FAAB9008D9F83 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2795DEB4142FAAB9008D9F83 /* Foundation.framework */; };
+		2795DEB7142FAAB9008D9F83 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2795DEB6142FAAB9008D9F83 /* CoreGraphics.framework */; };
+		2795DEBD142FAAB9008D9F83 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2795DEBB142FAAB9008D9F83 /* InfoPlist.strings */; };
+		2795DEBF142FAAB9008D9F83 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2795DEBE142FAAB9008D9F83 /* main.m */; };
+		2795DEC3142FAAB9008D9F83 /* LevelDBAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2795DEC2142FAAB9008D9F83 /* LevelDBAppDelegate.m */; };
+		2795DEC6142FAAB9008D9F83 /* MainWindow.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2795DEC4142FAAB9008D9F83 /* MainWindow.xib */; };
+		2795DEC9142FAAB9008D9F83 /* RootViewController.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2795DEC8142FAAB9008D9F83 /* RootViewController.mm */; };
+		2795DECC142FAAB9008D9F83 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2795DECA142FAAB9008D9F83 /* RootViewController.xib */; };
+		2795DEF7142FD868008D9F83 /* LevelDB.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2795DEF6142FD868008D9F83 /* LevelDB.mm */; };
+		2795DF23142FDADF008D9F83 /* libleveldb.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2795DF22142FDADF008D9F83 /* libleveldb.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		2795DEAE142FAAB9008D9F83 /* LevelDB.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = LevelDB.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2795DEB2142FAAB9008D9F83 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		2795DEB4142FAAB9008D9F83 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		2795DEB6142FAAB9008D9F83 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
+		2795DEBA142FAAB9008D9F83 /* LevelDB-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "LevelDB-Info.plist"; sourceTree = "<group>"; };
+		2795DEBC142FAAB9008D9F83 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		2795DEBE142FAAB9008D9F83 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		2795DEC0142FAAB9008D9F83 /* LevelDB-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "LevelDB-Prefix.pch"; sourceTree = "<group>"; };
+		2795DEC1142FAAB9008D9F83 /* LevelDBAppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = LevelDBAppDelegate.h; sourceTree = "<group>"; };
+		2795DEC2142FAAB9008D9F83 /* LevelDBAppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = LevelDBAppDelegate.m; sourceTree = "<group>"; };
+		2795DEC5142FAAB9008D9F83 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/MainWindow.xib; sourceTree = "<group>"; };
+		2795DEC7142FAAB9008D9F83 /* RootViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RootViewController.h; sourceTree = "<group>"; };
+		2795DEC8142FAAB9008D9F83 /* RootViewController.mm */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.objcpp; path = RootViewController.mm; sourceTree = "<group>"; };
+		2795DECB142FAAB9008D9F83 /* en */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = en; path = en.lproj/RootViewController.xib; sourceTree = "<group>"; };
+		2795DEF5142FD868008D9F83 /* LevelDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LevelDB.h; sourceTree = "<group>"; };
+		2795DEF6142FD868008D9F83 /* LevelDB.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LevelDB.mm; sourceTree = "<group>"; };
+		2795DF22142FDADF008D9F83 /* libleveldb.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libleveldb.a; path = "leveldb-library/libleveldb.a"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		2795DEAB142FAAB9008D9F83 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2795DF23142FDADF008D9F83 /* libleveldb.a in Frameworks */,
+				2795DEB3142FAAB9008D9F83 /* UIKit.framework in Frameworks */,
+				2795DEB5142FAAB9008D9F83 /* Foundation.framework in Frameworks */,
+				2795DEB7142FAAB9008D9F83 /* CoreGraphics.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		2795DEA3142FAAB9008D9F83 = {
+			isa = PBXGroup;
+			children = (
+				2795DF22142FDADF008D9F83 /* libleveldb.a */,
+				2795DEF4142FD868008D9F83 /* Classes */,
+				2795DEB8142FAAB9008D9F83 /* LevelDB */,
+				2795DEB1142FAAB9008D9F83 /* Frameworks */,
+				2795DEAF142FAAB9008D9F83 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		2795DEAF142FAAB9008D9F83 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				2795DEAE142FAAB9008D9F83 /* LevelDB.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		2795DEB1142FAAB9008D9F83 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2795DEB2142FAAB9008D9F83 /* UIKit.framework */,
+				2795DEB4142FAAB9008D9F83 /* Foundation.framework */,
+				2795DEB6142FAAB9008D9F83 /* CoreGraphics.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		2795DEB8142FAAB9008D9F83 /* LevelDB */ = {
+			isa = PBXGroup;
+			children = (
+				2795DEC1142FAAB9008D9F83 /* LevelDBAppDelegate.h */,
+				2795DEC2142FAAB9008D9F83 /* LevelDBAppDelegate.m */,
+				2795DEC4142FAAB9008D9F83 /* MainWindow.xib */,
+				2795DEC7142FAAB9008D9F83 /* RootViewController.h */,
+				2795DEC8142FAAB9008D9F83 /* RootViewController.mm */,
+				2795DECA142FAAB9008D9F83 /* RootViewController.xib */,
+				2795DEB9142FAAB9008D9F83 /* Supporting Files */,
+			);
+			path = LevelDB;
+			sourceTree = "<group>";
+		};
+		2795DEB9142FAAB9008D9F83 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				2795DEBA142FAAB9008D9F83 /* LevelDB-Info.plist */,
+				2795DEBB142FAAB9008D9F83 /* InfoPlist.strings */,
+				2795DEBE142FAAB9008D9F83 /* main.m */,
+				2795DEC0142FAAB9008D9F83 /* LevelDB-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		2795DEF4142FD868008D9F83 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				2795DEF5142FD868008D9F83 /* LevelDB.h */,
+				2795DEF6142FD868008D9F83 /* LevelDB.mm */,
+			);
+			path = Classes;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		2795DEAD142FAAB9008D9F83 /* LevelDB */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2795DECF142FAAB9008D9F83 /* Build configuration list for PBXNativeTarget "LevelDB" */;
+			buildPhases = (
+				2795DEAA142FAAB9008D9F83 /* Sources */,
+				2795DEAB142FAAB9008D9F83 /* Frameworks */,
+				2795DEAC142FAAB9008D9F83 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = LevelDB;
+			productName = LevelDB;
+			productReference = 2795DEAE142FAAB9008D9F83 /* LevelDB.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		2795DEA5142FAAB9008D9F83 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				ORGANIZATIONNAME = "Pave Labs";
+			};
+			buildConfigurationList = 2795DEA8142FAAB9008D9F83 /* Build configuration list for PBXProject "LevelDB" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 2795DEA3142FAAB9008D9F83;
+			productRefGroup = 2795DEAF142FAAB9008D9F83 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				2795DEAD142FAAB9008D9F83 /* LevelDB */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2795DEAC142FAAB9008D9F83 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2795DEBD142FAAB9008D9F83 /* InfoPlist.strings in Resources */,
+				2795DEC6142FAAB9008D9F83 /* MainWindow.xib in Resources */,
+				2795DECC142FAAB9008D9F83 /* RootViewController.xib in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		2795DEAA142FAAB9008D9F83 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2795DEBF142FAAB9008D9F83 /* main.m in Sources */,
+				2795DEC3142FAAB9008D9F83 /* LevelDBAppDelegate.m in Sources */,
+				2795DEC9142FAAB9008D9F83 /* RootViewController.mm in Sources */,
+				2795DEF7142FD868008D9F83 /* LevelDB.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		2795DEBB142FAAB9008D9F83 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2795DEBC142FAAB9008D9F83 /* en */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		2795DEC4142FAAB9008D9F83 /* MainWindow.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2795DEC5142FAAB9008D9F83 /* en */,
+			);
+			name = MainWindow.xib;
+			sourceTree = "<group>";
+		};
+		2795DECA142FAAB9008D9F83 /* RootViewController.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				2795DECB142FAAB9008D9F83 /* en */,
+			);
+			name = RootViewController.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		2795DECD142FAAB9008D9F83 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$SOURCE_ROOT/leveldb-library/include";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				LIBRARY_SEARCH_PATHS = "";
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		2795DECE142FAAB9008D9F83 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$SOURCE_ROOT/leveldb-library/include";
+				IPHONEOS_DEPLOYMENT_TARGET = 4.3;
+				LIBRARY_SEARCH_PATHS = "";
+				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		2795DED0142FAAB9008D9F83 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "LevelDB/LevelDB-Prefix.pch";
+				INFOPLIST_FILE = "LevelDB/LevelDB-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/leveldv\"",
+					"\"$(SRCROOT)/leveldb-library\"",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Debug;
+		};
+		2795DED1142FAAB9008D9F83 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "LevelDB/LevelDB-Prefix.pch";
+				INFOPLIST_FILE = "LevelDB/LevelDB-Info.plist";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/leveldv\"",
+					"\"$(SRCROOT)/leveldb-library\"",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				WRAPPER_EXTENSION = app;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		2795DEA8142FAAB9008D9F83 /* Build configuration list for PBXProject "LevelDB" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2795DECD142FAAB9008D9F83 /* Debug */,
+				2795DECE142FAAB9008D9F83 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		2795DECF142FAAB9008D9F83 /* Build configuration list for PBXNativeTarget "LevelDB" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2795DED0142FAAB9008D9F83 /* Debug */,
+				2795DED1142FAAB9008D9F83 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 2795DEA5142FAAB9008D9F83 /* Project object */;
+}

@@ -1,0 +1,6 @@
+build/
+.DS_Store
+xcuserdata
+*.mode2v3
+*.mode1v3
+*.pbxuser
