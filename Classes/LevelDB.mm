@@ -107,8 +107,6 @@ using namespace leveldb;
     {
         NSLog(@"Problem storing key/value pair in database: %s", status.ToString().c_str());
     }
-
-    return (BOOL)status.ok();
 }
 
 @end
