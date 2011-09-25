@@ -16,8 +16,14 @@
 {
     NSString *path = [[LevelDB libraryPath] stringByAppendingPathComponent:@"test.ldb"];
     LevelDB *ldb = [[LevelDB alloc] initWithPath:path];
-    [ldb setObject:@"laval" forKey:@"test"];
-    NSLog(@"Value: %@", [ldb getString:@"test"]);
+    
+    //test string
+    [ldb setObject:@"laval" forKey:@"string_test"];
+    NSLog(@"String Value: %@", [ldb getString:@"string_test"]);
+    
+    //test dictionary
+    [ldb setObject:[NSDictionary dictionaryWithObjectsAndKeys:@"val1", @"key1", @"val2", @"key2", nil] forKey:@"dict_test"];
+    NSLog(@"Dictionary Value: %@", [ldb getDictionary:@"dict_test"]);
     [super viewDidLoad];
 }
 

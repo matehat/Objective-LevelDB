@@ -22,7 +22,11 @@ using namespace leveldb;
 
 + (NSString *)libraryPath;
 - (id) initWithPath:(NSString *)path;
-- (NSString *) getString:(NSString *)key;
+
 - (void) setObject:(NSString *)value forKey:(NSString *)key;
+
+- (NSData *) getData:(NSString *)key;
+- (NSString *) getString:(NSString *)key;
+- (NSDictionary *) getDictionary:(NSString *)key;
 
 @end

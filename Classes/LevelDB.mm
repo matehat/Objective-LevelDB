@@ -50,9 +50,13 @@ using namespace leveldb;
 
 +(Slice) SliceFromObject:(id) object {
     NSMutableData *d = [[[NSMutableData alloc] init] autorelease];
-    
-    if([(id)object isKindOfClass:[NSString class]]) {
+    if ([(id)object isKindOfClass:[NSString class]]) {
         [d appendData:[(NSString *)object dataUsingEncoding:NSUTF8StringEncoding]];
+    } else if ([(id)object isKindOfClass:[NSDictionary class]]) {
+        NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:d];
+        [archiver encodeObject:object forKey:@"dictionary"];
+        [archiver finishEncoding];
+        [archiver release];
     }
     
     return Slice((const char *)[d bytes], (size_t)[d length]);
@@ -63,23 +67,35 @@ using namespace leveldb;
     return [paths objectAtIndex:0];
 }
 
-- (NSString *) getString:(NSString *)key {
-
+- (NSData *) getData:(NSString *)key {
     std::string v_string;
-
+    
     Slice k = [LevelDB SliceFromObject:key];
     Status status = db->Get(readOptions, k, &v_string);
-
+    
     if(!status.ok()) {
         if(!status.IsNotFound())
             NSLog(@"Problem retrieving value for key '%@' from database: %s", key, status.ToString().c_str());
         return nil;
     }
-
-
+    
+    
     Slice v = v_string;
-    NSData *data = [NSData dataWithBytes:v.data() length:v.size()];
+    return [NSData dataWithBytes:v.data() length:v.size()];
+}
+
+- (NSString *) getString:(NSString *)key {
+    NSData *data = [self getData:key];
     return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+}
+
+- (NSDictionary *) getDictionary:(NSString *)key {
+    NSData *data = [self getData:key];
+    NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
+    NSDictionary *dictionary = [[unarchiver decodeObjectForKey:@"dictionary"] retain];
+    [unarchiver finishDecoding];
+    [unarchiver release];
+    return dictionary;
 }
 
 - (void) setObject:(NSString *)value forKey:(NSString *)key {
