@@ -9,4 +9,16 @@ To make this work:
 5. Add the leveldb/include path to your header path
 6. Make sure any class that imports leveldb is a `.mm` file. LevelDB is written in C++, so it can only be included by an Objective-C++ file
 
-An example is available
+Here is a simple example:
+
+    NSString *path = [[LevelDB libraryPath] stringByAppendingPathComponent:@"test.ldb"];
+    LevelDB *ldb = [[LevelDB alloc] initWithPath:path];
+
+    //test string
+    [ldb setObject:@"laval" forKey:@"string_test"];
+    NSLog(@"String Value: %@", [ldb getString:@"string_test"]);
+
+    //test dictionary
+    [ldb setObject:[NSDictionary dictionaryWithObjectsAndKeys:@"val1", @"key1", @"val2", @"key2", nil] forKey:@"dict_test"];
+    NSLog(@"Dictionary Value: %@", [ldb getDictionary:@"dict_test"]);
+    [super viewDidLoad];
