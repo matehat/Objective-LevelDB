@@ -15,7 +15,7 @@
 - (void)viewDidLoad
 {
     LevelDB *ldb = [LevelDB databaseInLibraryWithName:@"test.ldb"];
-    
+
     //test string
     [ldb setObject:@"laval" forKey:@"string_test"];
     NSLog(@"String Value: %@", [ldb getString:@"string_test"]);
@@ -24,6 +24,13 @@
     [ldb setObject:[NSDictionary dictionaryWithObjectsAndKeys:@"val1", @"key1", @"val2", @"key2", nil] forKey:@"dict_test"];
     NSLog(@"Dictionary Value: %@", [ldb getDictionary:@"dict_test"]);
     [super viewDidLoad];
+    
+    [ldb iterate:^BOOL(NSString *key, id value) {
+        NSLog(@"value: %@", value);
+        return TRUE;
+    }];
+     
+    [ldb clear];
 }
 
 - (void)viewWillAppear:(BOOL)animated

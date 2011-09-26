@@ -11,6 +11,9 @@
 
 using namespace leveldb;
 
+typedef BOOL (^KeyBlock)(NSString *key);
+typedef BOOL (^KeyValueBlock)(NSString *key, id value);
+
 @interface LevelDB : NSObject {
     DB *db;
     ReadOptions readOptions;
@@ -24,10 +27,21 @@ using namespace leveldb;
 
 - (id) initWithPath:(NSString *)path;
 
-- (void) setObject:(NSString *)value forKey:(NSString *)key;
+- (void) setObject:(id)value forKey:(NSString *)key;
+
 - (id) getObject:(NSString *)key;
 - (NSString *) getString:(NSString *)key;
 - (NSDictionary *) getDictionary:(NSString *)key;
 - (NSArray *) getArray:(NSString *)key;
+
+//iteration methods
+- (NSArray *)allKeys;
+- (void) iterateKeys:(KeyBlock)block;
+- (void) iterate:(KeyValueBlock)block;
+
+//clear methods
+- (void) deleteObject:(NSString *)key;
+- (void) clear;
+- (void) deleteDatabase;
 
 @end
