@@ -24,8 +24,7 @@ using namespace leveldb;
 - (id) initWithPath:(NSString *)path;
 
 - (void) setObject:(NSString *)value forKey:(NSString *)key;
-
-- (NSData *) getData:(NSString *)key;
+- (id) getObject:(NSString *)key;
 - (NSString *) getString:(NSString *)key;
 - (NSDictionary *) getDictionary:(NSString *)key;
 

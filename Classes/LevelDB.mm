@@ -50,15 +50,10 @@ using namespace leveldb;
 
 +(Slice) SliceFromObject:(id) object {
     NSMutableData *d = [[[NSMutableData alloc] init] autorelease];
-    if ([(id)object isKindOfClass:[NSString class]]) {
-        [d appendData:[(NSString *)object dataUsingEncoding:NSUTF8StringEncoding]];
-    } else if ([(id)object isKindOfClass:[NSDictionary class]]) {
-        NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:d];
-        [archiver encodeObject:object forKey:@"dictionary"];
-        [archiver finishEncoding];
-        [archiver release];
-    }
-    
+    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:d];
+    [archiver encodeObject:object forKey:@"object"];
+    [archiver finishEncoding];
+    [archiver release];
     return Slice((const char *)[d bytes], (size_t)[d length]);
 }
 
@@ -67,7 +62,17 @@ using namespace leveldb;
     return [paths objectAtIndex:0];
 }
 
-- (NSData *) getData:(NSString *)key {
+- (void) setObject:(NSString *)value forKey:(NSString *)key {
+    Slice k = [LevelDB SliceFromObject:key];
+    Slice v = [LevelDB SliceFromObject:value];
+    Status status = db->Put(writeOptions, k, v);
+    
+    if(!status.ok()) {
+        NSLog(@"Problem storing key/value pair in database: %s", status.ToString().c_str());
+    }
+}
+
+- (id) getObject:(NSString *)key {
     std::string v_string;
     
     Slice k = [LevelDB SliceFromObject:key];
@@ -79,34 +84,24 @@ using namespace leveldb;
         return nil;
     }
     
-    
     Slice v = v_string;
-    return [NSData dataWithBytes:v.data() length:v.size()];
+    NSData *data = [NSData dataWithBytes:v.data() length:v.size()];
+    NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
+    id object = [[unarchiver decodeObjectForKey:@"object"] retain];
+    [unarchiver finishDecoding];
+    [unarchiver release];
+    return object;
 }
 
+
 - (NSString *) getString:(NSString *)key {
-    NSData *data = [self getData:key];
-    return [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    return (NSString *)[self getObject:key];
 }
 
 - (NSDictionary *) getDictionary:(NSString *)key {
-    NSData *data = [self getData:key];
-    NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
-    NSDictionary *dictionary = [[unarchiver decodeObjectForKey:@"dictionary"] retain];
-    [unarchiver finishDecoding];
-    [unarchiver release];
-    return dictionary;
+    return (NSDictionary *)[self getObject:key];
 }
 
-- (void) setObject:(NSString *)value forKey:(NSString *)key {
-    Slice k = [LevelDB SliceFromObject:key];
-    Slice v = [LevelDB SliceFromObject:value];
-    Status status = db->Put(writeOptions, k, v);
-    
-    if(!status.ok())
-    {
-        NSLog(@"Problem storing key/value pair in database: %s", status.ToString().c_str());
-    }
-}
+
 
 @end
