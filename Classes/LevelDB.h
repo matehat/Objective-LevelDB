@@ -19,7 +19,9 @@ using namespace leveldb;
 
 @property (nonatomic, retain) NSString *path;
 
-+ (NSString *)libraryPath;
++ (id)libraryPath;
++ (LevelDB *)databaseInLibraryWithName:(NSString *)name;
+
 - (id) initWithPath:(NSString *)path;
 
 - (void) setObject:(NSString *)value forKey:(NSString *)key;

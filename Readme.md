@@ -11,8 +11,7 @@ To make this work:
 
 Here is a simple example:
 
-    NSString *path = [[LevelDB libraryPath] stringByAppendingPathComponent:@"test.ldb"];
-    LevelDB *ldb = [[LevelDB alloc] initWithPath:path];
+    LevelDB *ldb = [LevelDB databaseInLibraryWithName:@"test.ldb"];
 
     //test string
     [ldb setObject:@"laval" forKey:@"string_test"];

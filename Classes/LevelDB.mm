@@ -61,6 +61,12 @@ using namespace leveldb;
     return [paths objectAtIndex:0];
 }
 
++ (LevelDB *)databaseInLibraryWithName:(NSString *)name {
+    NSString *path = [[LevelDB libraryPath] stringByAppendingPathComponent:name];
+    LevelDB *ldb = [[[LevelDB alloc] initWithPath:path] autorelease];
+    return ldb;
+}
+
 - (void) setObject:(NSString *)value forKey:(NSString *)key {
     Slice k = [LevelDB SliceFromObject:key];
     Slice v = [LevelDB SliceFromObject:value];
