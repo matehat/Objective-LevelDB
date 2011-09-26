@@ -1,6 +1,8 @@
-A simple wrapper for Google's LevelDB. 
+### Introduction
 
-To make this work:
+This is a simple wrapper for Google's LevelDB. LevelDB is a fast key-value store written by Google. 
+
+### Instructions
 
 1. Drag LevelDB.h and LevelDB.mm into your project. 
 2. Clone [Google's leveldb](http://code.google.com/p/leveldb/source/checkout), preferably as a submodule of your project
@@ -9,7 +11,7 @@ To make this work:
 5. Add the leveldb/include path to your header path
 6. Make sure any class that imports leveldb is a `.mm` file. LevelDB is written in C++, so it can only be included by an Objective-C++ file
 
-Here is a simple example:
+### Example
 
     LevelDB *ldb = [LevelDB databaseInLibraryWithName:@"test.ldb"];
 
@@ -21,3 +23,7 @@ Here is a simple example:
     [ldb setObject:[NSDictionary dictionaryWithObjectsAndKeys:@"val1", @"key1", @"val2", @"key2", nil] forKey:@"dict_test"];
     NSLog(@"Dictionary Value: %@", [ldb getDictionary:@"dict_test"]);
     [super viewDidLoad];
+    
+### License
+
+Distributed under the MIT license
