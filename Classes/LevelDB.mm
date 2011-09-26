@@ -1,6 +1,5 @@
 //
 //  LevelDB.m
-//  HackerNews
 //
 //  Created by Michael Hoisie on 9/23/11.
 //  Copyright 2011 Pave Labs. All rights reserved.
@@ -16,7 +15,7 @@ using namespace leveldb;
 
 @implementation LevelDB 
 
-@synthesize path;
+@synthesize path=_path;
 
 - (id)init
 {
@@ -31,10 +30,10 @@ using namespace leveldb;
 - (id) initWithPath:(NSString *)path {
     self = [super init];
     if (self) {
-        self.path = path;
+        _path = path;
         Options options;
         options.create_if_missing = true;
-        Status status = leveldb::DB::Open(options, [path UTF8String], &db);
+        Status status = leveldb::DB::Open(options, [_path UTF8String], &db);
         
         readOptions.fill_cache = false;
         writeOptions.sync = false;

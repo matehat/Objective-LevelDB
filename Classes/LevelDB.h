@@ -1,6 +1,5 @@
 //
 //  LevelDB.h
-//  HackerNews
 //
 //  Created by Michael Hoisie on 9/23/11.
 //  Copyright 2011 Pave Labs. All rights reserved.
