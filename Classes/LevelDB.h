@@ -27,5 +27,6 @@ using namespace leveldb;
 - (id) getObject:(NSString *)key;
 - (NSString *) getString:(NSString *)key;
 - (NSDictionary *) getDictionary:(NSString *)key;
+- (NSArray *) getArray:(NSString *)key;
 
 @end

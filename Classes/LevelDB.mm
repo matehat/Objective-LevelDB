@@ -102,6 +102,9 @@ using namespace leveldb;
     return (NSDictionary *)[self getObject:key];
 }
 
+- (NSArray *) getArray:(NSString *)key {
+    return (NSArray *)[self getObject:key];
+}
 
 
 @end
