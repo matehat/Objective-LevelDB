@@ -1,8 +1,8 @@
 //
 //  LevelDB.m
 //
-//  Created by Michael Hoisie on 9/23/11.
-//  Copyright 2011 Pave Labs. All rights reserved.
+//  Copyright 2011 Pave Labs. All rights reserved. 
+//  See LICENCE for details.
 //
 
 #import "LevelDB.h"

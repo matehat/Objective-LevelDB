@@ -2,8 +2,8 @@
 //  RootViewController.m
 //  LevelDB
 //
-//  Created by Michael Hoisie on 9/25/11.
 //  Copyright 2011 Pave Labs. All rights reserved.
+//  See LICENCE for details.
 //
 
 #import "RootViewController.h"
@@ -25,10 +25,15 @@
     NSLog(@"Dictionary Value: %@", [ldb getDictionary:@"dict_test"]);
     [super viewDidLoad];
     
+    //test invalid get
+    NSLog(@"Should be null: %@", [ldb getString:@"does_not_exist"]);
+    
     [ldb iterate:^BOOL(NSString *key, id value) {
         NSLog(@"value: %@", value);
         return TRUE;
     }];
+    
+    NSLog(@"String Value: %@", [ldb getString:@"string_test"]);
      
     [ldb clear];
 }
