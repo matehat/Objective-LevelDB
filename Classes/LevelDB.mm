@@ -79,7 +79,7 @@ static id ObjectFromSlice(Slice v) {
     return ldb;
 }
 
-- (void) setObject:(id)value forKey:(NSString *)key {
+- (void) putObject:(id)value forKey:(NSString *)key {
     Slice k = SliceFromString(key);
     Slice v = SliceFromObject(value);
     Status status = db->Put(writeOptions, k, v);

@@ -17,11 +17,11 @@
     LevelDB *ldb = [LevelDB databaseInLibraryWithName:@"test.ldb"];
 
     //test string
-    [ldb setObject:@"laval" forKey:@"string_test"];
+    [ldb putObject:@"laval" forKey:@"string_test"];
     NSLog(@"String Value: %@", [ldb getString:@"string_test"]);
     
     //test dictionary
-    [ldb setObject:[NSDictionary dictionaryWithObjectsAndKeys:@"val1", @"key1", @"val2", @"key2", nil] forKey:@"dict_test"];
+    [ldb putObject:[NSDictionary dictionaryWithObjectsAndKeys:@"val1", @"key1", @"val2", @"key2", nil] forKey:@"dict_test"];
     NSLog(@"Dictionary Value: %@", [ldb getDictionary:@"dict_test"]);
     [super viewDidLoad];
     

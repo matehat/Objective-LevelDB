@@ -27,7 +27,7 @@ typedef BOOL (^KeyValueBlock)(NSString *key, id value);
 
 - (id) initWithPath:(NSString *)path;
 
-- (void) setObject:(id)value forKey:(NSString *)key;
+- (void) putObject:(id)value forKey:(NSString *)key;
 
 - (id) getObject:(NSString *)key;
 - (NSString *) getString:(NSString *)key;
