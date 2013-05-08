@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         =  'LevelDB-ObjC'
-  s.version      =  '0.0.1'
+  s.version      =  '0.0.2'
   s.ios.deployment_target = '5.0'
   s.osx.deployment_target = '10.6'
   s.license      =  'MIT'
