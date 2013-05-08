@@ -8,7 +8,7 @@ Pod::Spec.new do |s|
   s.description  =  'This is a simple wrapper for Google\'s LevelDB. LevelDB is a fast key-value store written by Google. This is a forked version for updated leveldb and XCode after 4.2.'
   s.homepage     =  'https://github.com/hoisie/LevelDB-ObjC'
   s.author       =  'Michael Hoisie'
-  s.source       =  { :git => 'https://github.com/matehat/LevelDB-ObjC.git', :commit => '017a932cee36dd58a0346ce22e40feed0c4d50d4', :submodules => true }
+  s.source       =  { :git => 'https://github.com/matehat/LevelDB-ObjC.git', :commit => 'd197997dd0462795caebf9d2c6bb6801d2691efb', :submodules => true }
   s.source_files =  'Classes/*.{h,m,mm}'
   s.library      =  'leveldb'
  
