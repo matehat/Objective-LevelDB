@@ -57,18 +57,24 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 #pragma mark - Iteration
 
 - (NSArray *)allKeys;
+- (NSArray *)keysByFilteringWithPredicate:(NSPredicate *)predicate;
+- (NSDictionary *)dictionaryByFilteringWithPredicate:(NSPredicate *)predicate;
 
 - (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block;
-- (void) enumerateKeysUsingBlock:(KeyBlock)block;
-
 - (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
                              startingAtKey:(id)key;
+- (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
+                             startingAtKey:(id)key
+                       filteredByPredicate:(NSPredicate *)predicate;
 
+- (void) enumerateKeysUsingBlock:(KeyBlock)block;
 - (void) enumerateKeysUsingBlock:(KeyBlock)block
                    startingAtKey:(id)key;
+- (void) enumerateKeysUsingBlock:(KeyBlock)block
+                   startingAtKey:(id)key
+             filteredByPredicate:(NSPredicate *)predicate;
 
-- (void) deleteDatabase;
-
+- (void) deleteDatabaseFromDisk;
 - (void) close;
 
 @end
