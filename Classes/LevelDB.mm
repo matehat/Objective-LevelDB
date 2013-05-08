@@ -117,6 +117,8 @@ static id ObjectFromSlice(Slice v) {
     return writeOptions.sync;
 }
 
+#pragma mark - Setters
+
 - (void) setObject:(id)value forKey:(id)key {
     Slice k = KeyFromStringOrData(key);
     LevelDBKey lkey = GenericKeyFromSlice(k);
@@ -136,6 +138,8 @@ static id ObjectFromSlice(Slice v) {
         [self setObject:obj forKey:key];
     }];
 }
+
+#pragma mark - Getters
 
 - (id) objectForKey:(id)key {
     std::string v_string;
@@ -168,6 +172,8 @@ static id ObjectFromSlice(Slice v) {
         return [self objectForKey:key];
 }
 
+#pragma mark - Removers
+
 - (void) removeObjectForKey:(id)key {
     Slice k = KeyFromStringOrData(key);
     Status status = db->Delete(writeOptions, k);
@@ -189,7 +195,7 @@ static id ObjectFromSlice(Slice v) {
     }];
 }
 
-#pragma mark - Iteration
+#pragma mark - Selection
 
 - (NSArray *)allKeys {
     NSMutableArray *keys = [[[NSMutableArray alloc] init] autorelease];
@@ -220,18 +226,7 @@ static id ObjectFromSlice(Slice v) {
     return [NSDictionary dictionaryWithDictionary:results];
 }
 
-- (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block {
-    Iterator* iter = db->NewIterator(ReadOptions());
-    BOOL stop = false;
-    for (iter->SeekToFirst(); iter->Valid(); iter->Next()) {
-        Slice key = iter->key(), value = iter->value();
-        LevelDBKey k = GenericKeyFromSlice(key);
-        id v = DecodeFromSlice(value, &k);
-        block(&k, v, &stop);
-        if (stop) break;
-    }
-    delete iter;
-}
+#pragma mark - Enumeration
 
 - (void) enumerateKeysUsingBlock:(KeyBlock)block {
     Iterator* iter = db->NewIterator(ReadOptions());
@@ -241,48 +236,6 @@ static id ObjectFromSlice(Slice v) {
         LevelDBKey k = GenericKeyFromSlice(key);
         block(&k, &stop);
         if (stop) break;
-    }
-
-    delete iter;
-}
-
-- (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
-                             startingAtKey:(id)key {
-    
-    Slice k = KeyFromStringOrData(key);
-    Iterator* iter = db->NewIterator(ReadOptions());
-    BOOL stop = false;
-    
-    for (iter->Seek(k); iter->Valid(); iter->Next()) {
-        Slice key2 = iter->key(), value = iter->value();
-        LevelDBKey k = GenericKeyFromSlice(key2);
-        id v = DecodeFromSlice(value, &k);
-        block(&k, v, &stop);
-        if (stop) break;
-    }
-    
-    delete iter;
-}
-
-- (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
-                   startingAtKey:(id)key
-             filteredByPredicate:(NSPredicate *)predicate {
-    Iterator* iter = db->NewIterator(ReadOptions());
-    BOOL stop = false;
-    if (key) {
-        Slice k = KeyFromStringOrData(key);
-        iter->Seek(k);
-    } else
-        iter->SeekToFirst();
-    
-    for (; iter->Valid(); iter->Next()) {
-        Slice key2 = iter->key(), value = iter->value();
-        LevelDBKey lk = GenericKeyFromSlice(key2);
-        id v = DecodeFromSlice(value, &lk);
-        if ([predicate evaluateWithObject:v]) {
-            block(&lk, v, &stop);
-            if (stop) break;
-        }
     }
     
     delete iter;
@@ -330,6 +283,63 @@ static id ObjectFromSlice(Slice v) {
     
     delete iter;
 }
+
+- (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block {
+    Iterator* iter = db->NewIterator(ReadOptions());
+    BOOL stop = false;
+    for (iter->SeekToFirst(); iter->Valid(); iter->Next()) {
+        Slice key = iter->key(), value = iter->value();
+        LevelDBKey k = GenericKeyFromSlice(key);
+        id v = DecodeFromSlice(value, &k);
+        block(&k, v, &stop);
+        if (stop) break;
+    }
+    delete iter;
+}
+
+- (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
+                             startingAtKey:(id)key {
+    
+    Slice k = KeyFromStringOrData(key);
+    Iterator* iter = db->NewIterator(ReadOptions());
+    BOOL stop = false;
+    
+    for (iter->Seek(k); iter->Valid(); iter->Next()) {
+        Slice key2 = iter->key(), value = iter->value();
+        LevelDBKey k = GenericKeyFromSlice(key2);
+        id v = DecodeFromSlice(value, &k);
+        block(&k, v, &stop);
+        if (stop) break;
+    }
+    
+    delete iter;
+}
+
+- (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
+                   startingAtKey:(id)key
+             filteredByPredicate:(NSPredicate *)predicate {
+    Iterator* iter = db->NewIterator(ReadOptions());
+    BOOL stop = false;
+    if (key) {
+        Slice k = KeyFromStringOrData(key);
+        iter->Seek(k);
+    } else
+        iter->SeekToFirst();
+    
+    for (; iter->Valid(); iter->Next()) {
+        Slice key2 = iter->key(), value = iter->value();
+        LevelDBKey lk = GenericKeyFromSlice(key2);
+        id v = DecodeFromSlice(value, &lk);
+        if ([predicate evaluateWithObject:v]) {
+            block(&lk, v, &stop);
+            if (stop) break;
+        }
+    }
+    
+    delete iter;
+}
+
+#pragma mark - Bookkeeping
 
 - (void) deleteDatabaseFromDisk {
     NSFileManager *fileManager = [NSFileManager defaultManager];

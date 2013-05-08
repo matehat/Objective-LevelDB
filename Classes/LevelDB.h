@@ -37,28 +37,43 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 @property (nonatomic, copy) EncoderBlock encoder;
 @property (nonatomic, copy) DecoderBlock decoder;
 
-+ (id)libraryPath;
-+ (LevelDB *)databaseInLibraryWithName:(NSString *)name;
++ (id) libraryPath;
++ (LevelDB *) databaseInLibraryWithName:(NSString *)name;
 
 - (id) initWithPath:(NSString *)path;
+
+#pragma mark - Setters
 
 - (void) setObject:(id)value forKey:(id)key;
 - (void) setValue:(id)value forKey:(NSString *)key ;
 - (void) addEntriesFromDictionary:(NSDictionary *)dictionary;
 
+#pragma mark - Getters
+
 - (id) objectForKey:(id)key;
 - (id) objectsForKeys:(NSArray *)keys notFoundMarker:(id)marker;
 - (id) valueForKey:(NSString *)key;
+
+#pragma mark - Removers
 
 - (void) removeObjectForKey:(id)key;
 - (void) removeObjectsForKeys:(NSArray *)keyArray;
 - (void) removeAllObjects;
 
-#pragma mark - Iteration
+#pragma mark - Selection
 
 - (NSArray *)allKeys;
 - (NSArray *)keysByFilteringWithPredicate:(NSPredicate *)predicate;
 - (NSDictionary *)dictionaryByFilteringWithPredicate:(NSPredicate *)predicate;
+
+#pragma mark - Enumeration
+
+- (void) enumerateKeysUsingBlock:(KeyBlock)block;
+- (void) enumerateKeysUsingBlock:(KeyBlock)block
+                   startingAtKey:(id)key;
+- (void) enumerateKeysUsingBlock:(KeyBlock)block
+                   startingAtKey:(id)key
+             filteredByPredicate:(NSPredicate *)predicate;
 
 - (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block;
 - (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
@@ -67,12 +82,7 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
                              startingAtKey:(id)key
                        filteredByPredicate:(NSPredicate *)predicate;
 
-- (void) enumerateKeysUsingBlock:(KeyBlock)block;
-- (void) enumerateKeysUsingBlock:(KeyBlock)block
-                   startingAtKey:(id)key;
-- (void) enumerateKeysUsingBlock:(KeyBlock)block
-                   startingAtKey:(id)key
-             filteredByPredicate:(NSPredicate *)predicate;
+#pragma mark - Bookkeeping
 
 - (void) deleteDatabaseFromDisk;
 - (void) close;
