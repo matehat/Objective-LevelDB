@@ -14,8 +14,12 @@ Pod::Spec.new do |s|
  
   s.public_header_files   =  'Classes/levelDB.h'
   s.preserve_paths = 'leveldb-library'
- 
-  s.xcconfig = { 'LIBRARY_SEARCH_PATHS' => '"$(PODS_ROOT)/LevelDB-ObjC/leveldb-library"', 'HEADER_SEARCH_PATHS' => '"$(PODS_ROOT)/LevelDB-ObjC/leveldb-library/include"' }
+
+  s.xcconfig = {
+      'LIBRARY_SEARCH_PATHS'    => '"$(PODS_ROOT)/../LevelDB-ObjC/leveldb-library"',
+      'HEADER_SEARCH_PATHS'     => '"$(PODS_ROOT)/../LevelDB-ObjC/leveldb-library/include"',
+      'OTHER_LDFLAGS'           => '-lstdc++'
+  }
  
   def s.pre_install(pod, target_definition)
     Dir.chdir(pod.root + 'leveldb-library') do
