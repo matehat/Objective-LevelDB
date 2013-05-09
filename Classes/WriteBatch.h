@@ -6,9 +6,15 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <leveldb/db.h>
+#import <leveldb/write_batch.h>
 #import "LevelDB.h"
 
-@interface Writebatch : NSObject
+@interface Writebatch : NSObject {
+    leveldb::WriteBatch _writeBatch;
+}
+
+@property (readonly) leveldb::WriteBatch writeBatch;
 
 + (Writebatch *) writeBatchFromDB:(LevelDB *)db;
 
@@ -20,7 +26,6 @@
 - (void) setValue:(id)value forKey:(NSString *)key;
 - (void) addEntriesFromDictionary:(NSDictionary *)dictionary;
 
-- (leveldb::WriteBatch) getWriteBatch;
 - (void) apply;
 
 @end

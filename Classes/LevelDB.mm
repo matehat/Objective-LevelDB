@@ -129,7 +129,7 @@ NSData * NSDataFromLevelDBKey(LevelDBKey * key) {
 }
 
 - (void) applyBatch:(Writebatch *)writeBatch {
-    leveldb::WriteBatch wb = [writeBatch getWriteBatch];
+    leveldb::WriteBatch wb = writeBatch.writeBatch;
     leveldb::Status status = db->Write(writeOptions, &wb);
     if(!status.ok()) {
         NSLog(@"Problem applying the write batch in database: %s", status.ToString().c_str());

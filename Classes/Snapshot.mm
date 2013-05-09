@@ -8,10 +8,10 @@
 #import "Snapshot.h"
 
 @interface Snapshot () {
-    const leveldb::Snapshot * snapshot;
+    const leveldb::Snapshot * _snapshot;
 }
 
-@property (nonatomic, getter = getSnapshot) const leveldb::Snapshot * snapshot;
+@property (readonly, getter = getSnapshot) const leveldb::Snapshot * snapshot;
 
 @end
 
@@ -19,20 +19,13 @@
 
 + (Snapshot *) snapshotFromDB:(LevelDB *)database {
     Snapshot *snapshot = [[[Snapshot alloc] init] autorelease];
-    snapshot.snapshot = database.db->GetSnapshot();
-    snapshot.db = database;
+    snapshot->_snapshot = database.db->GetSnapshot();
+    snapshot->_db = database;
     return snapshot;
 }
 
-- (void) setSnapshot:(const leveldb::Snapshot *)__snapshot {
-    snapshot = __snapshot;
-}
 - (const leveldb::Snapshot *) getSnapshot {
-    return snapshot;
-}
-
-- (void) setDb:(LevelDB *)db {
-    _db = db;
+    return _snapshot;
 }
 
 - (id) objectForKey:(id)key {

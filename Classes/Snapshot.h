@@ -13,7 +13,7 @@
 
 @interface Snapshot : NSObject
 
-@property (nonatomic, assign) LevelDB * db;
+@property (nonatomic, readonly, assign) LevelDB * db;
 
 + (id) snapshotFromDB:(LevelDB *)database;
 

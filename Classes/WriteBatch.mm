@@ -5,14 +5,10 @@
 //  See LICENCE for details.
 //
 
-#import <leveldb/db.h>
-#import <leveldb/write_batch.h>
 #import "WriteBatch.h"
 #import "Header.h"
 
-@interface Writebatch () {
-    leveldb::WriteBatch writeBatch;
-}
+@interface Writebatch ()
 
 @property (nonatomic, assign) LevelDB * db;
 
@@ -20,9 +16,11 @@
 
 @implementation Writebatch
 
+@synthesize writeBatch = _writeBatch;
+
 + (Writebatch *) writeBatchFromDB:(LevelDB *)db {
     Writebatch *wb = [[Writebatch alloc] init];
-    wb.db = db;
+    wb->_db = db;
     return wb;
 }
 
@@ -36,7 +34,7 @@
 
 - (void) removeObjectForKey:(id)key {
     leveldb::Slice k = KeyFromStringOrData(key);
-    writeBatch.Delete(k);
+    _writeBatch.Delete(k);
 }
 - (void) removeObjectsForKeys:(NSArray *)keyArray {
     [keyArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -53,7 +51,7 @@
     leveldb::Slice k = KeyFromStringOrData(key);
     LevelDBKey lkey = GenericKeyFromSlice(k);
     leveldb::Slice v = EncodeToSlice(value, &lkey, _db.encoder);
-    writeBatch.Put(k, v);
+    _writeBatch.Put(k, v);
 }
 - (void) setValue:(id)value forKey:(NSString *)key {
     [self setObject:value forKey:key];
@@ -64,9 +62,6 @@
     }];
 }
 
-- (leveldb::WriteBatch) getWriteBatch {
-    return writeBatch;
-}
 - (void) apply {
     [_db applyBatch:self];
 }
