@@ -18,16 +18,16 @@
 #import "Header.h"
 
 NSString * NSStringFromLevelDBKey(LevelDBKey * key) {
-    return [[NSString alloc] initWithBytes:key->data length:key->length encoding:NSUTF8StringEncoding];
+    return [[[NSString alloc] initWithBytes:key->data length:key->length encoding:NSUTF8StringEncoding] autorelease];
 }
-NSData * NSDataFromLevelDBKey(LevelDBKey * key) {
-    return [NSData dataWithBytes:key->data length:key->length];
+NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
+    return [[NSData dataWithBytes:key->data length:key->length] autorelease];
 }
 
 @implementation LevelDB 
 
-@synthesize db=db;
-@synthesize path=_path;
+@synthesize db   = db;
+@synthesize path = _path;
 
 - (id)init
 {
