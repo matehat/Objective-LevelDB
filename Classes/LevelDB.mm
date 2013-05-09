@@ -6,29 +6,16 @@
 //
 
 #import "LevelDB.h"
+#import "Snapshot.h"
+#import "WriteBatch.h"
 
 #import <leveldb/db.h>
 #import <leveldb/options.h>
 #import <leveldb/cache.h>
+#import <leveldb/filter_policy.h>
+#import <leveldb/write_batch.h>
 
-#define SliceFromString(_string_)           (Slice((char *)[_string_ UTF8String], [_string_ lengthOfBytesUsingEncoding:NSUTF8StringEncoding]))
-#define StringFromSlice(_slice_)            ([[[NSString alloc] initWithBytes:_slice_.data() length:_slice_.size() encoding:NSUTF8StringEncoding] autorelease])
-
-#define SliceFromData(_data_)               (Slice((char *)[_data_ bytes], [_data_ length]))
-#define DataFromSlice(_slice_)              [NSData dataWithBytes:_slice_.data() length:_slice_.size()]
-
-#define DecodeFromSlice(_slice_, _key_)     (_decoder) ? _decoder(_key_, DataFromSlice(_slice_)) : ObjectFromSlice(_slice_)
-#define EncodeToSlice(_object_, _key_)      (_encoder) ? SliceFromData(_encoder(_key_, _object_)) : SliceFromObject(_object_)
-
-#define KeyFromStringOrData(_key_)          ([_key_ isKindOfClass:[NSString class]]) ? SliceFromString(_key_) : \
-                                            ([_key_ isKindOfClass:[NSData class]])   ? SliceFromData(_key_)   : NULL
-
-#define GenericKeyFromSlice(_slice_)        (LevelDBKey) { .data = _slice_.data(), .length = _slice_.size() }
-#define GenericKeyFromNSDataOrString(_obj_) ([_obj_ isKindOfClass:[NSString class]]) ? (LevelDBKey) { .data   = [_obj_ cStringUsingEncoding:NSUTF8StringEncoding], \
-                                                                                                      .length = [_obj_ lengthOfBytesUsingEncoding:NSUTF8StringEncoding]} : \
-                                            ([_obj_ isKindOfClass:[NSData class]])   ? (LevelDBKey) { .data = [_obj_ bytes], .length = [_obj_ length] } : NULL
-
-using namespace leveldb;
+#import "Header.h"
 
 NSString * NSStringFromLevelDBKey(LevelDBKey * key) {
     return [[NSString alloc] initWithBytes:key->data length:key->length encoding:NSUTF8StringEncoding];
@@ -37,26 +24,9 @@ NSData * NSDataFromLevelDBKey(LevelDBKey * key) {
     return [NSData dataWithBytes:key->data length:key->length];
 }
 
-static Slice SliceFromObject(id object) {
-    NSMutableData *d = [[[NSMutableData alloc] init] autorelease];
-    NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:d];
-    [archiver encodeObject:object forKey:@"object"];
-    [archiver finishEncoding];
-    [archiver release];
-    return Slice((const char *)[d bytes], (size_t)[d length]);
-}
-
-static id ObjectFromSlice(Slice v) {
-    NSData *data = DataFromSlice(v);
-    NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
-    id object = [[unarchiver decodeObjectForKey:@"object"] retain];
-    [unarchiver finishDecoding];
-    [unarchiver release];
-    return object;
-}
-
 @implementation LevelDB 
 
+@synthesize db=db;
 @synthesize path=_path;
 
 - (id)init
@@ -70,21 +40,33 @@ static id ObjectFromSlice(Slice v) {
 }
 
 - (id) initWithPath:(NSString *)path {
-    return [self initWithPath:path andCacheSize:0];
+    LevelDBOptions opts;
+    return [self initWithPath:path andOptions:opts];
 }
-- (id) initWithPath:(NSString *)path andCacheSize:(int)cacheSize {
+- (id) initWithPath:(NSString *)path andOptions:(LevelDBOptions)opts {
     self = [super init];
     if (self) {
         _path = path;
-        Options options;
-        options.create_if_missing = true;
+        leveldb::Options options;
         
-        if (cacheSize > 0)
-            options.block_cache = NewLRUCache(cacheSize);
+        options.create_if_missing = opts.createIfMissing;
+        options.paranoid_checks = opts.paranoidCheck;
+        options.error_if_exists = opts.errorIfMissing;
         
-        Status status = DB::Open(options, [_path UTF8String], &db);
+        if (!opts.compression)
+            options.compression = leveldb::kNoCompression;
         
-        readOptions.fill_cache = false;
+        if (opts.cacheSize > 0)
+            options.block_cache = leveldb::NewLRUCache(opts.cacheSize);
+        else
+            readOptions.fill_cache = false;
+        
+        if (opts.filterPolicy > 0)
+            options.filter_policy = leveldb::NewBloomFilterPolicy(opts.filterPolicy);
+        
+        leveldb::Status status = leveldb::DB::Open(options, [_path UTF8String], &db);
+        
+        readOptions.fill_cache = true;
         writeOptions.sync = false;
         
         if(!status.ok()) {
@@ -101,12 +83,13 @@ static id ObjectFromSlice(Slice v) {
 }
 
 + (LevelDB *)databaseInLibraryWithName:(NSString *)name {
-    return [LevelDB databaseInLibraryWithName:name andCacheSize:0];
+    LevelDBOptions opts;
+    return [LevelDB databaseInLibraryWithName:name andOptions:opts];
 }
 
-+ (LevelDB *)databaseInLibraryWithName:(NSString *)name andCacheSize:(int)cacheSize {
++ (LevelDB *)databaseInLibraryWithName:(NSString *)name andOptions:(LevelDBOptions)opts {
     NSString *path = [[LevelDB libraryPath] stringByAppendingPathComponent:name];
-    LevelDB *ldb = [[[LevelDB alloc] initWithPath:path] autorelease];
+    LevelDB *ldb = [[[LevelDB alloc] initWithPath:path andOptions:opts] autorelease];
     return ldb;
 }
 
@@ -116,15 +99,21 @@ static id ObjectFromSlice(Slice v) {
 - (BOOL) safe {
     return writeOptions.sync;
 }
+- (void) setUseCache:(BOOL)useCache {
+    readOptions.fill_cache = useCache;
+}
+- (BOOL) useCache {
+    return readOptions.fill_cache;
+}
 
 #pragma mark - Setters
 
 - (void) setObject:(id)value forKey:(id)key {
-    Slice k = KeyFromStringOrData(key);
+    leveldb::Slice k = KeyFromStringOrData(key);
     LevelDBKey lkey = GenericKeyFromSlice(k);
-    Slice v = EncodeToSlice(value, &lkey);
+    leveldb::Slice v = EncodeToSlice(value, &lkey, _encoder);
     
-    Status status = db->Put(writeOptions, k, v);
+    leveldb::Status status = db->Put(writeOptions, k, v);
     
     if(!status.ok()) {
         NSLog(@"Problem storing key/value pair in database: %s", status.ToString().c_str());
@@ -139,12 +128,29 @@ static id ObjectFromSlice(Slice v) {
     }];
 }
 
+- (void) applyBatch:(Writebatch *)writeBatch {
+    leveldb::WriteBatch wb = [writeBatch getWriteBatch];
+    leveldb::Status status = db->Write(writeOptions, &wb);
+    if(!status.ok()) {
+        NSLog(@"Problem applying the write batch in database: %s", status.ToString().c_str());
+    }
+}
+
 #pragma mark - Getters
 
 - (id) objectForKey:(id)key {
+    [self objectForKey:key withSnapshot:nil];
+}
+- (id) objectForKey:(id)key
+       withSnapshot:(Snapshot *)snapshot {
+    
     std::string v_string;
-    Slice k = KeyFromStringOrData(key);
-    Status status = db->Get(readOptions, k, &v_string);
+    leveldb::Slice k = KeyFromStringOrData(key);
+    CopyReadOptions(readOptions, _readOptions);
+    if (snapshot) {
+        _readOptions.snapshot = [snapshot getSnapshot];
+    }
+    leveldb::Status status = db->Get(_readOptions, k, &v_string);
     
     if(!status.ok()) {
         if(!status.IsNotFound())
@@ -153,7 +159,7 @@ static id ObjectFromSlice(Slice v) {
     }
     
     LevelDBKey lkey = GenericKeyFromSlice(k);
-    return DecodeFromSlice(v_string, &lkey);
+    return DecodeFromSlice(v_string, &lkey, _decoder);
 }
 - (id) objectsForKeys:(NSArray *)keys notFoundMarker:(id)marker {
     NSMutableArray *result = [NSMutableArray arrayWithCapacity:keys.count];
@@ -175,8 +181,8 @@ static id ObjectFromSlice(Slice v) {
 #pragma mark - Removers
 
 - (void) removeObjectForKey:(id)key {
-    Slice k = KeyFromStringOrData(key);
-    Status status = db->Delete(writeOptions, k);
+    leveldb::Slice k = KeyFromStringOrData(key);
+    leveldb::Status status = db->Delete(writeOptions, k);
     
     if(!status.ok()) {
         NSLog(@"Problem deleting key/value pair in database: %s", status.ToString().c_str());
@@ -226,56 +232,63 @@ static id ObjectFromSlice(Slice v) {
     return [NSDictionary dictionaryWithDictionary:results];
 }
 
+- (Snapshot *) getSnapshot {
+    return [Snapshot snapshotFromDB:self];
+}
+
 #pragma mark - Enumeration
 
 - (void) enumerateKeysUsingBlock:(KeyBlock)block {
-    Iterator* iter = db->NewIterator(ReadOptions());
-    BOOL stop = false;
-    for (iter->SeekToFirst(); iter->Valid(); iter->Next()) {
-        Slice key = iter->key();
-        LevelDBKey k = GenericKeyFromSlice(key);
-        block(&k, &stop);
-        if (stop) break;
-    }
-    
-    delete iter;
+    [self enumerateKeysUsingBlock:block
+                    startingAtKey:nil
+              filteredByPredicate:nil
+                     withSnapshot:nil];
 }
 
 - (void) enumerateKeysUsingBlock:(KeyBlock)block
                    startingAtKey:(id)key {
     
-    Slice k = KeyFromStringOrData(key);
-    Iterator* iter = db->NewIterator(ReadOptions());
-    BOOL stop = false;
-    
-    for (iter->Seek(k); iter->Valid(); iter->Next()) {
-        Slice key2 = iter->key();
-        LevelDBKey k = GenericKeyFromSlice(key2);
-        block(&k, &stop);
-        if (stop) break;
-    }
-    
-    delete iter;
+    [self enumerateKeysUsingBlock:block
+                    startingAtKey:key
+              filteredByPredicate:nil
+                     withSnapshot:nil];
 }
 
 - (void) enumerateKeysUsingBlock:(KeyBlock)block
                    startingAtKey:(id)key
              filteredByPredicate:(NSPredicate *)predicate {
-    
-    Slice k;
-    Iterator* iter = db->NewIterator(ReadOptions());
+    [self enumerateKeysUsingBlock:block
+                    startingAtKey:key
+              filteredByPredicate:predicate
+                     withSnapshot:nil];
+}
+
+- (void) enumerateKeysUsingBlock:(KeyBlock)block
+                   startingAtKey:(id)key
+             filteredByPredicate:(NSPredicate *)predicate
+                    withSnapshot:(Snapshot *)snapshot {
+
+    CopyReadOptions(readOptions, _readOptions);
+    if (snapshot) {
+        _readOptions.snapshot = [snapshot getSnapshot];
+    }
+    leveldb::Iterator* iter = db->NewIterator(_readOptions);
+    leveldb::Slice ikey, ivalue;
     BOOL stop = false;
+    
     if (key) {
-        k = KeyFromStringOrData(key);
-        iter->Seek(k);
-    } else
+        iter->Seek(KeyFromStringOrData(key));
+    } else {
         iter->SeekToFirst();
+    }
     
     for (; iter->Valid(); iter->Next()) {
-        Slice key2 = iter->key(), value = iter->value();
-        LevelDBKey lk = GenericKeyFromSlice(key2);
-        id v = DecodeFromSlice(value, &lk);
-        if ([predicate evaluateWithObject:v]) {
+        ikey = iter->key();
+        ivalue = iter->value();
+        
+        LevelDBKey lk = GenericKeyFromSlice(ikey);
+        id v = DecodeFromSlice(ivalue, &lk, _decoder);
+        if (predicate == nil || [predicate evaluateWithObject:v]) {
             block(&lk, &stop);
             if (stop) break;
         }
@@ -285,52 +298,55 @@ static id ObjectFromSlice(Slice v) {
 }
 
 - (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block {
-    Iterator* iter = db->NewIterator(ReadOptions());
-    BOOL stop = false;
-    for (iter->SeekToFirst(); iter->Valid(); iter->Next()) {
-        Slice key = iter->key(), value = iter->value();
-        LevelDBKey k = GenericKeyFromSlice(key);
-        id v = DecodeFromSlice(value, &k);
-        block(&k, v, &stop);
-        if (stop) break;
-    }
-    delete iter;
+    [self enumerateKeysAndObjectsUsingBlock:block
+                              startingAtKey:nil
+                        filteredByPredicate:nil
+                               withSnapshot:nil];
 }
 
 - (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
                              startingAtKey:(id)key {
-    
-    Slice k = KeyFromStringOrData(key);
-    Iterator* iter = db->NewIterator(ReadOptions());
-    BOOL stop = false;
-    
-    for (iter->Seek(k); iter->Valid(); iter->Next()) {
-        Slice key2 = iter->key(), value = iter->value();
-        LevelDBKey k = GenericKeyFromSlice(key2);
-        id v = DecodeFromSlice(value, &k);
-        block(&k, v, &stop);
-        if (stop) break;
-    }
-    
-    delete iter;
+    [self enumerateKeysAndObjectsUsingBlock:block
+                              startingAtKey:key
+                        filteredByPredicate:nil
+                               withSnapshot:nil];
 }
 
 - (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
-                   startingAtKey:(id)key
-             filteredByPredicate:(NSPredicate *)predicate {
-    Iterator* iter = db->NewIterator(ReadOptions());
+                             startingAtKey:(id)key
+                       filteredByPredicate:(NSPredicate *)predicate  {
+    [self enumerateKeysAndObjectsUsingBlock:block
+                              startingAtKey:key
+                        filteredByPredicate:predicate
+                               withSnapshot:nil];
+}
+
+- (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
+                             startingAtKey:(id)key
+                       filteredByPredicate:(NSPredicate *)predicate
+                              withSnapshot:(Snapshot *)snapshot {
+    
+    CopyReadOptions(readOptions, _readOptions);
+    if (snapshot) {
+        _readOptions.snapshot = [snapshot getSnapshot];
+    }
+    leveldb::Iterator* iter = db->NewIterator(_readOptions);
+    leveldb::Slice ikey, ivalue;
     BOOL stop = false;
+    
     if (key) {
-        Slice k = KeyFromStringOrData(key);
+        leveldb::Slice k = KeyFromStringOrData(key);
         iter->Seek(k);
-    } else
+    } else {
         iter->SeekToFirst();
+    }
     
     for (; iter->Valid(); iter->Next()) {
-        Slice key2 = iter->key(), value = iter->value();
-        LevelDBKey lk = GenericKeyFromSlice(key2);
-        id v = DecodeFromSlice(value, &lk);
-        if ([predicate evaluateWithObject:v]) {
+        ikey = iter->key();
+        ivalue = iter->value();
+        LevelDBKey lk = GenericKeyFromSlice(ikey);
+        id v = DecodeFromSlice(ivalue, &lk, _decoder);
+        if (predicate == nil || [predicate evaluateWithObject:v]) {
             block(&lk, v, &stop);
             if (stop) break;
         }
