@@ -125,4 +125,12 @@
                                withSnapshot:self];
 }
 
+- (void) release {
+    _db.db->ReleaseSnapshot(_snapshot);
+}
+- (void) dealloc {
+    [self release];
+    [super dealloc];
+}
+
 @end

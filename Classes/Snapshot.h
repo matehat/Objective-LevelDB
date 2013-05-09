@@ -45,4 +45,6 @@
                              startingAtKey:(id)key
                        filteredByPredicate:(NSPredicate *)predicate;
 
+- (void) release;
+
 @end
