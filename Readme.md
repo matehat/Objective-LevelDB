@@ -87,6 +87,21 @@ Writebatch *wb = [Writebatch writebatchFromDB:ldb];
 [wb apply];
 ```
 
+##### LevelDB options
+
+```objective-c
+// The following values are the default
+LevelDBOptions options = MakeLevelDBOptions();
+options.createIfMissing = true;
+options.errorIfExists   = false;
+options.paranoidCheck   = false;
+options.compression     = true;
+options.filterPolicy    = 0;      // Size in bits per key, allocated for a bloom filter, used in testing presence of key
+options.cacheSize       = 0;      // Size in bytes, allocated for a LRU cache used for speeding up lookups
+
+LevelDB *ldb = [LevelDB databaseInLibraryWithName:@"test.ldb" andOptions:options];
+```
+
 ### License
 
 Distributed under the MIT license
