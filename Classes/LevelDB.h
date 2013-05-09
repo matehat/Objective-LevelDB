@@ -6,24 +6,26 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "leveldb/db.h"
+#import <leveldb/db.h>
 
 @class Snapshot;
 @class Writebatch;
 
 typedef struct LevelDBOptions {
-    BOOL createIfMissing = true;
-    BOOL errorIfMissing  = false;
-    BOOL paranoidCheck   = false;
-    BOOL compression     = true;
-    int  filterPolicy    = 0;
-    unsigned long long cacheSize  = 0;
+    BOOL createIfMissing ;
+    BOOL errorIfExists   ;
+    BOOL paranoidCheck   ;
+    BOOL compression     ;
+    int  filterPolicy    ;
+    unsigned long long cacheSize;
 } LevelDBOptions;
 
 typedef struct {
     const char * data;
     int          length;
 } LevelDBKey;
+
+LevelDBOptions MakeLevelDBOptions();
 
 typedef NSData * (^EncoderBlock) (LevelDBKey * key, id object);
 typedef id       (^DecoderBlock) (LevelDBKey * key, id data);

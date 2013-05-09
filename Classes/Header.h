@@ -13,7 +13,7 @@
 #define StringFromSlice(_slice_)            [[[NSString alloc] initWithBytes:_slice_.data() length:_slice_.size() encoding:NSUTF8StringEncoding] autorelease]
 
 #define SliceFromData(_data_)               leveldb::Slice((char *)[_data_ bytes], [_data_ length])
-#define DataFromSlice(_slice_)              [[NSData dataWithBytes:_slice_.data() length:_slice_.size()] autorelease]
+#define DataFromSlice(_slice_)              [NSData dataWithBytes:_slice_.data() length:_slice_.size()]
 
 #define DecodeFromSlice(_slice_, _key_, _d) (_d) ? _d(_key_, DataFromSlice(_slice_))  : ObjectFromSlice(_slice_)
 #define EncodeToSlice(_object_, _key_, _e)  (_e) ? SliceFromData(_e(_key_, _object_)) : SliceFromObject(_object_)

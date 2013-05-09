@@ -6,18 +6,18 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "leveldb/db.h"
+#import <leveldb/db.h>
 #import "LevelDB.h"
 
 @class LevelDB;
 
-@interface Snapshot : NSObject
+@interface Snapshot : NSObject {
+    const leveldb::Snapshot * _snapshot;
+}
 
 @property (nonatomic, readonly, assign) LevelDB * db;
 
 + (id) snapshotFromDB:(LevelDB *)database;
-
-- (const leveldb::Snapshot *) getSnapshot;
 
 - (id) objectForKey:(id)key;
 - (id) objectsForKeys:(NSArray *)keys notFoundMarker:(id)marker;

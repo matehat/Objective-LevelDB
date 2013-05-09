@@ -7,11 +7,10 @@
 
 #import "Snapshot.h"
 
-@interface Snapshot () {
-    const leveldb::Snapshot * _snapshot;
-}
+@interface Snapshot ()
 
 @property (readonly, getter = getSnapshot) const leveldb::Snapshot * snapshot;
+- (const leveldb::Snapshot *) getSnapshot;
 
 @end
 
@@ -19,7 +18,7 @@
 
 + (Snapshot *) snapshotFromDB:(LevelDB *)database {
     Snapshot *snapshot = [[[Snapshot alloc] init] autorelease];
-    snapshot->_snapshot = database.db->GetSnapshot();
+    snapshot->_snapshot = [database db]->GetSnapshot();
     snapshot->_db = database;
     return snapshot;
 }
@@ -126,7 +125,7 @@
 }
 
 - (void) release {
-    _db.db->ReleaseSnapshot(_snapshot);
+    [_db db]->ReleaseSnapshot(_snapshot);
 }
 - (void) dealloc {
     [self release];

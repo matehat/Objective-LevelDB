@@ -29,11 +29,23 @@
     (key) ? iter->Seek(KeyFromStringOrData(key)) : iter->SeekToFirst()
 
 NSString * NSStringFromLevelDBKey(LevelDBKey * key) {
-    return [[[NSString alloc] initWithBytes:key->data length:key->length encoding:NSUTF8StringEncoding] autorelease];
+    return [[NSString alloc] initWithBytes:key->data length:key->length encoding:NSUTF8StringEncoding];
 }
 NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
-    return [[NSData dataWithBytes:key->data length:key->length] autorelease];
+    return [NSData dataWithBytes:key->data length:key->length];
 }
+
+@interface Snapshot ()
+- (const leveldb::Snapshot *) getSnapshot;
+@end
+
+@interface Writebatch ()
+- (leveldb::WriteBatch) writeBatch;
+@end
+
+@interface LevelDB ()
+
+@end
 
 @implementation LevelDB 
 
@@ -50,19 +62,24 @@ NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
     return self;
 }
 
+LevelDBOptions MakeLevelDBOptions() {
+    return (LevelDBOptions) {true, false, false, true, 0, 0};
+}
+
 - (id) initWithPath:(NSString *)path {
-    LevelDBOptions opts;
+    LevelDBOptions opts = MakeLevelDBOptions();
     return [self initWithPath:path andOptions:opts];
 }
 - (id) initWithPath:(NSString *)path andOptions:(LevelDBOptions)opts {
     self = [super init];
     if (self) {
         _path = path;
+        
         leveldb::Options options;
         
         options.create_if_missing = opts.createIfMissing;
         options.paranoid_checks = opts.paranoidCheck;
-        options.error_if_exists = opts.errorIfMissing;
+        options.error_if_exists = opts.errorIfExists;
         
         if (!opts.compression)
             options.compression = leveldb::kNoCompression;
@@ -94,7 +111,7 @@ NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
 }
 
 + (LevelDB *)databaseInLibraryWithName:(NSString *)name {
-    LevelDBOptions opts;
+    LevelDBOptions opts = MakeLevelDBOptions();
     return [LevelDB databaseInLibraryWithName:name andOptions:opts];
 }
 
@@ -140,7 +157,7 @@ NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
 }
 
 - (void) applyBatch:(Writebatch *)writeBatch {
-    leveldb::WriteBatch wb = writeBatch.writeBatch;
+    leveldb::WriteBatch wb = [writeBatch writeBatch];
     leveldb::Status status = db->Write(writeOptions, &wb);
     if(!status.ok()) {
         NSLog(@"Problem applying the write batch in database: %s", status.ToString().c_str());
@@ -204,7 +221,7 @@ NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
 }
 
 - (void) removeAllObjects {
-    [self enumerateKeysAndObjectsUsingBlock:^(LevelDBKey *key, id value, BOOL *stop) {
+    [self enumerateKeysUsingBlock:^(LevelDBKey *key, BOOL *stop) {
         [self removeObjectForKey:NSDataFromLevelDBKey(key)];
     }];
 }
