@@ -278,7 +278,6 @@ NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
 
     MaybeAddSnapshotToOptions(readOptions, readOptionsPtr, snapshot);
     leveldb::Iterator* iter = db->NewIterator(*readOptionsPtr);
-    leveldb::Slice ikey, ivalue;
     BOOL stop = false;
     
     KeyValueBlock iterate = (predicate != nil) ? ^(LevelDBKey *lk, id value, BOOL *stop) {
@@ -328,7 +327,6 @@ NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
     
     MaybeAddSnapshotToOptions(readOptions, readOptionsPtr, snapshot);
     leveldb::Iterator* iter = db->NewIterator(*readOptionsPtr);
-    leveldb::Slice ikey, ivalue;
     BOOL stop = false;
     
     KeyValueBlock iterate = (predicate != nil) ? ^(LevelDBKey *lk, id value, BOOL *stop) {
