@@ -34,10 +34,6 @@
                                                 } \
                                             : NULL
 
-#define CopyReadOptions(_from_, _to_)       leveldb::ReadOptions _to_; \
-                                            _to_.fill_cache = _from_.fill_cache;
-
-
 static leveldb::Slice SliceFromObject(id object) {
     NSMutableData *d = [[[NSMutableData alloc] init] autorelease];
     NSKeyedArchiver *archiver = [[NSKeyedArchiver alloc] initForWritingWithMutableData:d];

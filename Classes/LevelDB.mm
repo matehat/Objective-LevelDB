@@ -17,6 +17,14 @@
 
 #import "Header.h"
 
+#define MaybeAddSnapshotToOptions(_from_, _to_, _snap_) \
+    leveldb::ReadOptions * _to_;\
+    if (_snap_ != nil) { \
+        _to_->fill_cache = _from_.fill_cache; \
+        _to_->snapshot = [_snap_ getSnapshot]; \
+    } else \
+        _to_ = &_from_;
+
 NSString * NSStringFromLevelDBKey(LevelDBKey * key) {
     return [[[NSString alloc] initWithBytes:key->data length:key->length encoding:NSUTF8StringEncoding] autorelease];
 }
@@ -145,12 +153,9 @@ NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
        withSnapshot:(Snapshot *)snapshot {
     
     std::string v_string;
+    MaybeAddSnapshotToOptions(readOptions, readOptionsPtr, snapshot);
     leveldb::Slice k = KeyFromStringOrData(key);
-    CopyReadOptions(readOptions, _readOptions);
-    if (snapshot) {
-        _readOptions.snapshot = [snapshot getSnapshot];
-    }
-    leveldb::Status status = db->Get(_readOptions, k, &v_string);
+    leveldb::Status status = db->Get(*readOptionsPtr, k, &v_string);
     
     if(!status.ok()) {
         if(!status.IsNotFound())
@@ -268,11 +273,8 @@ NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
              filteredByPredicate:(NSPredicate *)predicate
                     withSnapshot:(Snapshot *)snapshot {
 
-    CopyReadOptions(readOptions, _readOptions);
-    if (snapshot) {
-        _readOptions.snapshot = [snapshot getSnapshot];
-    }
-    leveldb::Iterator* iter = db->NewIterator(_readOptions);
+    MaybeAddSnapshotToOptions(readOptions, readOptionsPtr, snapshot);
+    leveldb::Iterator* iter = db->NewIterator(*readOptionsPtr);
     leveldb::Slice ikey, ivalue;
     BOOL stop = false;
     
@@ -326,11 +328,8 @@ NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
                        filteredByPredicate:(NSPredicate *)predicate
                               withSnapshot:(Snapshot *)snapshot {
     
-    CopyReadOptions(readOptions, _readOptions);
-    if (snapshot) {
-        _readOptions.snapshot = [snapshot getSnapshot];
-    }
-    leveldb::Iterator* iter = db->NewIterator(_readOptions);
+    MaybeAddSnapshotToOptions(readOptions, readOptionsPtr, snapshot);
+    leveldb::Iterator* iter = db->NewIterator(*readOptionsPtr);
     leveldb::Slice ikey, ivalue;
     BOOL stop = false;
     
