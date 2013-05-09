@@ -281,16 +281,17 @@ NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
     leveldb::Slice ikey, ivalue;
     BOOL stop = false;
     
+    KeyValueBlock iterate = (predicate != nil) ? ^(LevelDBKey *lk, id value, BOOL *stop) {
+        if ([predicate evaluateWithObject:value]) block(lk, stop);
+    } : ^(LevelDBKey *lk, id value, BOOL *stop) {
+        block(lk, stop);
+    };
+    
     for (SeekToFirstOrKey(iter, key); iter->Valid(); iter->Next()) {
-        ikey = iter->key();
-        ivalue = iter->value();
-        
-        LevelDBKey lk = GenericKeyFromSlice(ikey);
-        id v = DecodeFromSlice(ivalue, &lk, _decoder);
-        if (predicate == nil || [predicate evaluateWithObject:v]) {
-            block(&lk, &stop);
-            if (stop) break;
-        }
+        LevelDBKey lk = GenericKeyFromSlice(iter->key());
+        id v = DecodeFromSlice(iter->value(), &lk, _decoder);
+        iterate(&lk, v, &stop);
+        if (stop) break;
     }
     
     delete iter;
@@ -330,15 +331,15 @@ NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
     leveldb::Slice ikey, ivalue;
     BOOL stop = false;
     
+    KeyValueBlock iterate = (predicate != nil) ? ^(LevelDBKey *lk, id value, BOOL *stop) {
+        if ([predicate evaluateWithObject:value]) block(lk, value, stop);
+    } : block;
+    
     for (SeekToFirstOrKey(iter, key); iter->Valid(); iter->Next()) {
-        ikey = iter->key();
-        ivalue = iter->value();
-        LevelDBKey lk = GenericKeyFromSlice(ikey);
-        id v = DecodeFromSlice(ivalue, &lk, _decoder);
-        if (predicate == nil || [predicate evaluateWithObject:v]) {
-            block(&lk, v, &stop);
-            if (stop) break;
-        }
+        LevelDBKey lk = GenericKeyFromSlice(iter->key());
+        id v = DecodeFromSlice(iter->value(), &lk, _decoder);
+        iterate(&lk, v, &stop);
+        if (stop) break;
     }
     
     delete iter;
