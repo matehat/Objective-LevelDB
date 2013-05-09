@@ -25,6 +25,9 @@
     } else \
         _to_ = &_from_;
 
+#define SeekToFirstOrKey(iter, key) \
+    (key) ? iter->Seek(KeyFromStringOrData(key)) : iter->SeekToFirst()
+
 NSString * NSStringFromLevelDBKey(LevelDBKey * key) {
     return [[[NSString alloc] initWithBytes:key->data length:key->length encoding:NSUTF8StringEncoding] autorelease];
 }
@@ -278,13 +281,7 @@ NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
     leveldb::Slice ikey, ivalue;
     BOOL stop = false;
     
-    if (key) {
-        iter->Seek(KeyFromStringOrData(key));
-    } else {
-        iter->SeekToFirst();
-    }
-    
-    for (; iter->Valid(); iter->Next()) {
+    for (SeekToFirstOrKey(iter, key); iter->Valid(); iter->Next()) {
         ikey = iter->key();
         ivalue = iter->value();
         
@@ -333,14 +330,7 @@ NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
     leveldb::Slice ikey, ivalue;
     BOOL stop = false;
     
-    if (key) {
-        leveldb::Slice k = KeyFromStringOrData(key);
-        iter->Seek(k);
-    } else {
-        iter->SeekToFirst();
-    }
-    
-    for (; iter->Valid(); iter->Next()) {
+    for (SeekToFirstOrKey(iter, key); iter->Valid(); iter->Next()) {
         ikey = iter->key();
         ivalue = iter->value();
         LevelDBKey lk = GenericKeyFromSlice(ikey);
