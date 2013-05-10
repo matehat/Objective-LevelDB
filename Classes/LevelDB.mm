@@ -95,9 +95,9 @@ LevelDBOptions MakeLevelDBOptions() {
             NSError *crError;
             
             BOOL success = [fm createDirectoryAtPath:dirpath
-          withIntermediateDirectories:true
-                           attributes:nil
-                                error:nil];
+                         withIntermediateDirectories:true
+                                          attributes:nil
+                                               error:&crError];
             if (!success) {
                 NSLog(@"Problem creating parent directory: %@", crError);
             }
