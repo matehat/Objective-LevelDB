@@ -63,7 +63,7 @@ NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
 }
 
 LevelDBOptions MakeLevelDBOptions() {
-    return (LevelDBOptions) {true, false, false, true, 0, 0};
+    return (LevelDBOptions) {true, true, false, false, true, 0, 0};
 }
 
 - (id) initWithPath:(NSString *)path {
@@ -88,6 +88,20 @@ LevelDBOptions MakeLevelDBOptions() {
             options.block_cache = leveldb::NewLRUCache(opts.cacheSize);
         else
             readOptions.fill_cache = false;
+        
+        if (opts.createIntermediateDirectories) {
+            NSString *dirpath = [path stringByDeletingLastPathComponent];
+            NSFileManager *fm = [NSFileManager defaultManager];
+            NSError *crError;
+            
+            BOOL success = [fm createDirectoryAtPath:dirpath
+          withIntermediateDirectories:true
+                           attributes:nil
+                                error:nil];
+            if (!success) {
+                NSLog(@"Problem creating parent directory: %@", crError);
+            }
+        }
         
         if (opts.filterPolicy > 0)
             options.filter_policy = leveldb::NewBloomFilterPolicy(opts.filterPolicy);

@@ -13,6 +13,7 @@
 
 typedef struct LevelDBOptions {
     BOOL createIfMissing ;
+    BOOL createIntermediateDirectories;
     BOOL errorIfExists   ;
     BOOL paranoidCheck   ;
     BOOL compression     ;
