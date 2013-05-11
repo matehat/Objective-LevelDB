@@ -6,16 +6,10 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <leveldb/db.h>
-#import <leveldb/write_batch.h>
 
 #import "LevelDB.h"
 
-@interface Writebatch : NSObject {
-    leveldb::WriteBatch _writeBatch;
-}
-
-@property (readonly) leveldb::WriteBatch writeBatch;
+@interface Writebatch : NSObject
 
 + (Writebatch *) writeBatchFromDB:(LevelDB *)db;
 

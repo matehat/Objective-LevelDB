@@ -35,6 +35,10 @@ NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
     return [NSData dataWithBytes:key->data length:key->length];
 }
 
+LevelDBOptions MakeLevelDBOptions() {
+    return (LevelDBOptions) {true, true, false, false, true, 0, 0};
+}
+
 @interface Snapshot ()
 - (const leveldb::Snapshot *) getSnapshot;
 @end
@@ -43,7 +47,13 @@ NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
 - (leveldb::WriteBatch) writeBatch;
 @end
 
-@interface LevelDB ()
+@interface LevelDB () {
+    leveldb::DB * db;
+    leveldb::ReadOptions readOptions;
+    leveldb::WriteOptions writeOptions;
+}
+
+@property (nonatomic, readonly) leveldb::DB * db;
 
 @end
 
@@ -62,8 +72,8 @@ NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
     return self;
 }
 
-LevelDBOptions MakeLevelDBOptions() {
-    return (LevelDBOptions) {true, true, false, false, true, 0, 0};
++ (LevelDBOptions) makeOptions {
+    return MakeLevelDBOptions();
 }
 
 - (id) initWithPath:(NSString *)path {

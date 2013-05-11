@@ -6,14 +6,11 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <leveldb/db.h>
 #import "LevelDB.h"
 
 @class LevelDB;
 
-@interface Snapshot : NSObject {
-    const leveldb::Snapshot * _snapshot;
-}
+@interface Snapshot : NSObject 
 
 @property (nonatomic, readonly, assign) LevelDB * db;
 

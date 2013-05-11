@@ -4,12 +4,14 @@ A feature-complete Objective-C wrapper for [Google's LevelDB](http://code.google
 
 ### Instructions
 
-1. Drag LevelDB.h and LevelDB.mm into your project. 
+1. Drag all `.h` and `.mm` files into your project.
 2. Clone [Google's leveldb](http://code.google.com/p/leveldb/source/checkout), preferably as a submodule of your project
 3. In the leveldb library source directory, run `make PLATFORM=IOS` to build the library file
 4. Add libleveldb.a to your project as a dependency
 5. Add the leveldb/include path to your header path
-6. Make sure any class that imports leveldb is a `.mm` file. LevelDB is written in C++, so it can only be included by an Objective-C++ file
+
+Although Google's leveldb library is written in C++, this wrapper was written in a way that you can import Objective-LevelDB into your Objective-C
+project without worrying about turning your `.m` files into `.mm`.
 
 ### Examples
 
@@ -91,7 +93,7 @@ Writebatch *wb = [Writebatch writebatchFromDB:ldb];
 
 ```objective-c
 // The following values are the default
-LevelDBOptions options = MakeLevelDBOptions();
+LevelDBOptions options = [LevelDB makeOptions];
 options.createIfMissing = true;
 options.errorIfExists   = false;
 options.paranoidCheck   = false;
@@ -99,7 +101,19 @@ options.compression     = true;
 options.filterPolicy    = 0;      // Size in bits per key, allocated for a bloom filter, used in testing presence of key
 options.cacheSize       = 0;      // Size in bytes, allocated for a LRU cache used for speeding up lookups
 
+// Then, you can provide it when initializing a db instance.
 LevelDB *ldb = [LevelDB databaseInLibraryWithName:@"test.ldb" andOptions:options];
+```
+
+##### Per-request options
+
+```objective-c
+db.safe = true; // Make sure to data was actually written to disk before returning from write operations.
+[ldb setObject:@"laval" forKey:@"string_test"];
+[ldb setObject:[NSDictionary dictionaryWithObjectsAndKeys:@"val1", @"key1", @"val2", @"key2", nil] forKey:@"dict_test"];
+db.safe = false; // Switch back to default
+
+db.useCache = false; // Do not use DB cache when reading data (default to true);
 ```
 
 ### License

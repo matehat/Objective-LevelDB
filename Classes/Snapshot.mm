@@ -6,15 +6,22 @@
 //
 
 #import "Snapshot.h"
+#import <leveldb/db.h>
 
-@interface Snapshot ()
+@interface LevelDB ()
+- (leveldb::DB *)db;
+@end
+
+@interface Snapshot () {
+    const leveldb::Snapshot * _snapshot;
+}
 
 @property (readonly, getter = getSnapshot) const leveldb::Snapshot * snapshot;
 - (const leveldb::Snapshot *) getSnapshot;
 
 @end
 
-@implementation Snapshot
+@implementation Snapshot 
 
 + (Snapshot *) snapshotFromDB:(LevelDB *)database {
     Snapshot *snapshot = [[[Snapshot alloc] init] autorelease];

@@ -5,11 +5,17 @@
 //  See LICENCE for details.
 //
 
+#import <leveldb/db.h>
+#import <leveldb/write_batch.h>
+
 #import "WriteBatch.h"
 #import "Header.h"
 
-@interface Writebatch ()
+@interface Writebatch () {
+    leveldb::WriteBatch _writeBatch;
+}
 
+@property (readonly) leveldb::WriteBatch writeBatch;
 @property (nonatomic, assign) LevelDB * db;
 
 @end

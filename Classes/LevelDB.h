@@ -6,7 +6,6 @@
 //
 
 #import <Foundation/Foundation.h>
-#import <leveldb/db.h>
 
 @class Snapshot;
 @class Writebatch;
@@ -26,8 +25,6 @@ typedef struct {
     int          length;
 } LevelDBKey;
 
-LevelDBOptions MakeLevelDBOptions();
-
 typedef NSData * (^EncoderBlock) (LevelDBKey * key, id object);
 typedef id       (^DecoderBlock) (LevelDBKey * key, id data);
 
@@ -37,13 +34,8 @@ typedef void     (^KeyValueBlock)(LevelDBKey * key, id value, BOOL *stop);
 NSString * NSStringFromLevelDBKey(LevelDBKey * key);
 NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 
-@interface LevelDB : NSObject {
-    leveldb::DB * db;
-    leveldb::ReadOptions readOptions;
-    leveldb::WriteOptions writeOptions;
-}
+@interface LevelDB : NSObject
 
-@property (nonatomic, readonly) leveldb::DB * db;
 @property (nonatomic, retain) NSString *path;
 
 @property (nonatomic) BOOL safe;
@@ -53,6 +45,8 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 @property (nonatomic, copy) DecoderBlock decoder;
 
 + (id) libraryPath;
+
++ (LevelDBOptions) makeOptions;
 
 + (LevelDB *) databaseInLibraryWithName:(NSString *)name;
 + (LevelDB *) databaseInLibraryWithName:(NSString *)name andOptions:(LevelDBOptions)opts;
