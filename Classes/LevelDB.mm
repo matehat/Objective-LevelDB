@@ -267,9 +267,11 @@ LevelDBOptions MakeLevelDBOptions() {
 }
 
 - (void) removeAllObjects {
-    [self enumerateKeysUsingBlock:^(LevelDBKey *key, BOOL *stop) {
-        [self removeObjectForKey:NSDataFromLevelDBKey(key)];
-    }];
+    leveldb::Iterator* iter = db->NewIterator(readOptions);
+    for (iter->SeekToFirst(); iter->Valid(); iter->Next()) {
+        db->Delete(writeOptions, iter->key());
+    }
+    delete iter;
 }
 
 #pragma mark - Selection
