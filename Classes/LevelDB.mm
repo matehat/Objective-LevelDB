@@ -353,7 +353,7 @@ LevelDBOptions MakeLevelDBOptions() {
     
     for (SeekToFirstOrKey(iter, key); iter->Valid(); iter->Next()) {
         LevelDBKey lk = GenericKeyFromSlice(iter->key());
-        id v = DecodeFromSlice(iter->value(), &lk, _decoder);
+        id v = (predicate == nil) ? nil : DecodeFromSlice(iter->value(), &lk, _decoder);
         iterate(&lk, v, &stop);
         if (stop) break;
     }
