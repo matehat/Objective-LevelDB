@@ -135,14 +135,14 @@ LevelDBOptions MakeLevelDBOptions() {
     return [paths objectAtIndex:0];
 }
 
-+ (LevelDB *)databaseInLibraryWithName:(NSString *)name {
++ (id)databaseInLibraryWithName:(NSString *)name {
     LevelDBOptions opts = MakeLevelDBOptions();
-    return [LevelDB databaseInLibraryWithName:name andOptions:opts];
+    return [self databaseInLibraryWithName:name andOptions:opts];
 }
 
-+ (LevelDB *)databaseInLibraryWithName:(NSString *)name andOptions:(LevelDBOptions)opts {
-    NSString *path = [[LevelDB libraryPath] stringByAppendingPathComponent:name];
-    LevelDB *ldb = [[[LevelDB alloc] initWithPath:path andOptions:opts] autorelease];
++ (id)databaseInLibraryWithName:(NSString *)name andOptions:(LevelDBOptions)opts {
+    NSString *path = [[self libraryPath] stringByAppendingPathComponent:name];
+    LevelDB *ldb = [[[self alloc] initWithPath:path andOptions:opts] autorelease];
     return ldb;
 }
 

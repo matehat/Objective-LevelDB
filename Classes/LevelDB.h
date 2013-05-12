@@ -56,8 +56,8 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 
 + (LevelDBOptions) makeOptions;
 
-+ (LevelDB *) databaseInLibraryWithName:(NSString *)name;
-+ (LevelDB *) databaseInLibraryWithName:(NSString *)name andOptions:(LevelDBOptions)opts;
++ (id) databaseInLibraryWithName:(NSString *)name;
++ (id) databaseInLibraryWithName:(NSString *)name andOptions:(LevelDBOptions)opts;
 
 - (id) initWithPath:(NSString *)path;
 - (id) initWithPath:(NSString *)path andOptions:(LevelDBOptions)opts;
