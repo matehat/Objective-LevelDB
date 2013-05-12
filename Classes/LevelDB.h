@@ -31,8 +31,16 @@ typedef id       (^DecoderBlock) (LevelDBKey * key, id data);
 typedef void     (^KeyBlock)     (LevelDBKey * key, BOOL *stop);
 typedef void     (^KeyValueBlock)(LevelDBKey * key, id value, BOOL *stop);
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+    
 NSString * NSStringFromLevelDBKey(LevelDBKey * key);
 NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
+
+#ifdef __cplusplus
+}
+#endif
 
 @interface LevelDB : NSObject
 
