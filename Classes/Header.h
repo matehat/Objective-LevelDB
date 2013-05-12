@@ -49,7 +49,7 @@ static id ObjectFromSlice(leveldb::Slice v) {
     id object = [[unarchiver decodeObjectForKey:@"object"] retain];
     [unarchiver finishDecoding];
     [unarchiver release];
-    return object;
+    return [object autorelease];
 }
 
 #endif

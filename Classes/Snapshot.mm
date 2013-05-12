@@ -35,7 +35,7 @@
 }
 
 - (id) objectForKey:(id)key {
-    [_db objectForKey:key withSnapshot:self];
+    return [_db objectForKey:key withSnapshot:self];
 }
 - (id) objectsForKeys:(NSArray *)keys notFoundMarker:(id)marker {
     NSMutableArray *result = [NSMutableArray arrayWithCapacity:keys.count];

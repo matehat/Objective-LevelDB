@@ -25,7 +25,7 @@
 @synthesize writeBatch = _writeBatch;
 
 + (Writebatch *) writeBatchFromDB:(LevelDB *)db {
-    Writebatch *wb = [[Writebatch alloc] init];
+    Writebatch *wb = [[[Writebatch alloc] init] autorelease];
     wb->_db = db;
     return wb;
 }

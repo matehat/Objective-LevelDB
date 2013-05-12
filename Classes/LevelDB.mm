@@ -18,7 +18,8 @@
 #import "Header.h"
 
 #define MaybeAddSnapshotToOptions(_from_, _to_, _snap_) \
-    leveldb::ReadOptions * _to_;\
+    leveldb::ReadOptions __to_;\
+    leveldb::ReadOptions * _to_ = &__to_;\
     if (_snap_ != nil) { \
         _to_->fill_cache = _from_.fill_cache; \
         _to_->snapshot = [_snap_ getSnapshot]; \
@@ -191,7 +192,7 @@ LevelDBOptions MakeLevelDBOptions() {
 #pragma mark - Getters
 
 - (id) objectForKey:(id)key {
-    [self objectForKey:key withSnapshot:nil];
+    return [self objectForKey:key withSnapshot:nil];
 }
 - (id) objectForKey:(id)key
        withSnapshot:(Snapshot *)snapshot {
