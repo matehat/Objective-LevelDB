@@ -228,6 +228,27 @@ LevelDBOptions MakeLevelDBOptions() {
         return [self objectForKey:key];
 }
 
+- (BOOL) objectExistsForKey:(id)key {
+    return [self objectExistsForKey:key withSnapshot:nil];
+}
+- (BOOL) objectExistsForKey:(id)key
+               withSnapshot:(Snapshot *)snapshot {
+    std::string v_string;
+    MaybeAddSnapshotToOptions(readOptions, readOptionsPtr, snapshot);
+    leveldb::Slice k = KeyFromStringOrData(key);
+    leveldb::Status status = db->Get(*readOptionsPtr, k, &v_string);
+    
+    if (!status.ok()) {
+        if (status.IsNotFound())
+            return false;
+        else {
+            NSLog(@"Problem retrieving value for key '%@' from database: %s", key, status.ToString().c_str());
+            return NULL;
+        }
+    } else
+        return true;
+}
+
 #pragma mark - Removers
 
 - (void) removeObjectForKey:(id)key {

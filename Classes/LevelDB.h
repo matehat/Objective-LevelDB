@@ -78,6 +78,10 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 - (id) objectsForKeys:(NSArray *)keys notFoundMarker:(id)marker;
 - (id) valueForKey:(NSString *)key;
 
+- (BOOL) objectExistsForKey:(id)key;
+- (BOOL) objectExistsForKey:(id)key
+               withSnapshot:(Snapshot *)snapshot;
+
 #pragma mark - Removers
 
 - (void) removeObjectForKey:(id)key;

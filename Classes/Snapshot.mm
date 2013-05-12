@@ -37,6 +37,9 @@
 - (id) objectForKey:(id)key {
     return [_db objectForKey:key withSnapshot:self];
 }
+- (BOOL) objectExistsForKey:(id)key {
+    return [_db objectExistsForKey:key withSnapshot:self];
+}
 - (id) objectsForKeys:(NSArray *)keys notFoundMarker:(id)marker {
     NSMutableArray *result = [NSMutableArray arrayWithCapacity:keys.count];
     [keys enumerateObjectsUsingBlock:^(id objId, NSUInteger idx, BOOL *stop) {

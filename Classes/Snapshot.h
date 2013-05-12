@@ -20,6 +20,8 @@
 - (id) objectsForKeys:(NSArray *)keys notFoundMarker:(id)marker;
 - (id) valueForKey:(NSString *)key;
 
+- (BOOL) objectExistsForKey:(id)key;
+
 - (NSArray *)allKeys;
 - (NSArray *)keysByFilteringWithPredicate:(NSPredicate *)predicate;
 - (NSDictionary *)dictionaryByFilteringWithPredicate:(NSPredicate *)predicate;
