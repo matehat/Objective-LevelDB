@@ -116,6 +116,25 @@ db.safe = false; // Switch back to default
 db.useCache = false; // Do not use DB cache when reading data (default to true);
 ```
 
+##### NSNotificationCenter-based observing
+
+```objective-c
+[ldb addObserver:self selector:@selector(valueChanged:) forKey:key];
+id observer = [ldb addObserverForKey:key queue:queue usingBlock:^(NSNotification *note){
+  NSString *key = note.userInfo[kLevelDBKey];
+  id value = note.userInfo[kLevelDBValue];
+  id changeType = note.userInfo[kLevelDBChangeType]; // Can be kLevelDBChangeTypePut or kLevelDBChangeTypeDelete
+}];
+
+[ldb pauseObserving];
+[ldb removeAllObjects];
+[ldb resumeObserving];
+
+// To avoid retain cycles, just like with NSNotificationCenter, you need to remove the observers when you don't need them anymore
+[ldb removeObserver:observer];
+[ldb removeObserver:self forKey:key];
+```
+
 ### License
 
 Distributed under the MIT license

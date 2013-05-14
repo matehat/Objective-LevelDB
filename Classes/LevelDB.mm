@@ -29,12 +29,33 @@
 #define SeekToFirstOrKey(iter, key) \
     (key) ? iter->Seek(KeyFromStringOrData(key)) : iter->SeekToFirst()
 
+namespace {
+    class BatchIterator : public leveldb::WriteBatch::Handler {
+    public:
+        void (^putCallback)(const leveldb::Slice& key, const leveldb::Slice& value);
+        void (^deleteCallback)(const leveldb::Slice& key);
+        
+        virtual void Put(const leveldb::Slice& key, const leveldb::Slice& value) {
+            putCallback(key, value);
+        }
+        virtual void Delete(const leveldb::Slice& key) {
+            deleteCallback(key);
+        }
+    };
+}
+
 NSString * NSStringFromLevelDBKey(LevelDBKey * key) {
-    return [[NSString alloc] initWithBytes:key->data length:key->length encoding:NSUTF8StringEncoding];
+    return [[[NSString alloc] initWithBytes:key->data length:key->length encoding:NSUTF8StringEncoding] autorelease];
 }
 NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
     return [NSData dataWithBytes:key->data length:key->length];
 }
+
+NSString * const kLevelDBChangeType         = @"changeType";
+NSString * const kLevelDBChangeTypePut      = @"put";
+NSString * const kLevelDBChangeTypeDelete   = @"del";
+NSString * const kLevelDBChangeValue        = @"value";
+NSString * const kLevelDBChangeKey          = @"key";
 
 LevelDBOptions MakeLevelDBOptions() {
     return (LevelDBOptions) {true, true, false, false, true, 0, 0};
@@ -58,32 +79,32 @@ LevelDBOptions MakeLevelDBOptions() {
 
 @end
 
-@implementation LevelDB 
+@implementation LevelDB {
+    BOOL _hasObservers;
+}
 
 @synthesize db   = db;
 @synthesize path = _path;
 
-- (id)init
-{
-    self = [super init];
-    if (self) {
-        // Initialization code here.
-    }
-    
-    return self;
-}
+static NSNotificationCenter * _notificationCenter;
 
 + (LevelDBOptions) makeOptions {
     return MakeLevelDBOptions();
 }
 
-- (id) initWithPath:(NSString *)path {
+- (id) initWithPath:(NSString *)path andName:(NSString *)name {
     LevelDBOptions opts = MakeLevelDBOptions();
-    return [self initWithPath:path andOptions:opts];
+    return [self initWithPath:path name:name andOptions:opts];
 }
-- (id) initWithPath:(NSString *)path andOptions:(LevelDBOptions)opts {
+- (id) initWithPath:(NSString *)path name:(NSString *)name andOptions:(LevelDBOptions)opts {
     self = [super init];
     if (self) {
+        
+        if (_notificationCenter == nil)
+            _notificationCenter = [[NSNotificationCenter alloc] init];
+        
+        _name = name;
+        _hasObservers = false;
         _path = path;
         
         leveldb::Options options;
@@ -142,7 +163,7 @@ LevelDBOptions MakeLevelDBOptions() {
 
 + (id)databaseInLibraryWithName:(NSString *)name andOptions:(LevelDBOptions)opts {
     NSString *path = [[self libraryPath] stringByAppendingPathComponent:name];
-    LevelDB *ldb = [[[self alloc] initWithPath:path andOptions:opts] autorelease];
+    LevelDB *ldb = [[[self alloc] initWithPath:path name:name andOptions:opts] autorelease];
     return ldb;
 }
 
@@ -159,6 +180,43 @@ LevelDBOptions MakeLevelDBOptions() {
     return readOptions.fill_cache;
 }
 
+#pragma mark - Notifications
+
+- (void) addObserver:(NSObject *)observer selector:(SEL)selector key:(NSString *)key {
+    _hasObservers = true;
+    [_notificationCenter addObserver:observer
+                            selector:selector
+                                name:[self notificationNameForKey:key]
+                              object:self];
+}
+- (id) addObserverForKey:(NSString *)key
+                   queue:(NSOperationQueue *)queue
+              usingBlock:(void (^)(NSNotification *))block {
+    _hasObservers = true;
+    return [_notificationCenter addObserverForName:[self notificationNameForKey:key]
+                                            object:self
+                                             queue:queue
+                                        usingBlock:block];
+}
+- (void) removeObserver:(id)observer {
+    [_notificationCenter removeObserver:observer name:nil object:self];
+}
+- (void) removeObserver:(id)observer forKey:(NSString *)key {
+    [_notificationCenter removeObserver:observer
+                                   name:[self notificationNameForKey:key]
+                                 object:self];
+}
+- (void) pauseObserving {
+    _hasObservers = false;
+}
+- (void) resumeObserving {
+    _hasObservers = true;
+}
+
+- (NSString *)notificationNameForKey:(NSString *)key {
+    return [NSString stringWithFormat:@"%@.%@", _name, key];
+}
+
 #pragma mark - Setters
 
 - (void) setObject:(id)value forKey:(id)key {
@@ -170,6 +228,12 @@ LevelDBOptions MakeLevelDBOptions() {
     
     if(!status.ok()) {
         NSLog(@"Problem storing key/value pair in database: %s", status.ToString().c_str());
+    } else if (_hasObservers && [key isKindOfClass:[NSString class]]) {
+        [_notificationCenter postNotificationName:[self notificationNameForKey:key]
+                                           object:self
+                                         userInfo:@{    kLevelDBChangeType : kLevelDBChangeTypePut,
+                                                        kLevelDBChangeKey  : key,
+                                                        kLevelDBChangeValue: value }];
     }
 }
 - (void) setValue:(id)value forKey:(NSString *)key {
@@ -183,6 +247,30 @@ LevelDBOptions MakeLevelDBOptions() {
 
 - (void) applyBatch:(Writebatch *)writeBatch {
     leveldb::WriteBatch wb = [writeBatch writeBatch];
+    
+    if (_hasObservers) {
+        BatchIterator iterator;
+        __block NSString *key;
+        
+        iterator.putCallback = ^(const leveldb::Slice& lkey, const leveldb::Slice& lvalue) {
+            key = StringFromSlice(lkey);
+            LevelDBKey llkey = GenericKeyFromSlice(lkey);
+            [_notificationCenter postNotificationName:[self notificationNameForKey:key]
+                                               object:self
+                                             userInfo:@{    kLevelDBChangeType : kLevelDBChangeTypePut,
+                                                            kLevelDBChangeKey  : key,
+                                                            kLevelDBChangeValue: DecodeFromSlice(lvalue, &llkey, _decoder) }];
+        };
+        iterator.deleteCallback = ^(const leveldb::Slice& lkey) {
+            key = StringFromSlice(lkey);
+            [_notificationCenter postNotificationName:[self notificationNameForKey:key]
+                                               object:self
+                                             userInfo:@{    kLevelDBChangeType : kLevelDBChangeTypeDelete,
+                                                            kLevelDBChangeKey  : key }];
+        };
+        wb.Iterate(&iterator);
+    }
+    
     leveldb::Status status = db->Write(writeOptions, &wb);
     if(!status.ok()) {
         NSLog(@"Problem applying the write batch in database: %s", status.ToString().c_str());
@@ -257,6 +345,11 @@ LevelDBOptions MakeLevelDBOptions() {
     
     if(!status.ok()) {
         NSLog(@"Problem deleting key/value pair in database: %s", status.ToString().c_str());
+    } else if (_hasObservers && [key isKindOfClass:[NSString class]]) {
+        [_notificationCenter postNotificationName:[self notificationNameForKey:key]
+                                           object:self
+                                         userInfo:@{ kLevelDBChangeType : kLevelDBChangeTypeDelete,
+                                                     kLevelDBChangeKey  : key }];
     }
 }
 
@@ -267,9 +360,36 @@ LevelDBOptions MakeLevelDBOptions() {
 }
 
 - (void) removeAllObjects {
-    leveldb::Iterator* iter = db->NewIterator(readOptions);
-    for (iter->SeekToFirst(); iter->Valid(); iter->Next()) {
-        db->Delete(writeOptions, iter->key());
+    leveldb::Iterator * iter = db->NewIterator(readOptions);
+    leveldb::Slice lkey;
+    NSMutableArray * keys = [NSMutableArray arrayWithCapacity:100];
+    
+    void(^notifyForKeys)(NSArray *keys) = ^(NSArray *keys) {
+        for (NSString *key in [keys objectEnumerator]) {
+            [_notificationCenter postNotificationName:[self notificationNameForKey:key]
+                                               object:self
+                                             userInfo:@{ kLevelDBChangeType : kLevelDBChangeTypeDelete,
+                                  kLevelDBChangeKey  : key }];
+        }
+    };
+    
+    if (_hasObservers) {
+        for (iter->SeekToFirst(); iter->Valid(); iter->Next()) {
+            lkey = iter->key();
+            [keys addObject:StringFromSlice(lkey)];
+            db->Delete(writeOptions, lkey);
+            
+            if (keys.count == 100) {
+                notifyForKeys(keys);
+                [keys removeAllObjects];
+            }
+        }
+        if (keys.count > 0)
+            notifyForKeys(keys);
+        
+    } else {
+        for (iter->SeekToFirst(); iter->Valid(); iter->Next())
+            db->Delete(writeOptions, iter->key());
     }
     delete iter;
 }

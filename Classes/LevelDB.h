@@ -31,6 +31,12 @@ typedef id       (^DecoderBlock) (LevelDBKey * key, id data);
 typedef void     (^KeyBlock)     (LevelDBKey * key, BOOL *stop);
 typedef void     (^KeyValueBlock)(LevelDBKey * key, id value, BOOL *stop);
 
+FOUNDATION_EXPORT NSString * const kLevelDBChangeType;
+FOUNDATION_EXPORT NSString * const kLevelDBChangeTypePut;
+FOUNDATION_EXPORT NSString * const kLevelDBChangeTypeDelete;
+FOUNDATION_EXPORT NSString * const kLevelDBChangeValue;
+FOUNDATION_EXPORT NSString * const kLevelDBChangeKey;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -45,6 +51,7 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 @interface LevelDB : NSObject
 
 @property (nonatomic, retain) NSString *path;
+@property (nonatomic, retain) NSString *name;
 
 @property (nonatomic) BOOL safe;
 @property (nonatomic) BOOL useCache;
@@ -59,8 +66,25 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 + (id) databaseInLibraryWithName:(NSString *)name;
 + (id) databaseInLibraryWithName:(NSString *)name andOptions:(LevelDBOptions)opts;
 
-- (id) initWithPath:(NSString *)path;
-- (id) initWithPath:(NSString *)path andOptions:(LevelDBOptions)opts;
+- (id) initWithPath:(NSString *)path andName:(NSString *)name;
+- (id) initWithPath:(NSString *)path name:(NSString *)name andOptions:(LevelDBOptions)opts;
+
+#pragma mark - Notifications
+
+- (void) addObserver:(NSObject *)observer
+            selector:(SEL)selector
+                 key:(NSString *)key;
+
+- (id) addObserverForKey:(NSString *)key
+                   queue:(NSOperationQueue *)queue
+              usingBlock:(void (^)(NSNotification *))block;
+
+- (void) removeObserver:(id)observer;
+- (void) removeObserver:(id)observer
+                 forKey:(NSString *)key;
+
+- (void) pauseObserving;
+- (void) resumeObserving;
 
 #pragma mark - Setters
 
