@@ -8,6 +8,7 @@
 
 #import "RootViewController.h"
 #import "LevelDB.h"
+#import "WriteBatch.h"
 
 @implementation RootViewController
 
@@ -15,27 +16,34 @@
 - (void)viewDidLoad
 {
     LevelDB *ldb = [LevelDB databaseInLibraryWithName:@"test.ldb"];
-
+    [ldb addObserverForKey:@"string_test" queue:nil usingBlock:^(NSNotification *notification) {
+        NSLog(@"Value for %@ changed to %@", notification.userInfo[kLevelDBChangeKey], notification.userInfo[kLevelDBChangeValue]);
+    }];
+    
     //test string
-    [ldb putObject:@"laval" forKey:@"string_test"];
-    NSLog(@"String Value: %@", [ldb getString:@"string_test"]);
+    [ldb setObject:@"laval" forKey:@"string_test"];
+    NSLog(@"String Value: %@", [ldb objectForKey:@"string_test"]);
     
     //test dictionary
-    [ldb putObject:[NSDictionary dictionaryWithObjectsAndKeys:@"val1", @"key1", @"val2", @"key2", nil] forKey:@"dict_test"];
-    NSLog(@"Dictionary Value: %@", [ldb getDictionary:@"dict_test"]);
+    [ldb setObject:[NSDictionary dictionaryWithObjectsAndKeys:@"val1", @"key1", @"val2", @"key2", nil] forKey:@"dict_test"];
+    NSLog(@"Dictionary Value: %@", [ldb objectForKey:@"dict_test"]);
     [super viewDidLoad];
     
     //test invalid get
-    NSLog(@"Should be null: %@", [ldb getString:@"does_not_exist"]);
+    NSLog(@"Should be null: %@", [ldb objectForKey:@"does_not_exist"]);
     
-    [ldb iterate:^BOOL(NSString *key, id value) {
+    [ldb enumerateKeysAndObjectsUsingBlock:^(LevelDBKey *key, id value, BOOL *stop) {
         NSLog(@"value: %@", value);
-        return TRUE;
     }];
     
-    NSLog(@"String Value: %@", [ldb getString:@"string_test"]);
-     
-    [ldb clear];
+    NSLog(@"String Value: %@", [ldb objectForKey:@"string_test"]);
+    
+    Writebatch *wb = [Writebatch writeBatchFromDB:ldb];
+    [wb setValue:@"changed!" forKey:@"string_test"];
+    NSLog(@"Not yet changed!");
+    [wb apply];
+    
+    [ldb removeAllObjects];
 }
 
 - (void)viewWillAppear:(BOOL)animated

@@ -18,6 +18,8 @@
 		2795DECC142FAAB9008D9F83 /* RootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2795DECA142FAAB9008D9F83 /* RootViewController.xib */; };
 		2795DEF7142FD868008D9F83 /* LevelDB.mm in Sources */ = {isa = PBXBuildFile; fileRef = 2795DEF6142FD868008D9F83 /* LevelDB.mm */; };
 		2795DF23142FDADF008D9F83 /* libleveldb.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 2795DF22142FDADF008D9F83 /* libleveldb.a */; };
+		D0FD3F561742FD79002B0C07 /* Snapshot.mm in Sources */ = {isa = PBXBuildFile; fileRef = D0FD3F531742FD79002B0C07 /* Snapshot.mm */; };
+		D0FD3F571742FD79002B0C07 /* WriteBatch.mm in Sources */ = {isa = PBXBuildFile; fileRef = D0FD3F551742FD79002B0C07 /* WriteBatch.mm */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -38,6 +40,11 @@
 		2795DEF5142FD868008D9F83 /* LevelDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LevelDB.h; sourceTree = "<group>"; };
 		2795DEF6142FD868008D9F83 /* LevelDB.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = LevelDB.mm; sourceTree = "<group>"; };
 		2795DF22142FDADF008D9F83 /* libleveldb.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libleveldb.a; path = "leveldb-library/libleveldb.a"; sourceTree = "<group>"; };
+		D0FD3F511742FD79002B0C07 /* Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Header.h; sourceTree = "<group>"; };
+		D0FD3F521742FD79002B0C07 /* Snapshot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Snapshot.h; sourceTree = "<group>"; };
+		D0FD3F531742FD79002B0C07 /* Snapshot.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = Snapshot.mm; sourceTree = "<group>"; };
+		D0FD3F541742FD79002B0C07 /* WriteBatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WriteBatch.h; sourceTree = "<group>"; };
+		D0FD3F551742FD79002B0C07 /* WriteBatch.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = WriteBatch.mm; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +119,11 @@
 		2795DEF4142FD868008D9F83 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				D0FD3F511742FD79002B0C07 /* Header.h */,
+				D0FD3F521742FD79002B0C07 /* Snapshot.h */,
+				D0FD3F531742FD79002B0C07 /* Snapshot.mm */,
+				D0FD3F541742FD79002B0C07 /* WriteBatch.h */,
+				D0FD3F551742FD79002B0C07 /* WriteBatch.mm */,
 				2795DEF5142FD868008D9F83 /* LevelDB.h */,
 				2795DEF6142FD868008D9F83 /* LevelDB.mm */,
 			);
@@ -185,6 +197,8 @@
 				2795DEC3142FAAB9008D9F83 /* LevelDBAppDelegate.m in Sources */,
 				2795DEC9142FAAB9008D9F83 /* RootViewController.mm in Sources */,
 				2795DEF7142FD868008D9F83 /* LevelDB.mm in Sources */,
+				D0FD3F561742FD79002B0C07 /* Snapshot.mm in Sources */,
+				D0FD3F571742FD79002B0C07 /* WriteBatch.mm in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
