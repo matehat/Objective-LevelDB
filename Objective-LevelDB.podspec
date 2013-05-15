@@ -8,9 +8,9 @@ Pod::Spec.new do |s|
   s.authors      =  'Michael Hoisie', 'Mathieu D\'Amours'
   
   s.ios.deployment_target = '5.0'
-  s.osx.deployment_target = '10.6'
+  s.osx.deployment_target = '10.7'
   
-  s.source       =  { :git => 'https://github.com/matehat/Objective-LevelDB.git' }
+  s.source       =  { :git => 'https://github.com/matehat/Objective-LevelDB.git', :tag => 'v1.0.0-alpha' }
   s.source_files =  'Classes/*.{h,m,mm}'
   s.library      =  'leveldb'
   
@@ -19,7 +19,9 @@ Pod::Spec.new do |s|
   s.xcconfig = {
       'LIBRARY_SEARCH_PATHS'    => '"$(PODS_ROOT)/Objective-LevelDB/leveldb-library"',
       'HEADER_SEARCH_PATHS'     => '"$(PODS_ROOT)/Objective-LevelDB/leveldb-library/include"',
-      'OTHER_LDFLAGS'           => '-lstdc++'
+      'OTHER_LDFLAGS'           => '-lstdc++',
+      'CC'                      => 'clang',
+      'CXX'                     => 'clang++'
   }
  
   def s.pre_install(pod, target_definition)
