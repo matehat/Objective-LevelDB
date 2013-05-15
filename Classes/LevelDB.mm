@@ -362,18 +362,18 @@ static NSNotificationCenter * _notificationCenter;
 - (void) removeAllObjects {
     leveldb::Iterator * iter = db->NewIterator(readOptions);
     leveldb::Slice lkey;
-    NSMutableArray * keys = [NSMutableArray arrayWithCapacity:100];
-    
-    void(^notifyForKeys)(NSArray *keys) = ^(NSArray *keys) {
-        for (NSString *key in [keys objectEnumerator]) {
-            [_notificationCenter postNotificationName:[self notificationNameForKey:key]
-                                               object:self
-                                             userInfo:@{ kLevelDBChangeType : kLevelDBChangeTypeDelete,
-                                  kLevelDBChangeKey  : key }];
-        }
-    };
     
     if (_hasObservers) {
+        NSMutableArray * keys = [NSMutableArray arrayWithCapacity:100];
+        void(^notifyForKeys)(NSArray *keys) = ^(NSArray *keys) {
+            for (NSString *key in [keys objectEnumerator]) {
+                [_notificationCenter postNotificationName:[self notificationNameForKey:key]
+                                                   object:self
+                                                 userInfo:@{ kLevelDBChangeType : kLevelDBChangeTypeDelete,
+                                                             kLevelDBChangeKey  : key }];
+            }
+        };
+        
         for (iter->SeekToFirst(); iter->Valid(); iter->Next()) {
             lkey = iter->key();
             [keys addObject:StringFromSlice(lkey)];
