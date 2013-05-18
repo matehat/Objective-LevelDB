@@ -100,6 +100,10 @@ static NSNotificationCenter * _notificationCenter;
 + (LevelDBOptions) makeOptions {
     return MakeLevelDBOptions();
 }
++ (void) ensureNotificationCenterExists {
+    if (_notificationCenter == nil)
+        _notificationCenter = [[NSNotificationCenter alloc] init];
+}
 
 - (id) initWithPath:(NSString *)path andName:(NSString *)name {
     LevelDBOptions opts = MakeLevelDBOptions();
@@ -108,10 +112,6 @@ static NSNotificationCenter * _notificationCenter;
 - (id) initWithPath:(NSString *)path name:(NSString *)name andOptions:(LevelDBOptions)opts {
     self = [super init];
     if (self) {
-        
-        if (_notificationCenter == nil)
-            _notificationCenter = [[NSNotificationCenter alloc] init];
-        
         _name = name;
         _hasObservers = false;
         _path = path;
@@ -186,8 +186,12 @@ static NSNotificationCenter * _notificationCenter;
 
 #pragma mark - Notifications
 
-- (void) addObserver:(NSObject *)observer selector:(SEL)selector key:(NSString *)key {
+- (void) addObserver:(NSObject *)observer
+            selector:(SEL)selector
+                 key:(NSString *)key {
+    
     _hasObservers = true;
+    [LevelDB ensureNotificationCenterExists];
     [_notificationCenter addObserver:observer
                             selector:selector
                                 name:[self notificationNameForKey:key]
@@ -196,7 +200,9 @@ static NSNotificationCenter * _notificationCenter;
 - (id) addObserverForKey:(NSString *)key
                    queue:(NSOperationQueue *)queue
               usingBlock:(void (^)(NSNotification *))block {
+    
     _hasObservers = true;
+    [LevelDB ensureNotificationCenterExists];
     return [_notificationCenter addObserverForName:[self notificationNameForKey:key]
                                             object:self
                                              queue:queue
