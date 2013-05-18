@@ -59,8 +59,6 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 @property (nonatomic, copy) EncoderBlock encoder;
 @property (nonatomic, copy) DecoderBlock decoder;
 
-+ (id) libraryPath;
-
 + (LevelDBOptions) makeOptions;
 
 + (id) databaseInLibraryWithName:(NSString *)name;

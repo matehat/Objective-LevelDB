@@ -51,6 +51,11 @@ NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
     return [NSData dataWithBytes:key->data length:key->length];
 }
 
+NSString * getLibraryPath() {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
+    return [paths objectAtIndex:0];
+}
+
 NSString * const kLevelDBChangeType         = @"changeType";
 NSString * const kLevelDBChangeTypePut      = @"put";
 NSString * const kLevelDBChangeTypeDelete   = @"del";
@@ -151,18 +156,13 @@ static NSNotificationCenter * _notificationCenter;
     return self;
 }
 
-+ (NSString *)libraryPath {
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES);
-    return [paths objectAtIndex:0];
-}
-
 + (id)databaseInLibraryWithName:(NSString *)name {
     LevelDBOptions opts = MakeLevelDBOptions();
     return [self databaseInLibraryWithName:name andOptions:opts];
 }
 
 + (id)databaseInLibraryWithName:(NSString *)name andOptions:(LevelDBOptions)opts {
-    NSString *path = [[self libraryPath] stringByAppendingPathComponent:name];
+    NSString *path = [getLibraryPath() stringByAppendingPathComponent:name];
     LevelDB *ldb = [[[self alloc] initWithPath:path name:name andOptions:opts] autorelease];
     return ldb;
 }
