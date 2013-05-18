@@ -39,6 +39,7 @@ NSLog(@"String Value: %@", [ldb objectForKey:@"string_test"]);
 [ldb setObject:[NSDictionary dictionaryWithObjectsAndKeys:@"val1", @"key1", @"val2", @"key2", nil] forKey:@"dict_test"];
 NSLog(@"Dictionary Value: %@", [ldb objectForKey:@"dict_test"]);
 ```
+All available methods can be found in its [header file](Classes/LevelDB.h#L87)
 
 ##### Enumeration
 
@@ -64,7 +65,7 @@ NSLog(@"Dictionary Value: %@", [ldb objectForKey:@"dict_test"]);
                   
 // Iterate backward
 ```
-More iteration methods are available, just have a look at the [header](Classes/LevelDB.h)
+More iteration methods are available, just have a look at the [header section](Classes/LevelDB.h#L120)
 
 ##### Snapshots, NSDictionary-like API (immutable)
     
@@ -79,6 +80,7 @@ NSLog(@"Dictionary Value: %@", [ldb objectForKey:@"dict_test"]);
 // Dispose (automatically done in dealloc)
 [snap release];
 ```
+All available methods can be found in its [header file](Classes/Snapshot.h)
 
 ##### Writebatches, a set of atomic updates
 
@@ -91,6 +93,7 @@ Writebatch *wb = [Writebatch writebatchFromDB:ldb];
 // To apply them in batch, 
 [wb apply];
 ```
+All available methods can be found in its [header file](Classes/WriteBatch.h)
 
 ##### LevelDB options
 
