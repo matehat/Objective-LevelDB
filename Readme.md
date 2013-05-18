@@ -61,7 +61,10 @@ NSLog(@"Dictionary Value: %@", [ldb objectForKey:@"dict_test"]);
 }
                           startingAtKey:key
                   filteredWithPredicate:predicate];
+                  
+// Iterate backward
 ```
+More iteration methods are available, just have a look at the [header](Classes/LevelDB.h)
 
 ##### Snapshots, NSDictionary-like API (immutable)
     
