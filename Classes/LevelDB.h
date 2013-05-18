@@ -120,26 +120,34 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 #pragma mark - Enumeration
 
 - (void) enumerateKeysUsingBlock:(KeyBlock)block;
+- (void) enumerateKeysBackwardUsingBlock:(KeyBlock)block;
+
 - (void) enumerateKeysUsingBlock:(KeyBlock)block
                    startingAtKey:(id)key;
 - (void) enumerateKeysUsingBlock:(KeyBlock)block
                    startingAtKey:(id)key
              filteredByPredicate:(NSPredicate *)predicate;
-- (void) enumerateKeysUsingBlock:(KeyBlock)block
-                   startingAtKey:(id)key
-             filteredByPredicate:(NSPredicate *)predicate
-                    withSnapshot:(Snapshot *)snapshot;
+
+- (void) enumerateKeysBackward:(BOOL)backward
+                    usingBlock:(KeyBlock)block
+                 startingAtKey:(id)key
+           filteredByPredicate:(NSPredicate *)predicate
+                  withSnapshot:(Snapshot *)snapshot;
 
 - (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block;
+- (void) enumerateKeysAndObjectsBackwardUsingBlock:(KeyValueBlock)block;
+
 - (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
                              startingAtKey:(id)key;
 - (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
                              startingAtKey:(id)key
                        filteredByPredicate:(NSPredicate *)predicate;
-- (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
-                             startingAtKey:(id)key
-                       filteredByPredicate:(NSPredicate *)predicate
-                              withSnapshot:(Snapshot *)snapshot;
+
+- (void) enumerateKeysAndObjectsBackward:(BOOL)backward
+                              usingBlock:(KeyValueBlock)block
+                           startingAtKey:(id)key
+                     filteredByPredicate:(NSPredicate *)predicate
+                            withSnapshot:(Snapshot *)snapshot;
 
 #pragma mark - Bookkeeping
 

@@ -87,51 +87,71 @@
 }
 
 - (void) enumerateKeysUsingBlock:(KeyBlock)block {
-    [_db enumerateKeysUsingBlock:block
-                    startingAtKey:nil
-              filteredByPredicate:nil
-                     withSnapshot:self];
+    [_db enumerateKeysBackward:FALSE
+                    usingBlock:block
+                 startingAtKey:nil
+           filteredByPredicate:nil
+                  withSnapshot:self];
+}
+- (void) enumerateKeysBackwardUsingBlock:(KeyBlock)block {
+    [_db enumerateKeysBackward:TRUE
+                    usingBlock:block
+                 startingAtKey:nil
+           filteredByPredicate:nil
+                  withSnapshot:self];
 }
 
 - (void) enumerateKeysUsingBlock:(KeyBlock)block
                    startingAtKey:(id)key {
-    [_db enumerateKeysUsingBlock:block
-                    startingAtKey:key
-              filteredByPredicate:nil
-                     withSnapshot:self];
+    [_db enumerateKeysBackward:FALSE
+                    usingBlock:block
+                 startingAtKey:key
+           filteredByPredicate:nil
+                  withSnapshot:self];
 }
 
 - (void) enumerateKeysUsingBlock:(KeyBlock)block
                    startingAtKey:(id)key
              filteredByPredicate:(NSPredicate *)predicate {
-    [_db enumerateKeysUsingBlock:block
-                    startingAtKey:key
-              filteredByPredicate:predicate
-                     withSnapshot:nil];
+    [_db enumerateKeysBackward:FALSE
+                    usingBlock:block
+                 startingAtKey:key
+           filteredByPredicate:predicate
+                  withSnapshot:nil];
 }
 
 - (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block {
-    [_db enumerateKeysAndObjectsUsingBlock:block
-                              startingAtKey:nil
-                        filteredByPredicate:nil
-                               withSnapshot:self];
+    [_db enumerateKeysAndObjectsBackward:FALSE
+                              usingBlock:block
+                           startingAtKey:nil
+                     filteredByPredicate:nil
+                            withSnapshot:self];
+}
+- (void) enumerateKeysAndObjectsBackwardUsingBlock:(KeyValueBlock)block {
+    [_db enumerateKeysAndObjectsBackward:TRUE
+                              usingBlock:block
+                           startingAtKey:nil
+                     filteredByPredicate:nil
+                            withSnapshot:self];
 }
 
 - (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
                              startingAtKey:(id)key {
-    [_db enumerateKeysAndObjectsUsingBlock:block
-                              startingAtKey:key
-                        filteredByPredicate:nil
-                               withSnapshot:self];
+    [_db enumerateKeysAndObjectsBackward:FALSE
+                              usingBlock:block
+                           startingAtKey:key
+                     filteredByPredicate:nil
+                            withSnapshot:self];
 }
 
 - (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
                              startingAtKey:(id)key
                        filteredByPredicate:(NSPredicate *)predicate  {
-    [_db enumerateKeysAndObjectsUsingBlock:block
-                              startingAtKey:key
-                        filteredByPredicate:predicate
-                               withSnapshot:self];
+    [_db enumerateKeysAndObjectsBackward:FALSE
+                              usingBlock:block
+                           startingAtKey:key
+                     filteredByPredicate:predicate
+                            withSnapshot:self];
 }
 
 - (void) release {

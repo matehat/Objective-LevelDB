@@ -27,6 +27,7 @@
 - (NSDictionary *)dictionaryByFilteringWithPredicate:(NSPredicate *)predicate;
 
 - (void) enumerateKeysUsingBlock:(KeyBlock)block;
+- (void) enumerateKeysBackwardUsingBlock:(KeyBlock)block;
 
 - (void) enumerateKeysUsingBlock:(KeyBlock)block
                    startingAtKey:(id)key;
@@ -36,6 +37,7 @@
              filteredByPredicate:(NSPredicate *)predicate;
 
 - (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block;
+- (void) enumerateKeysAndObjectsBackwardUsingBlock:(KeyValueBlock)block;
 
 - (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
                              startingAtKey:(id)key;
