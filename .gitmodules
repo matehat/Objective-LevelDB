@@ -1,0 +1,3 @@
+[submodule "leveldb-library"]
+	path = leveldb-library
+	url = git@github.com:storm-labs/LevelDB.git
