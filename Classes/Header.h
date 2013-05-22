@@ -6,8 +6,7 @@
 //
 //
 
-#ifndef Objective_LevelDB_Header_h
-#define Objective_LevelDB_Header_h
+#pragma once
 
 #define SliceFromString(_string_)           leveldb::Slice((char *)[_string_ UTF8String], [_string_ lengthOfBytesUsingEncoding:NSUTF8StringEncoding])
 #define StringFromSlice(_slice_)            [[[NSString alloc] initWithBytes:_slice_.data() length:_slice_.size() encoding:NSUTF8StringEncoding] autorelease]
@@ -51,5 +50,3 @@ static id ObjectFromSlice(leveldb::Slice v) {
     [unarchiver release];
     return [object autorelease];
 }
-
-#endif
