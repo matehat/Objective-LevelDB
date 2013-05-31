@@ -10,6 +10,14 @@
 
 @interface LevelDB ()
 - (leveldb::DB *)db;
+
+- (void) enumerateKeysAndObjectsBackward:(BOOL)backward
+                                  lazily:(BOOL)lazily
+                              usingBlock:(id)block
+                           startingAtKey:(id)key
+                     filteredByPredicate:(NSPredicate *)predicate
+                            withSnapshot:(Snapshot *)snapshot;
+
 @end
 
 @interface Snapshot () {
@@ -78,22 +86,22 @@
 - (NSDictionary *)dictionaryByFilteringWithPredicate:(NSPredicate *)predicate {
     NSMutableDictionary *results = [NSMutableDictionary dictionary];
     [self enumerateKeysAndObjectsUsingBlock:^(LevelDBKey *key, id obj, BOOL *stop) {
-        [results setObject:obj forKey:NSDataFromLevelDBKey(key)];
-    }
-                              startingAtKey:nil
-                        filteredByPredicate:predicate];
+                                 [results setObject:obj forKey:NSDataFromLevelDBKey(key)];
+                             }
+                          startingAtKey:nil
+                    filteredByPredicate:predicate];
     
     return [NSDictionary dictionaryWithDictionary:results];
 }
 
-- (void) enumerateKeysUsingBlock:(KeyBlock)block {
+- (void) enumerateKeysUsingBlock:(LevelDBKeyBlock)block {
     [_db enumerateKeysBackward:FALSE
                     usingBlock:block
                  startingAtKey:nil
            filteredByPredicate:nil
                   withSnapshot:self];
 }
-- (void) enumerateKeysBackwardUsingBlock:(KeyBlock)block {
+- (void) enumerateKeysBackwardUsingBlock:(LevelDBKeyBlock)block {
     [_db enumerateKeysBackward:TRUE
                     usingBlock:block
                  startingAtKey:nil
@@ -101,7 +109,7 @@
                   withSnapshot:self];
 }
 
-- (void) enumerateKeysUsingBlock:(KeyBlock)block
+- (void) enumerateKeysUsingBlock:(LevelDBKeyBlock)block
                    startingAtKey:(id)key {
     [_db enumerateKeysBackward:FALSE
                     usingBlock:block
@@ -110,7 +118,7 @@
                   withSnapshot:self];
 }
 
-- (void) enumerateKeysUsingBlock:(KeyBlock)block
+- (void) enumerateKeysUsingBlock:(LevelDBKeyBlock)block
                    startingAtKey:(id)key
              filteredByPredicate:(NSPredicate *)predicate {
     [_db enumerateKeysBackward:FALSE
@@ -120,34 +128,49 @@
                   withSnapshot:nil];
 }
 
-- (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block {
+- (void) enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block {
     [_db enumerateKeysAndObjectsBackward:FALSE
+                                  lazily:FALSE
                               usingBlock:block
                            startingAtKey:nil
                      filteredByPredicate:nil
                             withSnapshot:self];
 }
-- (void) enumerateKeysAndObjectsBackwardUsingBlock:(KeyValueBlock)block {
+- (void) enumerateKeysAndObjectsBackwardUsingBlock:(LevelDBKeyValueBlock)block {
     [_db enumerateKeysAndObjectsBackward:TRUE
+                                  lazily:FALSE
                               usingBlock:block
                            startingAtKey:nil
                      filteredByPredicate:nil
                             withSnapshot:self];
 }
 
-- (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
+- (void) enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block
                              startingAtKey:(id)key {
     [_db enumerateKeysAndObjectsBackward:FALSE
+                                  lazily:FALSE
                               usingBlock:block
                            startingAtKey:key
                      filteredByPredicate:nil
                             withSnapshot:self];
 }
 
-- (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
+- (void) enumerateKeysAndObjectsLazilyUsingBlock:(LevelDBLazyKeyValueBlock)block
+                                   startingAtKey:(id)key
+                             filteredByPredicate:(NSPredicate *)predicate  {
+    [_db enumerateKeysAndObjectsBackward:FALSE
+                                  lazily:YES
+                              usingBlock:block
+                           startingAtKey:key
+                     filteredByPredicate:predicate
+                            withSnapshot:self];
+}
+
+- (void) enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block
                              startingAtKey:(id)key
                        filteredByPredicate:(NSPredicate *)predicate  {
     [_db enumerateKeysAndObjectsBackward:FALSE
+                                  lazily:NO
                               usingBlock:block
                            startingAtKey:key
                      filteredByPredicate:predicate

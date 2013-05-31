@@ -415,22 +415,25 @@ static NSNotificationCenter * _notificationCenter;
 }
 - (NSArray *)keysByFilteringWithPredicate:(NSPredicate *)predicate {
     NSMutableArray *keys = [[[NSMutableArray alloc] init] autorelease];
-    [self enumerateKeysUsingBlock:^(LevelDBKey *key, BOOL *stop) {
-        [keys addObject:NSDataFromLevelDBKey(key)];
-    }
-                    startingAtKey:nil
-              filteredByPredicate:predicate];
-    
+    [self enumerateKeysAndObjectsBackward:NO lazily:NO
+                               usingBlock:^(LevelDBKey *key, id obj, BOOL *stop) {
+                                   [keys addObject:NSDataFromLevelDBKey(key)];
+                               }
+                            startingAtKey:nil
+                      filteredByPredicate:predicate
+                             withSnapshot:nil];
     return [NSArray arrayWithArray:keys];
 }
 
 - (NSDictionary *)dictionaryByFilteringWithPredicate:(NSPredicate *)predicate {
     NSMutableDictionary *results = [NSMutableDictionary dictionary];
-    [self enumerateKeysAndObjectsUsingBlock:^(LevelDBKey *key, id obj, BOOL *stop) {
-        [results setObject:obj forKey:NSDataFromLevelDBKey(key)];
-    }
-                    startingAtKey:nil
-              filteredByPredicate:predicate];
+    [self enumerateKeysAndObjectsBackward:NO lazily:NO
+                               usingBlock:^(LevelDBKey *key, id obj, BOOL *stop) {
+                                   [results setObject:obj forKey:NSDataFromLevelDBKey(key)];
+                               }
+                            startingAtKey:nil
+                      filteredByPredicate:predicate
+                             withSnapshot:nil];
     
     return [NSDictionary dictionaryWithDictionary:results];
 }
@@ -441,7 +444,7 @@ static NSNotificationCenter * _notificationCenter;
 
 #pragma mark - Enumeration
 
-- (void) enumerateKeysUsingBlock:(KeyBlock)block {
+- (void) enumerateKeysUsingBlock:(LevelDBKeyBlock)block {
     
     [self enumerateKeysBackward:FALSE
                      usingBlock:block
@@ -450,7 +453,7 @@ static NSNotificationCenter * _notificationCenter;
                    withSnapshot:nil];
 }
 
-- (void) enumerateKeysBackwardUsingBlock:(KeyBlock)block {
+- (void) enumerateKeysBackwardUsingBlock:(LevelDBKeyBlock)block {
     
     [self enumerateKeysBackward:TRUE
                      usingBlock:block
@@ -459,7 +462,7 @@ static NSNotificationCenter * _notificationCenter;
                    withSnapshot:nil];
 }
 
-- (void) enumerateKeysUsingBlock:(KeyBlock)block
+- (void) enumerateKeysUsingBlock:(LevelDBKeyBlock)block
                    startingAtKey:(id)key {
     
     [self enumerateKeysBackward:FALSE
@@ -469,19 +472,8 @@ static NSNotificationCenter * _notificationCenter;
                    withSnapshot:nil];
 }
 
-- (void) enumerateKeysUsingBlock:(KeyBlock)block
-                   startingAtKey:(id)key
-             filteredByPredicate:(NSPredicate *)predicate {
-    
-    [self enumerateKeysBackward:FALSE
-                     usingBlock:block
-                  startingAtKey:key
-            filteredByPredicate:predicate
-                   withSnapshot:nil];
-}
-
 - (void) enumerateKeysBackward:(BOOL)backward
-                    usingBlock:(KeyBlock)block
+                    usingBlock:(LevelDBKeyBlock)block
                  startingAtKey:(id)key
            filteredByPredicate:(NSPredicate *)predicate
                   withSnapshot:(Snapshot *)snapshot {
@@ -490,7 +482,7 @@ static NSNotificationCenter * _notificationCenter;
     leveldb::Iterator* iter = db->NewIterator(*readOptionsPtr);
     BOOL stop = false;
     
-    KeyValueBlock iterate = (predicate != nil)
+    LevelDBKeyValueBlock iterate = (predicate != nil)
         ? ^(LevelDBKey *lk, id value, BOOL *stop) {
             if ([predicate evaluateWithObject:value]) block(lk, stop);
           }
@@ -512,42 +504,62 @@ static NSNotificationCenter * _notificationCenter;
     delete iter;
 }
 
-- (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block {
+- (void) enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block {
     [self enumerateKeysAndObjectsBackward:FALSE
+                                   lazily:FALSE
                                usingBlock:block
                             startingAtKey:nil
                       filteredByPredicate:nil
                              withSnapshot:nil];
 }
-- (void) enumerateKeysAndObjectsBackwardUsingBlock:(KeyValueBlock)block {
+- (void) enumerateKeysAndObjectsBackwardUsingBlock:(LevelDBKeyValueBlock)block {
     [self enumerateKeysAndObjectsBackward:TRUE
+                                   lazily:FALSE
                                usingBlock:block
                             startingAtKey:nil
                       filteredByPredicate:nil
                              withSnapshot:nil];
 }
 
-- (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
+- (void) enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block
                              startingAtKey:(id)key {
     [self enumerateKeysAndObjectsBackward:FALSE
+                                   lazily:FALSE
                                usingBlock:block
                             startingAtKey:key
                       filteredByPredicate:nil
                              withSnapshot:nil];
 }
 
-- (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
-                             startingAtKey:(id)key
-                       filteredByPredicate:(NSPredicate *)predicate  {
-    [self enumerateKeysAndObjectsBackward:FALSE
+- (void)enumerateKeysAndObjectsBackward:(BOOL)backward
+                       lazilyUsingBlock:(LevelDBLazyKeyValueBlock)block
+                          startingAtKey:(id)key
+                    filteredByPredicate:(NSPredicate *)predicate
+                           withSnapshot:(Snapshot *)snapshot {
+    [self enumerateKeysAndObjectsBackward:backward
+                                   lazily:YES
                                usingBlock:block
                             startingAtKey:key
                       filteredByPredicate:predicate
-                             withSnapshot:nil];
+                             withSnapshot:snapshot];
+}
+
+- (void)enumerateKeysAndObjectsBackward:(BOOL)backward
+                             usingBlock:(LevelDBKeyValueBlock)block
+                          startingAtKey:(id)key
+                    filteredByPredicate:(NSPredicate *)predicate
+                           withSnapshot:(Snapshot *)snapshot {
+    [self enumerateKeysAndObjectsBackward:backward
+                                   lazily:NO
+                               usingBlock:block
+                            startingAtKey:key
+                      filteredByPredicate:predicate
+                             withSnapshot:snapshot];
 }
 
 - (void) enumerateKeysAndObjectsBackward:(BOOL)backward
-                              usingBlock:(KeyValueBlock)block
+                                  lazily:(BOOL)lazily
+                              usingBlock:(id)block
                            startingAtKey:(id)key
                      filteredByPredicate:(NSPredicate *)predicate
                             withSnapshot:(Snapshot *)snapshot {
@@ -556,17 +568,37 @@ static NSNotificationCenter * _notificationCenter;
     leveldb::Iterator* iter = db->NewIterator(*readOptionsPtr);
     BOOL stop = false;
     
-    KeyValueBlock iterate = (predicate != nil) ? ^(LevelDBKey *lk, id value, BOOL *stop) {
-        if ([predicate evaluateWithObject:value]) block(lk, value, stop);
-    } : block;
+    LevelDBLazyKeyValueBlock iterate = (predicate != nil)
+        ? ^ (LevelDBKey *lk, LevelDBValueGetterBlock valueGetter, BOOL *stop) {
+            id value = valueGetter();
+            if ([predicate evaluateWithObject:value]) {
+                if (lazily)
+                    ((LevelDBLazyKeyValueBlock)block)(lk, valueGetter, stop);
+                else
+                    ((LevelDBKeyValueBlock)block)(lk, value, stop);
+            }
+        }
+        : ^ (LevelDBKey *lk, LevelDBValueGetterBlock valueGetter, BOOL *stop) {
+            if (lazily)
+                ((LevelDBLazyKeyValueBlock)block)(lk, valueGetter, stop);
+            else
+                ((LevelDBKeyValueBlock)block)(lk, valueGetter(), stop);
+        };
     
     for (SeekToFirstOrKey(iter, key, backward);
          iter->Valid();
          MoveCursor(iter, backward)) {
         
-        LevelDBKey lk = GenericKeyFromSlice(iter->key());
-        id v = DecodeFromSlice(iter->value(), &lk, _decoder);
-        iterate(&lk, v, &stop);
+        __block LevelDBKey lk = GenericKeyFromSlice(iter->key());
+        __block id v = nil;
+        
+        LevelDBValueGetterBlock getter = ^ id {
+            if (v) return v;
+            v = DecodeFromSlice(iter->value(), &lk, _decoder);
+            return v;
+        };
+        
+        iterate(&lk, getter, &stop);
         if (stop) break;
     }
     

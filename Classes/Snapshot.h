@@ -26,25 +26,29 @@
 - (NSArray *)keysByFilteringWithPredicate:(NSPredicate *)predicate;
 - (NSDictionary *)dictionaryByFilteringWithPredicate:(NSPredicate *)predicate;
 
-- (void) enumerateKeysUsingBlock:(KeyBlock)block;
-- (void) enumerateKeysBackwardUsingBlock:(KeyBlock)block;
+- (void) enumerateKeysUsingBlock:(LevelDBKeyBlock)block;
+- (void) enumerateKeysBackwardUsingBlock:(LevelDBKeyBlock)block;
 
-- (void) enumerateKeysUsingBlock:(KeyBlock)block
+- (void) enumerateKeysUsingBlock:(LevelDBKeyBlock)block
                    startingAtKey:(id)key;
 
-- (void) enumerateKeysUsingBlock:(KeyBlock)block
+- (void) enumerateKeysUsingBlock:(LevelDBKeyBlock)block
                    startingAtKey:(id)key
              filteredByPredicate:(NSPredicate *)predicate;
 
-- (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block;
-- (void) enumerateKeysAndObjectsBackwardUsingBlock:(KeyValueBlock)block;
+- (void) enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block;
+- (void) enumerateKeysAndObjectsBackwardUsingBlock:(LevelDBKeyValueBlock)block;
 
-- (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
+- (void) enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block
                              startingAtKey:(id)key;
 
-- (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
+- (void) enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block
                              startingAtKey:(id)key
                        filteredByPredicate:(NSPredicate *)predicate;
+
+- (void) enumerateKeysAndObjectsLazilyUsingBlock:(LevelDBLazyKeyValueBlock)block
+                                   startingAtKey:(id)key
+                             filteredByPredicate:(NSPredicate *)predicate;
 
 - (void) release;
 

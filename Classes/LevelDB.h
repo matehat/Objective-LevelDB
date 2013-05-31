@@ -25,11 +25,14 @@ typedef struct {
     int          length;
 } LevelDBKey;
 
-typedef NSData * (^EncoderBlock) (LevelDBKey * key, id object);
-typedef id       (^DecoderBlock) (LevelDBKey * key, id data);
+typedef NSData * (^LevelDBEncoderBlock) (LevelDBKey * key, id object);
+typedef id       (^LevelDBDecoderBlock) (LevelDBKey * key, id data);
 
-typedef void     (^KeyBlock)     (LevelDBKey * key, BOOL *stop);
-typedef void     (^KeyValueBlock)(LevelDBKey * key, id value, BOOL *stop);
+typedef void     (^LevelDBKeyBlock)     (LevelDBKey * key, BOOL *stop);
+typedef void     (^LevelDBKeyValueBlock)(LevelDBKey * key, id value, BOOL *stop);
+
+typedef id       (^LevelDBValueGetterBlock)  (void);
+typedef void     (^LevelDBLazyKeyValueBlock) (LevelDBKey * key, LevelDBValueGetterBlock lazyValue, BOOL *stop);
 
 FOUNDATION_EXPORT NSString * const kLevelDBChangeType;
 FOUNDATION_EXPORT NSString * const kLevelDBChangeTypePut;
@@ -56,8 +59,8 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 @property (nonatomic) BOOL safe;
 @property (nonatomic) BOOL useCache;
 
-@property (nonatomic, copy) EncoderBlock encoder;
-@property (nonatomic, copy) DecoderBlock decoder;
+@property (nonatomic, copy) LevelDBEncoderBlock encoder;
+@property (nonatomic, copy) LevelDBDecoderBlock decoder;
 
 + (LevelDBOptions) makeOptions;
 
@@ -119,32 +122,32 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 
 #pragma mark - Enumeration
 
-- (void) enumerateKeysUsingBlock:(KeyBlock)block;
-- (void) enumerateKeysBackwardUsingBlock:(KeyBlock)block;
+- (void) enumerateKeysUsingBlock:(LevelDBKeyBlock)block;
+- (void) enumerateKeysBackwardUsingBlock:(LevelDBKeyBlock)block;
 
-- (void) enumerateKeysUsingBlock:(KeyBlock)block
+- (void) enumerateKeysUsingBlock:(LevelDBKeyBlock)block
                    startingAtKey:(id)key;
-- (void) enumerateKeysUsingBlock:(KeyBlock)block
-                   startingAtKey:(id)key
-             filteredByPredicate:(NSPredicate *)predicate;
 
 - (void) enumerateKeysBackward:(BOOL)backward
-                    usingBlock:(KeyBlock)block
+                    usingBlock:(LevelDBKeyBlock)block
                  startingAtKey:(id)key
            filteredByPredicate:(NSPredicate *)predicate
                   withSnapshot:(Snapshot *)snapshot;
 
-- (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block;
-- (void) enumerateKeysAndObjectsBackwardUsingBlock:(KeyValueBlock)block;
+- (void) enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block;
+- (void) enumerateKeysAndObjectsBackwardUsingBlock:(LevelDBKeyValueBlock)block;
 
-- (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
+- (void) enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block
                              startingAtKey:(id)key;
-- (void) enumerateKeysAndObjectsUsingBlock:(KeyValueBlock)block
-                             startingAtKey:(id)key
-                       filteredByPredicate:(NSPredicate *)predicate;
 
 - (void) enumerateKeysAndObjectsBackward:(BOOL)backward
-                              usingBlock:(KeyValueBlock)block
+                              usingBlock:(LevelDBKeyValueBlock)block
+                           startingAtKey:(id)key
+                     filteredByPredicate:(NSPredicate *)predicate
+                            withSnapshot:(Snapshot *)snapshot;
+
+- (void) enumerateKeysAndObjectsBackward:(BOOL)backward
+                        lazilyUsingBlock:(LevelDBLazyKeyValueBlock)block
                            startingAtKey:(id)key
                      filteredByPredicate:(NSPredicate *)predicate
                             withSnapshot:(Snapshot *)snapshot;
