@@ -608,13 +608,19 @@ static NSNotificationCenter * _notificationCenter;
 #pragma mark - Bookkeeping
 
 - (void) deleteDatabaseFromDisk {
+    [self close];
     NSFileManager *fileManager = [NSFileManager defaultManager];
     NSError *error;
     [fileManager removeItemAtPath:_path error:&error];
 }
 
 - (void) close {
-    delete db;
+    @synchronized(self) {
+        if (db) {
+            delete db;
+            db = NULL;
+        }
+    }
 }
 - (void) dealloc {
     [self close];
