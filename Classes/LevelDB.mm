@@ -370,8 +370,19 @@ static NSNotificationCenter * _notificationCenter;
 }
 
 - (void) removeAllObjects {
+    [self removeAllObjectsWithPrefix:nil];
+}
+
+- (void)removeAllObjectsWithPrefix:(NSData *)prefix {
     leveldb::Iterator * iter = db->NewIterator(readOptions);
     leveldb::Slice lkey;
+    
+    const void *prefixPtr;
+    size_t prefixLen;
+    if (prefix) {
+        prefixPtr = prefix.bytes;
+        prefixLen = prefix.length;
+    }
     
     if (_hasObservers) {
         NSMutableArray * keys = [NSMutableArray arrayWithCapacity:100];
@@ -380,12 +391,18 @@ static NSNotificationCenter * _notificationCenter;
                 [_notificationCenter postNotificationName:[self notificationNameForKey:key]
                                                    object:self
                                                  userInfo:@{ kLevelDBChangeType : kLevelDBChangeTypeDelete,
-                                                             kLevelDBChangeKey  : key }];
+                                      kLevelDBChangeKey  : key }];
             }
         };
         
-        for (iter->SeekToFirst(); iter->Valid(); iter->Next()) {
+        for (SeekToFirstOrKey(iter, (id)prefix, NO);
+             iter->Valid();
+             MoveCursor(iter, NO)) {
+            
             lkey = iter->key();
+            if (prefix && memcmp(lkey.data(), prefixPtr, prefixLen) != 0)
+                break;
+            
             [keys addObject:StringFromSlice(lkey)];
             db->Delete(writeOptions, lkey);
             
@@ -398,7 +415,13 @@ static NSNotificationCenter * _notificationCenter;
             notifyForKeys(keys);
         
     } else {
-        for (iter->SeekToFirst(); iter->Valid(); iter->Next())
+        for (SeekToFirstOrKey(iter, (id)prefix, NO);
+             iter->Valid();
+             MoveCursor(iter, NO))
+            
+            if (prefix && memcmp(lkey.data(), prefixPtr, prefixLen) != 0)
+                break;
+            
             db->Delete(writeOptions, iter->key());
     }
     delete iter;
@@ -421,6 +444,7 @@ static NSNotificationCenter * _notificationCenter;
                                }
                             startingAtKey:nil
                       filteredByPredicate:predicate
+                                andPrefix:nil
                              withSnapshot:nil];
     return [NSArray arrayWithArray:keys];
 }
@@ -433,6 +457,7 @@ static NSNotificationCenter * _notificationCenter;
                                }
                             startingAtKey:nil
                       filteredByPredicate:predicate
+                                andPrefix:nil
                              withSnapshot:nil];
     
     return [NSDictionary dictionaryWithDictionary:results];
@@ -450,6 +475,7 @@ static NSNotificationCenter * _notificationCenter;
                      usingBlock:block
                   startingAtKey:nil
             filteredByPredicate:nil
+                      andPrefix:nil
                    withSnapshot:nil];
 }
 
@@ -459,6 +485,7 @@ static NSNotificationCenter * _notificationCenter;
                      usingBlock:block
                   startingAtKey:nil
             filteredByPredicate:nil
+                      andPrefix:nil
                    withSnapshot:nil];
 }
 
@@ -469,18 +496,43 @@ static NSNotificationCenter * _notificationCenter;
                      usingBlock:block
                   startingAtKey:key
             filteredByPredicate:nil
+                      andPrefix:nil
                    withSnapshot:nil];
+}
+
+- (void)enumerateKeysBackward:(BOOL)backward
+                   usingBlock:(LevelDBKeyBlock)block
+                startingAtKey:(id)key
+          filteredByPredicate:(NSPredicate *)predicate
+                 withSnapshot:(Snapshot *)snapshot {
+    
+    [self enumerateKeysBackward:backward
+                     usingBlock:block
+                  startingAtKey:key
+            filteredByPredicate:predicate
+                      andPrefix:nil
+                   withSnapshot:snapshot];
 }
 
 - (void) enumerateKeysBackward:(BOOL)backward
                     usingBlock:(LevelDBKeyBlock)block
                  startingAtKey:(id)key
            filteredByPredicate:(NSPredicate *)predicate
+                     andPrefix:(NSData *)prefix
                   withSnapshot:(Snapshot *)snapshot {
 
     MaybeAddSnapshotToOptions(readOptions, readOptionsPtr, snapshot);
     leveldb::Iterator* iter = db->NewIterator(*readOptionsPtr);
+    leveldb::Slice lkey;
     BOOL stop = false;
+    
+    const void *prefixPtr;
+    size_t prefixLen;
+    if (prefix) {
+        prefixPtr = prefix.bytes;
+        prefixLen = prefix.length;
+    }
+    id starter = prefix != nil ? prefix : key;
     
     LevelDBKeyValueBlock iterate = (predicate != nil)
         ? ^(LevelDBKey *lk, id value, BOOL *stop) {
@@ -491,11 +543,15 @@ static NSNotificationCenter * _notificationCenter;
             block(lk, stop);
           };
     
-    for (SeekToFirstOrKey(iter, key, backward);
+    for (SeekToFirstOrKey(iter, starter, backward);
          iter->Valid();
          MoveCursor(iter, backward)) {
         
-        LevelDBKey lk = GenericKeyFromSlice(iter->key());
+        lkey = iter->key();
+        if (prefix && memcmp(lkey.data(), prefixPtr, prefixLen) != 0)
+            break;
+        
+        LevelDBKey lk = GenericKeyFromSlice(lkey);
         id v = (predicate == nil) ? nil : DecodeFromSlice(iter->value(), &lk, _decoder);
         iterate(&lk, v, &stop);
         if (stop) break;
@@ -510,6 +566,7 @@ static NSNotificationCenter * _notificationCenter;
                                usingBlock:block
                             startingAtKey:nil
                       filteredByPredicate:nil
+                                andPrefix:nil
                              withSnapshot:nil];
 }
 - (void) enumerateKeysAndObjectsBackwardUsingBlock:(LevelDBKeyValueBlock)block {
@@ -518,6 +575,7 @@ static NSNotificationCenter * _notificationCenter;
                                usingBlock:block
                             startingAtKey:nil
                       filteredByPredicate:nil
+                                andPrefix:nil
                              withSnapshot:nil];
 }
 
@@ -528,32 +586,35 @@ static NSNotificationCenter * _notificationCenter;
                                usingBlock:block
                             startingAtKey:key
                       filteredByPredicate:nil
+                                andPrefix:nil
                              withSnapshot:nil];
 }
 
-- (void)enumerateKeysAndObjectsBackward:(BOOL)backward
-                       lazilyUsingBlock:(LevelDBLazyKeyValueBlock)block
-                          startingAtKey:(id)key
-                    filteredByPredicate:(NSPredicate *)predicate
-                           withSnapshot:(Snapshot *)snapshot {
+- (void) enumerateKeysAndObjectsBackward:(BOOL)backward
+                        lazilyUsingBlock:(LevelDBLazyKeyValueBlock)block
+                           startingAtKey:(id)key
+                     filteredByPredicate:(NSPredicate *)predicate
+                            withSnapshot:(Snapshot *)snapshot {
     [self enumerateKeysAndObjectsBackward:backward
                                    lazily:YES
                                usingBlock:block
                             startingAtKey:key
                       filteredByPredicate:predicate
+                                andPrefix:nil
                              withSnapshot:snapshot];
 }
 
-- (void)enumerateKeysAndObjectsBackward:(BOOL)backward
-                             usingBlock:(LevelDBKeyValueBlock)block
-                          startingAtKey:(id)key
-                    filteredByPredicate:(NSPredicate *)predicate
-                           withSnapshot:(Snapshot *)snapshot {
+- (void) enumerateKeysAndObjectsBackward:(BOOL)backward
+                              usingBlock:(LevelDBKeyValueBlock)block
+                           startingAtKey:(id)key
+                     filteredByPredicate:(NSPredicate *)predicate
+                            withSnapshot:(Snapshot *)snapshot {
     [self enumerateKeysAndObjectsBackward:backward
                                    lazily:NO
                                usingBlock:block
                             startingAtKey:key
                       filteredByPredicate:predicate
+                                andPrefix:nil
                              withSnapshot:snapshot];
 }
 
@@ -562,10 +623,12 @@ static NSNotificationCenter * _notificationCenter;
                               usingBlock:(id)block
                            startingAtKey:(id)key
                      filteredByPredicate:(NSPredicate *)predicate
+                               andPrefix:(NSData *)prefix
                             withSnapshot:(Snapshot *)snapshot {
     
     MaybeAddSnapshotToOptions(readOptions, readOptionsPtr, snapshot);
     leveldb::Iterator* iter = db->NewIterator(*readOptionsPtr);
+    leveldb::Slice lkey;
     BOOL stop = false;
     
     LevelDBLazyKeyValueBlock iterate = (predicate != nil)
@@ -585,11 +648,23 @@ static NSNotificationCenter * _notificationCenter;
                 ((LevelDBKeyValueBlock)block)(lk, valueGetter(), stop);
         };
     
-    for (SeekToFirstOrKey(iter, key, backward);
+    const void *prefixPtr;
+    size_t prefixLen;
+    if (prefix) {
+        prefixPtr = prefix.bytes;
+        prefixLen = prefix.length;
+    }
+    id starter = prefix != nil ? prefix : key;
+    
+    for (SeekToFirstOrKey(iter, starter, backward);
          iter->Valid();
          MoveCursor(iter, backward)) {
         
-        __block LevelDBKey lk = GenericKeyFromSlice(iter->key());
+        lkey = iter->key();
+        if (prefix && memcmp(lkey.data(), prefixPtr, prefixLen) != 0)
+            break;
+        
+        __block LevelDBKey lk = GenericKeyFromSlice(lkey);
         __block id v = nil;
         
         LevelDBValueGetterBlock getter = ^ id {

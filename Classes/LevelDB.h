@@ -112,6 +112,7 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 - (void) removeObjectForKey:(id)key;
 - (void) removeObjectsForKeys:(NSArray *)keyArray;
 - (void) removeAllObjects;
+- (void) removeAllObjectsWithPrefix:(NSData *)prefix;
 
 #pragma mark - Selection
 
@@ -134,6 +135,13 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
            filteredByPredicate:(NSPredicate *)predicate
                   withSnapshot:(Snapshot *)snapshot;
 
+- (void) enumerateKeysBackward:(BOOL)backward
+                    usingBlock:(LevelDBKeyBlock)block
+                 startingAtKey:(id)key
+           filteredByPredicate:(NSPredicate *)predicate
+                     andPrefix:(NSData *)prefix
+                  withSnapshot:(Snapshot *)snapshot;
+
 - (void) enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block;
 - (void) enumerateKeysAndObjectsBackwardUsingBlock:(LevelDBKeyValueBlock)block;
 
@@ -150,6 +158,14 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
                         lazilyUsingBlock:(LevelDBLazyKeyValueBlock)block
                            startingAtKey:(id)key
                      filteredByPredicate:(NSPredicate *)predicate
+                            withSnapshot:(Snapshot *)snapshot;
+
+- (void) enumerateKeysAndObjectsBackward:(BOOL)backward
+                                  lazily:(BOOL)lazily
+                              usingBlock:(id)block
+                           startingAtKey:(id)key
+                     filteredByPredicate:(NSPredicate *)predicate
+                               andPrefix:(NSData *)prefix
                             withSnapshot:(Snapshot *)snapshot;
 
 #pragma mark - Bookkeeping
