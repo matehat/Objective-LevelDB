@@ -11,12 +11,15 @@
 
 @interface Writebatch : NSObject
 
-+ (Writebatch *) writeBatchFromDB:(LevelDB *)db;
+@property (nonatomic, assign) id db;
+
++ (instancetype) writeBatchFromDB:(id)db;
 
 - (void) removeObjectForKey:(id)key;
 - (void) removeObjectsForKeys:(NSArray *)keyArray;
 - (void) removeAllObjects;
 
+- (void) setData:(NSData *)data forKey:(id)key;
 - (void) setObject:(id)value forKey:(id)key;
 - (void) setValue:(id)value forKey:(NSString *)key;
 - (void) addEntriesFromDictionary:(NSDictionary *)dictionary;

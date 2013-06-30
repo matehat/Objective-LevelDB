@@ -13,24 +13,25 @@
 
 @interface Writebatch () {
     leveldb::WriteBatch _writeBatch;
+    id _db;
 }
 
 @property (readonly) leveldb::WriteBatch writeBatch;
-@property (nonatomic, assign) LevelDB * db;
 
 @end
 
 @implementation Writebatch
 
 @synthesize writeBatch = _writeBatch;
+@synthesize db = _db;
 
-+ (Writebatch *) writeBatchFromDB:(LevelDB *)db {
-    Writebatch *wb = [[[Writebatch alloc] init] autorelease];
-    wb->_db = db;
++ (instancetype) writeBatchFromDB:(id)db {
+    id wb = [[[self alloc] init] autorelease];
+    ((Writebatch *)wb)->_db = db;
     return wb;
 }
 
-- (Writebatch *) init {
+- (instancetype) init {
     self = [super init];
     if (self) {
         
@@ -53,10 +54,13 @@
     }];
 }
 
+- (void) setData:(NSData *)data forKey:(id)key {
+    _writeBatch.Put(KeyFromStringOrData(key), SliceFromData(data));
+}
 - (void) setObject:(id)value forKey:(id)key {
     leveldb::Slice k = KeyFromStringOrData(key);
     LevelDBKey lkey = GenericKeyFromSlice(k);
-    leveldb::Slice v = EncodeToSlice(value, &lkey, _db.encoder);
+    leveldb::Slice v = EncodeToSlice(value, &lkey, ((LevelDB *)_db).encoder);
     _writeBatch.Put(k, v);
 }
 - (void) setValue:(id)value forKey:(NSString *)key {
