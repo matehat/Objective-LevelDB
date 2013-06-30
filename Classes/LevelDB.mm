@@ -532,7 +532,7 @@ static NSNotificationCenter * _notificationCenter;
         prefixPtr = prefix.bytes;
         prefixLen = prefix.length;
     }
-    id starter = prefix != nil ? prefix : key;
+    id starter = key != nil ? key : prefix;
     
     LevelDBKeyValueBlock iterate = (predicate != nil)
         ? ^(LevelDBKey *lk, id value, BOOL *stop) {
@@ -654,7 +654,7 @@ static NSNotificationCenter * _notificationCenter;
         prefixPtr = prefix.bytes;
         prefixLen = prefix.length;
     }
-    id starter = prefix != nil ? prefix : key;
+    id starter = key != nil ? key : prefix;
     
     for (SeekToFirstOrKey(iter, starter, backward);
          iter->Valid();
