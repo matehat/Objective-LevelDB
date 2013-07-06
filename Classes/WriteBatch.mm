@@ -20,7 +20,9 @@
 
 @end
 
-@implementation Writebatch
+@implementation Writebatch {
+    dispatch_queue_t _serial_queue;
+}
 
 @synthesize writeBatch = _writeBatch;
 @synthesize db = _db;
@@ -34,14 +36,20 @@
 - (instancetype) init {
     self = [super init];
     if (self) {
-        
+        _serial_queue = dispatch_queue_create(NULL, DISPATCH_QUEUE_SERIAL);
     }
     return self;
+}
+- (void)dealloc {
+    dispatch_release(_serial_queue);
+    [super dealloc];
 }
 
 - (void) removeObjectForKey:(id)key {
     leveldb::Slice k = KeyFromStringOrData(key);
-    _writeBatch.Delete(k);
+    dispatch_sync(_serial_queue, ^{
+        _writeBatch.Delete(k);
+    });
 }
 - (void) removeObjectsForKeys:(NSArray *)keyArray {
     [keyArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
@@ -55,13 +63,17 @@
 }
 
 - (void) setData:(NSData *)data forKey:(id)key {
-    _writeBatch.Put(KeyFromStringOrData(key), SliceFromData(data));
+    dispatch_sync(_serial_queue, ^{
+        _writeBatch.Put(KeyFromStringOrData(key), SliceFromData(data));
+    });
 }
 - (void) setObject:(id)value forKey:(id)key {
-    leveldb::Slice k = KeyFromStringOrData(key);
-    LevelDBKey lkey = GenericKeyFromSlice(k);
-    leveldb::Slice v = EncodeToSlice(value, &lkey, ((LevelDB *)_db).encoder);
-    _writeBatch.Put(k, v);
+    dispatch_sync(_serial_queue, ^{
+        leveldb::Slice k = KeyFromStringOrData(key);
+        LevelDBKey lkey = GenericKeyFromSlice(k);
+        leveldb::Slice v = EncodeToSlice(value, &lkey, ((LevelDB *)_db).encoder);
+        _writeBatch.Put(k, v);
+    });
 }
 - (void) setValue:(id)value forKey:(NSString *)key {
     [self setObject:value forKey:key];
