@@ -417,12 +417,13 @@ static NSNotificationCenter * _notificationCenter;
     } else {
         for (SeekToFirstOrKey(iter, (id)prefix, NO);
              iter->Valid();
-             MoveCursor(iter, NO))
+             MoveCursor(iter, NO)) {
             
             if (prefix && memcmp(lkey.data(), prefixPtr, prefixLen) != 0)
                 break;
             
             db->Delete(writeOptions, iter->key());
+        }
     }
     delete iter;
 }
