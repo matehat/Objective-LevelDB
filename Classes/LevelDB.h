@@ -58,6 +58,7 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 
 @property (nonatomic) BOOL safe;
 @property (nonatomic) BOOL useCache;
+@property (readonly) BOOL closed;
 
 @property (nonatomic, copy) LevelDBEncoderBlock encoder;
 @property (nonatomic, copy) LevelDBDecoderBlock decoder;

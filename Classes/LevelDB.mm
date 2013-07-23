@@ -49,7 +49,9 @@ namespace {
 }
 
 NSString * NSStringFromLevelDBKey(LevelDBKey * key) {
-    return [[[NSString alloc] initWithBytes:key->data length:key->length encoding:NSUTF8StringEncoding] autorelease];
+    return [[[NSString alloc] initWithBytes:key->data
+                                    length:key->length
+                                  encoding:NSUTF8StringEncoding] autorelease];
 }
 NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
     return [NSData dataWithBytes:key->data length:key->length];
@@ -697,6 +699,9 @@ static NSNotificationCenter * _notificationCenter;
             db = NULL;
         }
     }
+}
+- (BOOL) closed {
+    return db == NULL;
 }
 - (void) dealloc {
     [self close];
