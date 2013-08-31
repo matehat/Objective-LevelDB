@@ -84,6 +84,8 @@ LevelDBOptions MakeLevelDBOptions() {
     leveldb::DB * db;
     leveldb::ReadOptions readOptions;
     leveldb::WriteOptions writeOptions;
+    const leveldb::Cache * cache;
+    const leveldb::FilterPolicy * filterPolicy;
 }
 
 @property (nonatomic, readonly) leveldb::DB * db;
@@ -127,9 +129,10 @@ static NSNotificationCenter * _notificationCenter;
         if (!opts.compression)
             options.compression = leveldb::kNoCompression;
         
-        if (opts.cacheSize > 0)
+        if (opts.cacheSize > 0) {
             options.block_cache = leveldb::NewLRUCache(opts.cacheSize);
-        else
+            cache = options.block_cache;
+        } else
             readOptions.fill_cache = false;
         
         if (opts.createIntermediateDirectories) {
@@ -146,9 +149,10 @@ static NSNotificationCenter * _notificationCenter;
             }
         }
         
-        if (opts.filterPolicy > 0)
-            options.filter_policy = leveldb::NewBloomFilterPolicy(opts.filterPolicy);
-        
+        if (opts.filterPolicy > 0) {
+            filterPolicy = leveldb::NewBloomFilterPolicy(opts.filterPolicy);;
+            options.filter_policy = filterPolicy;
+        }
         leveldb::Status status = leveldb::DB::Open(options, [_path UTF8String], &db);
         
         readOptions.fill_cache = true;
@@ -696,6 +700,13 @@ static NSNotificationCenter * _notificationCenter;
     @synchronized(self) {
         if (db) {
             delete db;
+            
+            if (cache)
+                delete cache;
+            
+            if (filterPolicy)
+                delete filterPolicy;
+            
             db = NULL;
         }
     }
