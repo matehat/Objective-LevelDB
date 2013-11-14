@@ -71,22 +71,6 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 - (id) initWithPath:(NSString *)path andName:(NSString *)name;
 - (id) initWithPath:(NSString *)path name:(NSString *)name andOptions:(LevelDBOptions)opts;
 
-#pragma mark - Notifications
-
-- (void) addObserver:(NSObject *)observer
-            selector:(SEL)selector
-                 key:(NSString *)key;
-
-- (id) addObserverForKey:(NSString *)key
-                   queue:(NSOperationQueue *)queue
-              usingBlock:(void (^)(NSNotification *))block;
-
-- (void) removeObserver:(id)observer;
-- (void) removeObserver:(id)observer
-                 forKey:(NSString *)key;
-
-- (void) pauseObserving;
-- (void) resumeObserving;
 - (void) deleteDatabaseFromDisk;
 - (void) close;
 
@@ -102,6 +86,7 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 
 - (id) objectForKey:(id)key;
 - (id) objectForKey:(id)key withSnapshot:(Snapshot *)snapshot;
+- (id) objectForKeyedSubscript:(id)key;
 
 - (id) objectsForKeys:(NSArray *)keys notFoundMarker:(id)marker;
 - (id) valueForKey:(NSString *)key;
@@ -121,7 +106,7 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 
 - (NSArray *) allKeys;
 - (NSArray *) keysByFilteringWithPredicate:(NSPredicate *)predicate;
-- (NSDictionary *)dictionaryByFilteringWithPredicate:(NSPredicate *)predicate;
+- (NSDictionary *) dictionaryByFilteringWithPredicate:(NSPredicate *)predicate;
 - (Snapshot *) getSnapshot;
 
 #pragma mark - Enumeration

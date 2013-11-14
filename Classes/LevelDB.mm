@@ -97,23 +97,14 @@ LevelDBOptions MakeLevelDBOptions() {
 
 @end
 
-@implementation LevelDB {
-    BOOL _hasObservers;
-}
+@implementation LevelDB
 
 @synthesize db   = db;
 @synthesize path = _path;
 
-static NSNotificationCenter * _notificationCenter;
-
 + (LevelDBOptions) makeOptions {
     return MakeLevelDBOptions();
 }
-+ (void) ensureNotificationCenterExists {
-    if (_notificationCenter == nil)
-        _notificationCenter = [[NSNotificationCenter alloc] init];
-}
-
 - (id) initWithPath:(NSString *)path andName:(NSString *)name {
     LevelDBOptions opts = MakeLevelDBOptions();
     return [self initWithPath:path name:name andOptions:opts];
@@ -122,7 +113,6 @@ static NSNotificationCenter * _notificationCenter;
     self = [super init];
     if (self) {
         _name = name;
-        _hasObservers = false;
         _path = path;
         
         leveldb::Options options;
@@ -171,12 +161,12 @@ static NSNotificationCenter * _notificationCenter;
     return self;
 }
 
-+ (id)databaseInLibraryWithName:(NSString *)name {
++ (id) databaseInLibraryWithName:(NSString *)name {
     LevelDBOptions opts = MakeLevelDBOptions();
     return [self databaseInLibraryWithName:name andOptions:opts];
 }
-
-+ (id)databaseInLibraryWithName:(NSString *)name andOptions:(LevelDBOptions)opts {
++ (id) databaseInLibraryWithName:(NSString *)name
+                      andOptions:(LevelDBOptions)opts {
     NSString *path = [getLibraryPath() stringByAppendingPathComponent:name];
     LevelDB *ldb = [[[self alloc] initWithPath:path name:name andOptions:opts] autorelease];
     return ldb;
@@ -195,49 +185,6 @@ static NSNotificationCenter * _notificationCenter;
     return readOptions.fill_cache;
 }
 
-#pragma mark - Notifications
-
-- (void) addObserver:(NSObject *)observer
-            selector:(SEL)selector
-                 key:(NSString *)key {
-    
-    _hasObservers = true;
-    [LevelDB ensureNotificationCenterExists];
-    [_notificationCenter addObserver:observer
-                            selector:selector
-                                name:[self notificationNameForKey:key]
-                              object:self];
-}
-- (id) addObserverForKey:(NSString *)key
-                   queue:(NSOperationQueue *)queue
-              usingBlock:(void (^)(NSNotification *))block {
-    
-    _hasObservers = true;
-    [LevelDB ensureNotificationCenterExists];
-    return [_notificationCenter addObserverForName:[self notificationNameForKey:key]
-                                            object:self
-                                             queue:queue
-                                        usingBlock:block];
-}
-- (void) removeObserver:(id)observer {
-    [_notificationCenter removeObserver:observer name:nil object:self];
-}
-- (void) removeObserver:(id)observer forKey:(NSString *)key {
-    [_notificationCenter removeObserver:observer
-                                   name:[self notificationNameForKey:key]
-                                 object:self];
-}
-- (void) pauseObserving {
-    _hasObservers = false;
-}
-- (void) resumeObserving {
-    _hasObservers = true;
-}
-
-- (NSString *)notificationNameForKey:(NSString *)key {
-    return [NSString stringWithFormat:@"%@.%@", _name, key];
-}
-
 #pragma mark - Setters
 
 - (void) setObject:(id)value forKey:(id)key {
@@ -249,12 +196,6 @@ static NSNotificationCenter * _notificationCenter;
     
     if(!status.ok()) {
         NSLog(@"Problem storing key/value pair in database: %s", status.ToString().c_str());
-    } else if (_hasObservers && [key isKindOfClass:[NSString class]]) {
-        [_notificationCenter postNotificationName:[self notificationNameForKey:key]
-                                           object:self
-                                         userInfo:@{    kLevelDBChangeType : kLevelDBChangeTypePut,
-                                                        kLevelDBChangeKey  : key,
-                                                        kLevelDBChangeValue: value }];
     }
 }
 - (void) setValue:(id)value forKey:(NSString *)key {
@@ -268,30 +209,6 @@ static NSNotificationCenter * _notificationCenter;
 
 - (void) applyBatch:(Writebatch *)writeBatch {
     leveldb::WriteBatch wb = [writeBatch writeBatch];
-    
-    if (_hasObservers) {
-        BatchIterator iterator;
-        __block NSString *key;
-        
-        iterator.putCallback = ^(const leveldb::Slice& lkey, const leveldb::Slice& lvalue) {
-            key = StringFromSlice(lkey);
-            LevelDBKey llkey = GenericKeyFromSlice(lkey);
-            [_notificationCenter postNotificationName:[self notificationNameForKey:key]
-                                               object:self
-                                             userInfo:@{    kLevelDBChangeType : kLevelDBChangeTypePut,
-                                                            kLevelDBChangeKey  : key,
-                                                            kLevelDBChangeValue: DecodeFromSlice(lvalue, &llkey, _decoder) }];
-        };
-        iterator.deleteCallback = ^(const leveldb::Slice& lkey) {
-            key = StringFromSlice(lkey);
-            [_notificationCenter postNotificationName:[self notificationNameForKey:key]
-                                               object:self
-                                             userInfo:@{    kLevelDBChangeType : kLevelDBChangeTypeDelete,
-                                                            kLevelDBChangeKey  : key }];
-        };
-        wb.Iterate(&iterator);
-    }
-    
     leveldb::Status status = db->Write(writeOptions, &wb);
     if(!status.ok()) {
         NSLog(@"Problem applying the write batch in database: %s", status.ToString().c_str());
@@ -336,6 +253,9 @@ static NSNotificationCenter * _notificationCenter;
     } else
         return [self objectForKey:key];
 }
+- (id)objectForKeyedSubscript:(id)key {
+    return [self objectForKey:key];
+}
 
 - (BOOL) objectExistsForKey:(id)key {
     return [self objectExistsForKey:key withSnapshot:nil];
@@ -366,14 +286,8 @@ static NSNotificationCenter * _notificationCenter;
     
     if(!status.ok()) {
         NSLog(@"Problem deleting key/value pair in database: %s", status.ToString().c_str());
-    } else if (_hasObservers && [key isKindOfClass:[NSString class]]) {
-        [_notificationCenter postNotificationName:[self notificationNameForKey:key]
-                                           object:self
-                                         userInfo:@{ kLevelDBChangeType : kLevelDBChangeTypeDelete,
-                                                     kLevelDBChangeKey  : key }];
     }
 }
-
 - (void) removeObjectsForKeys:(NSArray *)keyArray {
     [keyArray enumerateObjectsUsingBlock:^(id obj, NSUInteger idx, BOOL *stop) {
         [self removeObjectForKey:obj];
@@ -394,47 +308,16 @@ static NSNotificationCenter * _notificationCenter;
         prefixPtr = [(NSData *)prefix bytes];
         prefixLen = [(NSData *)prefix length];
     }
-    
-    if (_hasObservers) {
-        NSMutableArray * keys = [NSMutableArray arrayWithCapacity:100];
-        void(^notifyForKeys)(NSArray *keys) = ^(NSArray *keys) {
-            for (NSString *key in [keys objectEnumerator]) {
-                [_notificationCenter postNotificationName:[self notificationNameForKey:key]
-                                                   object:self
-                                                 userInfo:@{ kLevelDBChangeType : kLevelDBChangeTypeDelete,
-                                      kLevelDBChangeKey  : key }];
-            }
-        };
+
+    for (SeekToFirstOrKey(iter, (id)prefix, NO)
+         ; iter->Valid()
+         ; MoveCursor(iter, NO)) {
         
-        for (SeekToFirstOrKey(iter, (id)prefix, NO);
-             iter->Valid();
-             MoveCursor(iter, NO)) {
-            
-            lkey = iter->key();
-            if (prefix && memcmp(lkey.data(), prefixPtr, prefixLen) != 0)
-                break;
-            
-            [keys addObject:StringFromSlice(lkey)];
-            db->Delete(writeOptions, lkey);
-            
-            if (keys.count == 100) {
-                notifyForKeys(keys);
-                [keys removeAllObjects];
-            }
-        }
-        if (keys.count > 0)
-            notifyForKeys(keys);
+        lkey = iter->key();
+        if (prefix && memcmp(lkey.data(), prefixPtr, MIN(prefixLen, lkey.size())) != 0)
+            break;
         
-    } else {
-        for (SeekToFirstOrKey(iter, (id)prefix, NO);
-             iter->Valid();
-             MoveCursor(iter, NO)) {
-            
-            if (prefix && memcmp(lkey.data(), prefixPtr, prefixLen) != 0)
-                break;
-            
-            db->Delete(writeOptions, iter->key());
-        }
+        db->Delete(writeOptions, lkey);
     }
     delete iter;
 }
