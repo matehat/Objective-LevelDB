@@ -80,20 +80,20 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 - (void) setValue:(id)value forKey:(NSString *)key ;
 - (void) addEntriesFromDictionary:(NSDictionary *)dictionary;
 
-- (void) applyBatch:(Writebatch *)writeBatch;
+#pragma mark - Write batches
+
+- (Writebatch *) newWritebatch;
+- (void) applyWritebatch:(Writebatch *)writeBatch;
 
 #pragma mark - Getters
 
 - (id) objectForKey:(id)key;
-- (id) objectForKey:(id)key withSnapshot:(Snapshot *)snapshot;
 - (id) objectForKeyedSubscript:(id)key;
 
 - (id) objectsForKeys:(NSArray *)keys notFoundMarker:(id)marker;
 - (id) valueForKey:(NSString *)key;
 
 - (BOOL) objectExistsForKey:(id)key;
-- (BOOL) objectExistsForKey:(id)key
-               withSnapshot:(Snapshot *)snapshot;
 
 #pragma mark - Removers
 
@@ -116,7 +116,6 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
                  startingAtKey:(id)key
            filteredByPredicate:(NSPredicate *)predicate
                      andPrefix:(id)prefix
-                  withSnapshot:(Snapshot *)snapshot
                     usingBlock:(LevelDBKeyBlock)block;
 
 - (void) enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block;
@@ -125,7 +124,6 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
                            startingAtKey:(id)key
                      filteredByPredicate:(NSPredicate *)predicate
                                andPrefix:(id)prefix
-                            withSnapshot:(Snapshot *)snapshot
                               usingBlock:(id)block;
 
 @end

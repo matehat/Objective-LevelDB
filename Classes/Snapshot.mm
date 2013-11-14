@@ -9,14 +9,29 @@
 #import <leveldb/db.h>
 
 @interface LevelDB ()
+
 - (leveldb::DB *)db;
+
+- (void) enumerateKeysBackward:(BOOL)backward
+                 startingAtKey:(id)key
+           filteredByPredicate:(NSPredicate *)predicate
+                     andPrefix:(id)prefix
+                  withSnapshot:(Snapshot *)snapshot
+                    usingBlock:(LevelDBKeyBlock)block;
 
 - (void) enumerateKeysAndObjectsBackward:(BOOL)backward
                                   lazily:(BOOL)lazily
-                              usingBlock:(id)block
                            startingAtKey:(id)key
                      filteredByPredicate:(NSPredicate *)predicate
-                            withSnapshot:(Snapshot *)snapshot;
+                               andPrefix:(id)prefix
+                            withSnapshot:(Snapshot *)snapshot
+                              usingBlock:(id)block;
+
+- (id) objectForKey:(id)key
+       withSnapshot:(Snapshot *)snapshot;
+
+- (BOOL) objectExistsForKey:(id)key
+               withSnapshot:(Snapshot *)snapshot;
 
 @end
 
@@ -43,6 +58,9 @@
 }
 
 - (id) objectForKey:(id)key {
+    return [_db objectForKey:key withSnapshot:self];
+}
+- (id)objectForKeyedSubscript:(id)key {
     return [_db objectForKey:key withSnapshot:self];
 }
 - (BOOL) objectExistsForKey:(id)key {
@@ -74,114 +92,84 @@
 }
 - (NSArray *)keysByFilteringWithPredicate:(NSPredicate *)predicate {
     NSMutableArray *keys = [[[NSMutableArray alloc] init] autorelease];
-    [self enumerateKeysUsingBlock:^(LevelDBKey *key, BOOL *stop) {
-        [keys addObject:NSDataFromLevelDBKey(key)];
-    }
-                    startingAtKey:nil
-              filteredByPredicate:predicate];
+    [self enumerateKeysBackward:NO
+                  startingAtKey:nil
+            filteredByPredicate:predicate
+                      andPrefix:nil
+                     usingBlock:^(LevelDBKey *key, BOOL *stop) {
+                         [keys addObject:NSDataFromLevelDBKey(key)];
+                     }];
     
     return [NSArray arrayWithArray:keys];
 }
 
 - (NSDictionary *)dictionaryByFilteringWithPredicate:(NSPredicate *)predicate {
     NSMutableDictionary *results = [NSMutableDictionary dictionary];
-    [self enumerateKeysAndObjectsUsingBlock:^(LevelDBKey *key, id obj, BOOL *stop) {
-                                 [results setObject:obj forKey:NSDataFromLevelDBKey(key)];
-                             }
-                          startingAtKey:nil
-                    filteredByPredicate:predicate];
+    [self enumerateKeysAndObjectsBackward:NO
+                                   lazily:NO
+                            startingAtKey:nil
+                      filteredByPredicate:predicate
+                                andPrefix:nil
+                               usingBlock:^(LevelDBKey *key, id obj, BOOL *stop) {
+                                   [results setObject:obj forKey:NSDataFromLevelDBKey(key)];
+                               }];
     
     return [NSDictionary dictionaryWithDictionary:results];
 }
 
-- (void) enumerateKeysUsingBlock:(LevelDBKeyBlock)block {
-    [_db enumerateKeysBackward:FALSE
-                    usingBlock:block
+- (void)enumerateKeysUsingBlock:(LevelDBKeyBlock)block {
+    [_db enumerateKeysBackward:NO
                  startingAtKey:nil
            filteredByPredicate:nil
-                  withSnapshot:self];
+                     andPrefix:nil
+                  withSnapshot:self
+                    usingBlock:block];
 }
-- (void) enumerateKeysBackwardUsingBlock:(LevelDBKeyBlock)block {
-    [_db enumerateKeysBackward:TRUE
-                    usingBlock:block
-                 startingAtKey:nil
-           filteredByPredicate:nil
-                  withSnapshot:self];
-}
-
-- (void) enumerateKeysUsingBlock:(LevelDBKeyBlock)block
-                   startingAtKey:(id)key {
-    [_db enumerateKeysBackward:FALSE
-                    usingBlock:block
-                 startingAtKey:key
-           filteredByPredicate:nil
-                  withSnapshot:self];
-}
-
-- (void) enumerateKeysUsingBlock:(LevelDBKeyBlock)block
-                   startingAtKey:(id)key
-             filteredByPredicate:(NSPredicate *)predicate {
-    [_db enumerateKeysBackward:FALSE
-                    usingBlock:block
+- (void)enumerateKeysBackward:(BOOL)backward
+                startingAtKey:(id)key
+          filteredByPredicate:(NSPredicate *)predicate
+                    andPrefix:(id)prefix
+                   usingBlock:(LevelDBKeyBlock)block {
+    [_db enumerateKeysBackward:backward
                  startingAtKey:key
            filteredByPredicate:predicate
-                  withSnapshot:nil];
+                     andPrefix:prefix
+                  withSnapshot:self
+                    usingBlock:block];
 }
 
-- (void) enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block {
-    [_db enumerateKeysAndObjectsBackward:FALSE
-                                  lazily:FALSE
-                              usingBlock:block
-                           startingAtKey:nil
-                     filteredByPredicate:nil
-                            withSnapshot:self];
-}
-- (void) enumerateKeysAndObjectsBackwardUsingBlock:(LevelDBKeyValueBlock)block {
-    [_db enumerateKeysAndObjectsBackward:TRUE
-                                  lazily:FALSE
-                              usingBlock:block
-                           startingAtKey:nil
-                     filteredByPredicate:nil
-                            withSnapshot:self];
-}
-
-- (void) enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block
-                             startingAtKey:(id)key {
-    [_db enumerateKeysAndObjectsBackward:FALSE
-                                  lazily:FALSE
-                              usingBlock:block
-                           startingAtKey:key
-                     filteredByPredicate:nil
-                            withSnapshot:self];
-}
-
-- (void) enumerateKeysAndObjectsLazilyUsingBlock:(LevelDBLazyKeyValueBlock)block
-                                   startingAtKey:(id)key
-                             filteredByPredicate:(NSPredicate *)predicate  {
-    [_db enumerateKeysAndObjectsBackward:FALSE
-                                  lazily:YES
-                              usingBlock:block
-                           startingAtKey:key
-                     filteredByPredicate:predicate
-                            withSnapshot:self];
-}
-
-- (void) enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block
-                             startingAtKey:(id)key
-                       filteredByPredicate:(NSPredicate *)predicate  {
-    [_db enumerateKeysAndObjectsBackward:FALSE
+- (void)enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block {
+    [_db enumerateKeysAndObjectsBackward:NO
                                   lazily:NO
-                              usingBlock:block
+                           startingAtKey:nil
+                     filteredByPredicate:nil
+                               andPrefix:nil
+                            withSnapshot:self
+                              usingBlock:block];
+}
+- (void)enumerateKeysAndObjectsBackward:(BOOL)backward
+                                 lazily:(BOOL)lazily
+                          startingAtKey:(id)key
+                    filteredByPredicate:(NSPredicate *)predicate
+                              andPrefix:(id)prefix
+                             usingBlock:(id)block {
+    [_db enumerateKeysAndObjectsBackward:backward
+                                  lazily:lazily
                            startingAtKey:key
                      filteredByPredicate:predicate
-                            withSnapshot:self];
+                               andPrefix:prefix
+                            withSnapshot:self
+                              usingBlock:block];
 }
 
-- (void) release {
-    [_db db]->ReleaseSnapshot(_snapshot);
+- (void) close {
+    if (_snapshot) {
+        [_db db]->ReleaseSnapshot(_snapshot);
+        _snapshot = nil;
+    }
 }
 - (void) dealloc {
-    [self release];
+    [self close];
     [super dealloc];
 }
 

@@ -17,6 +17,8 @@
 + (id) snapshotFromDB:(LevelDB *)database;
 
 - (id) objectForKey:(id)key;
+- (id) objectForKeyedSubscript:(id)key;
+
 - (id) objectsForKeys:(NSArray *)keys notFoundMarker:(id)marker;
 - (id) valueForKey:(NSString *)key;
 
@@ -27,29 +29,20 @@
 - (NSDictionary *)dictionaryByFilteringWithPredicate:(NSPredicate *)predicate;
 
 - (void) enumerateKeysUsingBlock:(LevelDBKeyBlock)block;
-- (void) enumerateKeysBackwardUsingBlock:(LevelDBKeyBlock)block;
-
-- (void) enumerateKeysUsingBlock:(LevelDBKeyBlock)block
-                   startingAtKey:(id)key;
-
-- (void) enumerateKeysUsingBlock:(LevelDBKeyBlock)block
-                   startingAtKey:(id)key
-             filteredByPredicate:(NSPredicate *)predicate;
+- (void) enumerateKeysBackward:(BOOL)backward
+                 startingAtKey:(id)key
+           filteredByPredicate:(NSPredicate *)predicate
+                     andPrefix:(id)prefix
+                    usingBlock:(LevelDBKeyBlock)block;
 
 - (void) enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block;
-- (void) enumerateKeysAndObjectsBackwardUsingBlock:(LevelDBKeyValueBlock)block;
+- (void) enumerateKeysAndObjectsBackward:(BOOL)backward
+                                  lazily:(BOOL)lazily
+                           startingAtKey:(id)key
+                     filteredByPredicate:(NSPredicate *)predicate
+                               andPrefix:(id)prefix
+                              usingBlock:(id)block;
 
-- (void) enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block
-                             startingAtKey:(id)key;
-
-- (void) enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block
-                             startingAtKey:(id)key
-                       filteredByPredicate:(NSPredicate *)predicate;
-
-- (void) enumerateKeysAndObjectsLazilyUsingBlock:(LevelDBLazyKeyValueBlock)block
-                                   startingAtKey:(id)key
-                             filteredByPredicate:(NSPredicate *)predicate;
-
-- (void) release;
+- (void) close;
 
 @end

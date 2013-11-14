@@ -207,7 +207,13 @@ LevelDBOptions MakeLevelDBOptions() {
     }];
 }
 
-- (void) applyBatch:(Writebatch *)writeBatch {
+#pragma mark - Write batches
+
+- (Writebatch *)newWritebatch {
+    return [Writebatch writeBatchFromDB:self];
+}
+
+- (void) applyWritebatch:(Writebatch *)writeBatch {
     leveldb::WriteBatch wb = [writeBatch writeBatch];
     leveldb::Status status = db->Write(writeOptions, &wb);
     if(!status.ok()) {
@@ -374,6 +380,20 @@ LevelDBOptions MakeLevelDBOptions() {
                      usingBlock:block];
 }
 
+- (void)enumerateKeysBackward:(BOOL)backward
+                startingAtKey:(id)key
+          filteredByPredicate:(NSPredicate *)predicate
+                    andPrefix:(id)prefix
+                   usingBlock:(LevelDBKeyBlock)block {
+    
+    [self enumerateKeysBackward:backward
+                  startingAtKey:key
+            filteredByPredicate:predicate
+                      andPrefix:prefix
+                   withSnapshot:nil
+                     usingBlock:block];
+}
+
 - (void) enumerateKeysBackward:(BOOL)backward
                  startingAtKey:(id)key
            filteredByPredicate:(NSPredicate *)predicate
@@ -428,6 +448,22 @@ LevelDBOptions MakeLevelDBOptions() {
                             startingAtKey:nil
                       filteredByPredicate:nil
                                 andPrefix:nil
+                             withSnapshot:nil
+                               usingBlock:block];
+}
+
+- (void)enumerateKeysAndObjectsBackward:(BOOL)backward
+                                 lazily:(BOOL)lazily
+                          startingAtKey:(id)key
+                    filteredByPredicate:(NSPredicate *)predicate
+                              andPrefix:(id)prefix
+                             usingBlock:(id)block {
+    
+    [self enumerateKeysAndObjectsBackward:backward
+                                   lazily:lazily
+                            startingAtKey:key
+                      filteredByPredicate:predicate
+                                andPrefix:prefix
                              withSnapshot:nil
                                usingBlock:block];
 }
