@@ -210,7 +210,7 @@ LevelDBOptions MakeLevelDBOptions() {
 #pragma mark - Write batches
 
 - (Writebatch *)newWritebatch {
-    return [Writebatch writeBatchFromDB:self];
+    return [[Writebatch writeBatchFromDB:self] retain];
 }
 
 - (void) applyWritebatch:(Writebatch *)writeBatch {
@@ -364,8 +364,8 @@ LevelDBOptions MakeLevelDBOptions() {
     return [NSDictionary dictionaryWithDictionary:results];
 }
 
-- (Snapshot *) getSnapshot {
-    return [Snapshot snapshotFromDB:self];
+- (Snapshot *) newSnapshot {
+    return [[Snapshot snapshotFromDB:self] retain];
 }
 
 #pragma mark - Enumeration

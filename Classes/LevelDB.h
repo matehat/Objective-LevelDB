@@ -107,7 +107,7 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 - (NSArray *) allKeys;
 - (NSArray *) keysByFilteringWithPredicate:(NSPredicate *)predicate;
 - (NSDictionary *) dictionaryByFilteringWithPredicate:(NSPredicate *)predicate;
-- (Snapshot *) getSnapshot;
+- (Snapshot *) newSnapshot;
 
 #pragma mark - Enumeration
 

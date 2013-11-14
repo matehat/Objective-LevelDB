@@ -29,7 +29,7 @@
 
 + (instancetype) writeBatchFromDB:(id)db {
     id wb = [[[self alloc] init] autorelease];
-    ((Writebatch *)wb)->_db = db;
+    ((Writebatch *)wb)->_db = [db retain];
     return wb;
 }
 
@@ -41,7 +41,14 @@
     return self;
 }
 - (void)dealloc {
-    dispatch_release(_serial_queue);
+    if (_serial_queue) {
+        dispatch_release(_serial_queue);
+        _serial_queue = nil;
+    }
+    if (_db) {
+        [_db release];
+        _db = nil;
+    }
     [super dealloc];
 }
 
@@ -85,7 +92,7 @@
 }
 
 - (void) apply {
-    [_db applyBatch:self];
+    [_db applyWritebatch:self];
 }
 
 @end

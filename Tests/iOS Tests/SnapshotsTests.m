@@ -20,7 +20,7 @@ static NSUInteger numberOfIterations = 2500;
 }
 
 - (void) testInvariability {
-    snapshot = [db getSnapshot];
+    snapshot = [db newSnapshot];
     [db setObject:@{@"foo": @"bar"} forKey:@"key"];
     XCTAssertNil([snapshot objectForKey:@"key"],
                  @"Fetching a key inserted after snapshot was taken should yield nil");
@@ -58,7 +58,7 @@ static NSUInteger numberOfIterations = 2500;
     id key = @"dict1";
     id value = @{@"foo": @"bar"};
     [db setObject:value forKey:key];
-    snapshot = [db getSnapshot];
+    snapshot = [db newSnapshot];
     XCTAssertEqualObjects([snapshot objectForKey:key], value,
                           @"Saving and retrieving should keep an dictionary intact");
     
@@ -66,7 +66,7 @@ static NSUInteger numberOfIterations = 2500;
     XCTAssertEqualObjects([snapshot objectForKey:key], value,
                           @"Removing a key from the db should affect a snapshot right away");
     
-    snapshot = [db getSnapshot];
+    snapshot = [db newSnapshot];
     XCTAssertNil([snapshot objectForKey:@"dict1"],
                  @"A new snapshot should have those changes");
     
@@ -75,14 +75,14 @@ static NSUInteger numberOfIterations = 2500;
     XCTAssertNil([snapshot objectForKey:@"dict1"],
                  @"Inserting a new value in the db should not affect a previous snapshot");
     
-    snapshot = [db getSnapshot];
+    snapshot = [db newSnapshot];
     XCTAssertEqualObjects([snapshot objectForKey:key], value, @"Saving and retrieving should keep an array intact");
     
     [db removeObjectsForKeys:@[@"array1"]];
     XCTAssertEqualObjects([snapshot objectForKey:key], value,
                           @"Removing a key from the db should affect a snapshot right away");
     
-    snapshot = [db getSnapshot];
+    snapshot = [db newSnapshot];
     XCTAssertNil([snapshot objectForKey:@"array1"], @"A key that was deleted in batch should return nil");
 }
 
@@ -93,7 +93,7 @@ static NSUInteger numberOfIterations = 2500;
     [db setObject:value forKey:@"dict2"];
     [db setObject:value forKey:@"dict3"];
     
-    snapshot = [db getSnapshot];
+    snapshot = [db newSnapshot];
     [db removeAllObjects];
     
     NSArray *keys = @[ @"dict1", @"dict2", @"dict3" ];
@@ -105,7 +105,7 @@ static NSUInteger numberOfIterations = 2500;
     }];
     XCTAssertEqualObjects(stringKeys, keys, @"-[LevelDB allKeys] should return the list of keys used to insert data");
     
-    snapshot = [db getSnapshot];
+    snapshot = [db newSnapshot];
     XCTAssertEqual([snapshot allKeys], @[],
                    @"The list of keys should be empty after removing all objects from the database");
 }
@@ -119,7 +119,7 @@ static NSUInteger numberOfIterations = 2500;
     [db addEntriesFromDictionary:objects];
     NSArray *keys = @[@"key1", @"key2", @"key3"];
     
-    snapshot = [db getSnapshot];
+    snapshot = [db newSnapshot];
     [db removeAllObjects];
     
     for (id key in keys)
@@ -169,7 +169,7 @@ static NSUInteger numberOfIterations = 2500;
         [db setObject:@{@"price": @(price)} forKey:keyData];
     }
     [resultKeys sortUsingComparator:dataComparator];
-    snapshot = [db getSnapshot];
+    snapshot = [db newSnapshot];
     [db removeAllObjects];
     
     XCTAssertEqualObjects([snapshot keysByFilteringWithPredicate:predicate],
@@ -237,7 +237,7 @@ static NSUInteger numberOfIterations = 2500;
     
     NSArray *pairs = [self nPairs:numberOfIterations];
     
-    snapshot = [db getSnapshot];
+    snapshot = [db newSnapshot];
     [db removeAllObjects];
     
     // Test that enumerating the whole set yields keys in the correct orders
@@ -276,7 +276,7 @@ static NSUInteger numberOfIterations = 2500;
     
     NSArray *pairs = [self nPairs:numberOfIterations];
     
-    snapshot = [db getSnapshot];
+    snapshot = [db newSnapshot];
     [db removeAllObjects];
     
     // Test that enumerating the whole set backwards yields keys in the correct orders
@@ -320,7 +320,7 @@ static NSUInteger numberOfIterations = 2500;
     // Test that enumerating the whole set yields pairs in the correct orders
     r = 0;
     
-    snapshot = [db getSnapshot];
+    snapshot = [db newSnapshot];
     [db removeAllObjects];
     
     [snapshot enumerateKeysAndObjectsUsingBlock:^(LevelDBKey *lkey, id _value, BOOL *stop) {
@@ -361,7 +361,7 @@ static NSUInteger numberOfIterations = 2500;
     
     NSArray *pairs = [self nPairs:numberOfIterations];
     
-    snapshot = [db getSnapshot];
+    snapshot = [db newSnapshot];
     [db removeAllObjects];
     
     // Test that enumerating the whole set backwards yields pairs in the correct orders
@@ -408,7 +408,7 @@ static NSUInteger numberOfIterations = 2500;
     // Test that enumerating the set backwards and lazily at an offset yields pairs in the correct orders
     r = 567;
     
-    snapshot = [db getSnapshot];
+    snapshot = [db newSnapshot];
     [db removeAllObjects];
     
     [snapshot enumerateKeysAndObjectsBackward:YES lazily:YES
