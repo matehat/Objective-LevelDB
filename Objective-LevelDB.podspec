@@ -16,17 +16,17 @@ Pod::Spec.new do |s|
   
   s.preserve_paths = 'leveldb-library'
   s.xcconfig = {
-      'LIBRARY_SEARCH_PATHS'    => '"$(PODS_ROOT)/Objective-LevelDB/leveldb-library"',
-      'HEADER_SEARCH_PATHS'     => '"$(PODS_ROOT)/Objective-LevelDB/leveldb-library/include"',
-      'OTHER_LDFLAGS'           => '-lstdc++',
+      'LIBRARY_SEARCH_PATHS'    => '"$(PODS_ROOT)/../../leveldb-library"',
+      'HEADER_SEARCH_PATHS'     => '"$(PODS_ROOT)/../../leveldb-library/include"',
       'CC'                      => 'clang',
       'CXX'                     => 'clang++'
   }
  
-  def s.pre_install(pod, target_definition)
+  s.pre_install do |pod, target_definition|
     Dir.chdir(pod.root + 'leveldb-library') do
       # build static library
       `make PLATFORM=IOS CC=clang CXX=clang++ libleveldb.a`
+      `OPT="-O2 -DNDEBUG -stdlib=libc++" make CC=clang CXX=clang++`
     end
   end
 end

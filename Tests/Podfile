@@ -1,4 +1,3 @@
-xcodeproj 'Objective-LevelDB Tests'
 workspace '../Objective-LevelDB'
 inhibit_all_warnings!
 
@@ -6,14 +5,20 @@ def import_pods
   pod 'Objective-LevelDB'
 end
 
-target :ios do
-  platform :ios, '7.0'
-  link_with 'iOS Tests'
-  import_pods
-end
+PLATFORM = :ios
 
-target :osx do
-  platform :osx, '10.9'
-  link_with 'OS X Tests'
-  import_pods
+if PLATFORM == :ios
+  xcodeproj 'Objective-LevelDB iOS Tests'
+  target :ios do
+    platform :ios, '7.0'
+    link_with 'iOS Tests'
+    import_pods
+  end
+else
+  xcodeproj 'Objective-LevelDB OS X Tests'
+  target :osx do
+    platform :osx, '10.9'
+    link_with 'OS X Tests'
+    import_pods
+  end
 end

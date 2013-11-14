@@ -2,7 +2,10 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:Tests/Objective-LevelDB Tests.xcodeproj">
+      location = "group:Tests/Objective-LevelDB OS X Tests.xcodeproj">
+   </FileRef>
+   <FileRef
+      location = "group:Tests/Objective-LevelDB iOS Tests.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Tests/Pods/Pods.xcodeproj">
