@@ -1,5 +1,5 @@
 //
-//  Writebatch.m
+//  LDBWritebatch.m
 //  Objective-LevelDB Tests
 //
 //  Created by Mathieu D'Amours on 11/14/13.
@@ -16,7 +16,7 @@
 @implementation WritebatchTests
 
 - (void) testDatabaseIntegrity {
-    Writebatch *wb = [Writebatch writeBatchFromDB:db];
+    LDBWritebatch *wb = [LDBWritebatch writeBatchFromDB:db];
     
     id key = @"dict1";
     id value = @{@"foo": @"bar"};
@@ -41,7 +41,7 @@
 - (void)testKeysManipulation {
     id value = @{@"foo": @"bar"};
     
-    Writebatch *wb = [db newWritebatch];
+    LDBWritebatch *wb = [db newWritebatch];
     
     [wb setObject:value forKey:@"dict1"];
     [wb setObject:value forKey:@"dict2"];
@@ -73,7 +73,7 @@
                               @"key3": @[@{}]
                               };
     
-    Writebatch *wb = [db newWritebatch];
+    LDBWritebatch *wb = [db newWritebatch];
     [wb addEntriesFromDictionary:objects];
     NSArray *keys = @[@"key1", @"key2", @"key3"];
     

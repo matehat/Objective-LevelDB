@@ -11,7 +11,7 @@
 #import "WriteBatch.h"
 #include "Common.h"
 
-@interface Writebatch () {
+@interface LDBWritebatch () {
     leveldb::WriteBatch _writeBatch;
     id _db;
 }
@@ -20,7 +20,7 @@
 
 @end
 
-@implementation Writebatch {
+@implementation LDBWritebatch {
     dispatch_queue_t _serial_queue;
 }
 
@@ -29,7 +29,7 @@
 
 + (instancetype) writeBatchFromDB:(id)db {
     id wb = [[[self alloc] init] autorelease];
-    ((Writebatch *)wb)->_db = [db retain];
+    ((LDBWritebatch *)wb)->_db = [db retain];
     return wb;
 }
 

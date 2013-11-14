@@ -7,8 +7,8 @@
 
 #import <Foundation/Foundation.h>
 
-@class Snapshot;
-@class Writebatch;
+@class LDBSnapshot;
+@class LDBWritebatch;
 
 typedef struct LevelDBOptions {
     BOOL createIfMissing ;
@@ -53,61 +53,228 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 
 @interface LevelDB : NSObject
 
+///------------------------------------------------------------------------
+/// @name A LevelDB object, used to query to the database instance on disk
+///------------------------------------------------------------------------
+
+/**
+ The path of the database on disk
+ */
 @property (nonatomic, retain) NSString *path;
+
+/**
+ The name of the database.
+ */
 @property (nonatomic, retain) NSString *name;
 
+/**
+ A boolean value indicating whether write operations should be synchronous (flush to disk before returning).
+ */
 @property (nonatomic) BOOL safe;
+
+/**
+ A boolean value indicating whether read operations should try to use the configured cache (defaults to true).
+ */
 @property (nonatomic) BOOL useCache;
+
+/**
+ A boolean readonly value indicating whether the database is closed or not.
+ */
 @property (readonly) BOOL closed;
 
+/**
+ The data encoding block.
+ */
 @property (nonatomic, copy) LevelDBEncoderBlock encoder;
+
+/**
+ The data decoding block.
+ */
 @property (nonatomic, copy) LevelDBDecoderBlock decoder;
 
+/**
+ A class method that returns a LevelDBOptions struct, which can be modified to finetune leveldb
+ */
 + (LevelDBOptions) makeOptions;
 
+/**
+ A class method that returns an autoreleased instance of LevelDB with the given name, inside the Library folder
+ 
+ @param name The database's filename
+ */
 + (id) databaseInLibraryWithName:(NSString *)name;
+
+/**
+ A class method that returns an autoreleased instance of LevelDB with the given name and options, inside the Library folder
+ 
+ @param name The database's filename
+ @param opts A LevelDBOptions struct with options for fine tuning leveldb
+ */
 + (id) databaseInLibraryWithName:(NSString *)name andOptions:(LevelDBOptions)opts;
 
+/**
+ Initialize a leveldb instance
+ 
+ @param path The parent directory of the database file on disk
+ @param name the filename of the database file on disk
+ */
 - (id) initWithPath:(NSString *)path andName:(NSString *)name;
+
+/**
+ Initialize a leveldb instance
+ 
+ @param path The parent directory of the database file on disk
+ @param name the filename of the database file on disk
+ @param opts A LevelDBOptions struct with options for fine tuning leveldb
+ */
 - (id) initWithPath:(NSString *)path name:(NSString *)name andOptions:(LevelDBOptions)opts;
 
+
+/**
+ Delete the database file on disk
+ */
 - (void) deleteDatabaseFromDisk;
+
+/**
+ Close the database.
+ 
+ @warning The instance cannot be used to perform any query after it has been closed.
+ */
 - (void) close;
 
 #pragma mark - Setters
 
+/**
+ Set the value associated with a key in the database
+ 
+ The instance's encoder block will be used to produce a NSData instance from the provided value.
+ 
+ @param value The value to put in the database
+ @param key The key at which the value can be found
+ */
 - (void) setObject:(id)value forKey:(id)key;
+
+/**
+ Same as `[self setObject:forKey:]`
+ */
 - (void) setValue:(id)value forKey:(NSString *)key ;
+
+/**
+ Take all key-value pairs in the provided dictionary and insert them in the database
+ 
+ @param dictionary A dictionary from which key-value pairs will be inserted
+ */
 - (void) addEntriesFromDictionary:(NSDictionary *)dictionary;
 
 #pragma mark - Write batches
 
-- (Writebatch *) newWritebatch;
-- (void) applyWritebatch:(Writebatch *)writeBatch;
+/**
+ Return an autoreleased LDBWritebatch instance for this database
+ */
+- (LDBWritebatch *) newWritebatch;
+
+/**
+ Apply the operations from a writebatch into the current database
+ */
+- (void) applyWritebatch:(LDBWritebatch *)writeBatch;
 
 #pragma mark - Getters
 
+/**
+ Return the value associated with a key
+ 
+ @param key The key to retrieve from the database
+ */
 - (id) objectForKey:(id)key;
+
+/**
+ Same as `[self objectForKey:]`
+ */
 - (id) objectForKeyedSubscript:(id)key;
 
-- (id) objectsForKeys:(NSArray *)keys notFoundMarker:(id)marker;
+/**
+ Same as `[self objectForKey:]`
+ */
 - (id) valueForKey:(NSString *)key;
 
+/**
+ Return an array containing the values associated with the provided list of keys.
+ 
+ For keys that can't be found in the database, the `marker` value is used in place.
+ 
+ @warning marker should not be `nil`
+ 
+ @param keys The list of keys to fetch from the database
+ @param marker The value to associate to missing keys
+ */
+- (id) objectsForKeys:(NSArray *)keys notFoundMarker:(id)marker;
+
+/**
+ Return a boolean value indicating whether or not the key exists in the database
+ 
+ @param key The key to check for existence
+ */
 - (BOOL) objectExistsForKey:(id)key;
 
 #pragma mark - Removers
 
+/**
+ Remove a key (and its associated value) from the database
+ 
+ @param key The key to remove from the database
+ */
 - (void) removeObjectForKey:(id)key;
+
+/**
+ Remove a set of keys (and their associated values) from the database
+ 
+ @param keyArray An array of keys to remove from the database
+ */
 - (void) removeObjectsForKeys:(NSArray *)keyArray;
+
+/**
+ Remove all objects from the database
+ */
 - (void) removeAllObjects;
+
+/**
+ Remove all objects prefixed with a given value (`NSString` or `NSData`)
+ 
+ @param prefix The key prefix used to remove all matching keys (of type `NSString` or `NSData`)
+ */
 - (void) removeAllObjectsWithPrefix:(id)prefix;
 
 #pragma mark - Selection
 
+/**
+ Return an array containing all the keys of the database
+ 
+ @warning This shouldn't be used with very large databases, since every key will be stored in memory
+ */
 - (NSArray *) allKeys;
+
+/**
+ Return an array of key for which the value match the given predicate
+ 
+ @param predicate A `NSPredicate` instance tested against the database's values to retrieve the corresponding keys
+ */
 - (NSArray *) keysByFilteringWithPredicate:(NSPredicate *)predicate;
+
+/**
+ Return a dictionary with all key-value pairs, where values match the given predicate
+ 
+ @param predicate A `NSPredicate` instance tested against the database's values to retrieve the corresponding key-value pairs
+ */
 - (NSDictionary *) dictionaryByFilteringWithPredicate:(NSPredicate *)predicate;
-- (Snapshot *) newSnapshot;
+
+/**
+ Return an autoreleased LDBSnapshot instance for this database
+ 
+ LDBSnapshots are a way to "freeze" the state of the database. Write operation applied to the database after the
+ snapshot was taken do not affect the snapshot. Most *read* methods available in the LevelDB class are also
+ available in the LDBSnapshot class.
+ */
+- (LDBSnapshot *) newSnapshot;
 
 #pragma mark - Enumeration
 

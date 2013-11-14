@@ -16,7 +16,7 @@ static NSUInteger numberOfIterations = 2500;
 @end
 
 @implementation SnapshotsTests {
-    Snapshot *snapshot;
+    LDBSnapshot *snapshot;
 }
 
 - (void) testInvariability {

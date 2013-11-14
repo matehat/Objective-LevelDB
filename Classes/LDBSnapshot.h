@@ -1,5 +1,5 @@
 //
-//  Snapshot.h
+//  LDBSnapshot.h
 //
 //  Copyright 2013 Storm Labs.
 //  See LICENCE for details.
@@ -10,7 +10,7 @@
 
 @class LevelDB;
 
-@interface Snapshot : NSObject 
+@interface LDBSnapshot : NSObject 
 
 @property (nonatomic, readonly, assign) LevelDB * db;
 

@@ -6,8 +6,8 @@
 //
 
 #import "LevelDB.h"
-#import "Snapshot.h"
-#import "WriteBatch.h"
+#import "LDBSnapshot.h"
+#import "LDBWriteBatch.h"
 
 #import <leveldb/db.h>
 #import <leveldb/options.h>
@@ -77,11 +77,11 @@ LevelDBOptions MakeLevelDBOptions() {
     return (LevelDBOptions) {true, true, false, false, true, 0, 0};
 }
 
-@interface Snapshot ()
+@interface LDBSnapshot ()
 - (const leveldb::Snapshot *) getSnapshot;
 @end
 
-@interface Writebatch ()
+@interface LDBWritebatch ()
 - (leveldb::WriteBatch) writeBatch;
 @end
 
@@ -209,11 +209,11 @@ LevelDBOptions MakeLevelDBOptions() {
 
 #pragma mark - Write batches
 
-- (Writebatch *)newWritebatch {
-    return [[Writebatch writeBatchFromDB:self] retain];
+- (LDBWritebatch *)newWritebatch {
+    return [[LDBWritebatch writeBatchFromDB:self] retain];
 }
 
-- (void) applyWritebatch:(Writebatch *)writeBatch {
+- (void) applyWritebatch:(LDBWritebatch *)writeBatch {
     leveldb::WriteBatch wb = [writeBatch writeBatch];
     leveldb::Status status = db->Write(writeOptions, &wb);
     if(!status.ok()) {
@@ -227,7 +227,7 @@ LevelDBOptions MakeLevelDBOptions() {
     return [self objectForKey:key withSnapshot:nil];
 }
 - (id) objectForKey:(id)key
-       withSnapshot:(Snapshot *)snapshot {
+       withSnapshot:(LDBSnapshot *)snapshot {
     
     std::string v_string;
     MaybeAddSnapshotToOptions(readOptions, readOptionsPtr, snapshot);
@@ -267,7 +267,7 @@ LevelDBOptions MakeLevelDBOptions() {
     return [self objectExistsForKey:key withSnapshot:nil];
 }
 - (BOOL) objectExistsForKey:(id)key
-               withSnapshot:(Snapshot *)snapshot {
+               withSnapshot:(LDBSnapshot *)snapshot {
     std::string v_string;
     MaybeAddSnapshotToOptions(readOptions, readOptionsPtr, snapshot);
     leveldb::Slice k = KeyFromStringOrData(key);
@@ -364,8 +364,8 @@ LevelDBOptions MakeLevelDBOptions() {
     return [NSDictionary dictionaryWithDictionary:results];
 }
 
-- (Snapshot *) newSnapshot {
-    return [[Snapshot snapshotFromDB:self] retain];
+- (LDBSnapshot *) newSnapshot {
+    return [[LDBSnapshot snapshotFromDB:self] retain];
 }
 
 #pragma mark - Enumeration
@@ -398,7 +398,7 @@ LevelDBOptions MakeLevelDBOptions() {
                  startingAtKey:(id)key
            filteredByPredicate:(NSPredicate *)predicate
                      andPrefix:(id)prefix
-                  withSnapshot:(Snapshot *)snapshot
+                  withSnapshot:(LDBSnapshot *)snapshot
                     usingBlock:(LevelDBKeyBlock)block {
 
     MaybeAddSnapshotToOptions(readOptions, readOptionsPtr, snapshot);
@@ -473,7 +473,7 @@ LevelDBOptions MakeLevelDBOptions() {
                            startingAtKey:(id)key
                      filteredByPredicate:(NSPredicate *)predicate
                                andPrefix:(id)prefix
-                            withSnapshot:(Snapshot *)snapshot
+                            withSnapshot:(LDBSnapshot *)snapshot
                               usingBlock:(id)block{
     
     MaybeAddSnapshotToOptions(readOptions, readOptionsPtr, snapshot);

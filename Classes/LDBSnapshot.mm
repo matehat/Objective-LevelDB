@@ -1,11 +1,11 @@
 //
-//  Snapshot.mm
+//  LDBSnapshot.mm
 //
 //  Copyright 2013 Storm Labs.
 //  See LICENCE for details.
 //
 
-#import "Snapshot.h"
+#import "LDBSnapshot.h"
 #import <leveldb/db.h>
 
 @interface LevelDB ()
@@ -16,7 +16,7 @@
                  startingAtKey:(id)key
            filteredByPredicate:(NSPredicate *)predicate
                      andPrefix:(id)prefix
-                  withSnapshot:(Snapshot *)snapshot
+                  withSnapshot:(LDBSnapshot *)snapshot
                     usingBlock:(LevelDBKeyBlock)block;
 
 - (void) enumerateKeysAndObjectsBackward:(BOOL)backward
@@ -24,18 +24,18 @@
                            startingAtKey:(id)key
                      filteredByPredicate:(NSPredicate *)predicate
                                andPrefix:(id)prefix
-                            withSnapshot:(Snapshot *)snapshot
+                            withSnapshot:(LDBSnapshot *)snapshot
                               usingBlock:(id)block;
 
 - (id) objectForKey:(id)key
-       withSnapshot:(Snapshot *)snapshot;
+       withSnapshot:(LDBSnapshot *)snapshot;
 
 - (BOOL) objectExistsForKey:(id)key
-               withSnapshot:(Snapshot *)snapshot;
+               withSnapshot:(LDBSnapshot *)snapshot;
 
 @end
 
-@interface Snapshot () {
+@interface LDBSnapshot () {
     const leveldb::Snapshot * _snapshot;
 }
 
@@ -44,10 +44,10 @@
 
 @end
 
-@implementation Snapshot 
+@implementation LDBSnapshot 
 
-+ (Snapshot *) snapshotFromDB:(LevelDB *)database {
-    Snapshot *snapshot = [[[Snapshot alloc] init] autorelease];
++ (LDBSnapshot *) snapshotFromDB:(LevelDB *)database {
+    LDBSnapshot *snapshot = [[[LDBSnapshot alloc] init] autorelease];
     snapshot->_snapshot = [database db]->GetSnapshot();
     snapshot->_db = database;
     return snapshot;

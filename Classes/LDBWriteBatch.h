@@ -9,7 +9,7 @@
 
 #import "LevelDB.h"
 
-@interface Writebatch : NSObject
+@interface LDBWritebatch : NSObject
 
 @property (nonatomic, assign) id db;
 
