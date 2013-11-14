@@ -1,89 +1,40 @@
 //
-//  iOS_SnapshotsTests.m
-//  Objective-LevelDB Tests
+//  iOS_Tests.m
+//  iOS Tests
 //
-//  Created by Mathieu D'Amours on 11/14/13.
+//  Created by Mathieu D'Amours on 11/13/13.
 //
 //
 
 #import "BaseTestClass.h"
-#import <Objective-LevelDB/Snapshot.h>
 
-static NSUInteger numberOfIterations = 2500;
-
-@interface iOS_SnapshotsTests : BaseTestClass
+@interface MainTests : BaseTestClass
 
 @end
 
-@implementation iOS_SnapshotsTests {
-    Snapshot *snapshot;
-}
+static NSUInteger numberOfIterations = 2500;
 
-- (void) testInvariability {
-    snapshot = [db getSnapshot];
-    [db setObject:@{@"foo": @"bar"} forKey:@"key"];
-    XCTAssertNil([snapshot objectForKey:@"key"],
-                 @"Fetching a key inserted after snapshot was taken should yield nil");
-    
-    [snapshot close];
-    [snapshot close];
-    snapshot = nil;
-}
+@implementation MainTests
 
-- (NSArray *)nPairs:(NSUInteger)n {
-    NSMutableArray  *pairs = [NSMutableArray array];
-    
-    __block NSInteger r;
-    __block NSString *key;
-    __block NSArray *value;
-    
-    dispatch_apply(n, lvldb_test_queue, ^(size_t i) {
-        do {
-            r = arc4random_uniform(5000);
-            key = [NSString stringWithFormat:@"%d", r];
-        } while ([db objectExistsForKey:key]);
-        
-        value = @[@(r), @(i)];
-        [pairs addObject:@[key, value]];
-        [db setObject:value forKey:key];
-    });
-    
-    [pairs sortUsingComparator:^NSComparisonResult(NSArray *obj1, NSArray *obj2) {
-        return [obj1[0] compare:obj2[0]];
-    }];
-    return pairs;
+- (void)testDatabaseCreated {
+    XCTAssertNotNil(db, @"Database should not be nil");
 }
 
 - (void)testContentIntegrity {
     id key = @"dict1";
     id value = @{@"foo": @"bar"};
     [db setObject:value forKey:key];
-    snapshot = [db getSnapshot];
-    XCTAssertEqualObjects([snapshot objectForKey:key], value,
-                          @"Saving and retrieving should keep an dictionary intact");
+    XCTAssertEqualObjects([db objectForKey:key], value, @"Saving and retrieving should keep an dictionary intact");
     
-    [db removeObjectForKey:key];
-    XCTAssertEqualObjects([snapshot objectForKey:key], value,
-                          @"Removing a key from the db should affect a snapshot right away");
-    
-    snapshot = [db getSnapshot];
-    XCTAssertNil([snapshot objectForKey:@"dict1"],
-                 @"A new snapshot should have those changes");
+    [db removeObjectForKey:@"dict1"];
+    XCTAssertNil([db objectForKey:@"dict1"], @"A deleted key should return nil");
     
     value = @[@"foo", @"bar"];
     [db setObject:value forKey:key];
-    XCTAssertNil([snapshot objectForKey:@"dict1"],
-                 @"Inserting a new value in the db should not affect a previous snapshot");
-    
-    snapshot = [db getSnapshot];
-    XCTAssertEqualObjects([snapshot objectForKey:key], value, @"Saving and retrieving should keep an array intact");
+    XCTAssertEqualObjects([db objectForKey:key], value, @"Saving and retrieving should keep an array intact");
     
     [db removeObjectsForKeys:@[@"array1"]];
-    XCTAssertEqualObjects([snapshot objectForKey:key], value,
-                          @"Removing a key from the db should affect a snapshot right away");
-    
-    snapshot = [db getSnapshot];
-    XCTAssertNil([snapshot objectForKey:@"array1"], @"A key that was deleted in batch should return nil");
+    XCTAssertNil([db objectForKey:@"array1"], @"A key that was deleted in batch should return nil");
 }
 
 - (void)testKeysManipulation {
@@ -93,11 +44,8 @@ static NSUInteger numberOfIterations = 2500;
     [db setObject:value forKey:@"dict2"];
     [db setObject:value forKey:@"dict3"];
     
-    snapshot = [db getSnapshot];
-    [db removeAllObjects];
-    
     NSArray *keys = @[ @"dict1", @"dict2", @"dict3" ];
-    NSArray *keysFromDB = [snapshot allKeys];
+    NSArray *keysFromDB = [db allKeys];
     NSMutableArray *stringKeys = [NSMutableArray arrayWithCapacity:3];
     [keysFromDB enumerateObjectsUsingBlock:^(NSData *obj, NSUInteger idx, BOOL *stop) {
         NSString *stringKey = [[NSString alloc] initWithBytes:obj.bytes length:obj.length encoding:NSUTF8StringEncoding];
@@ -105,30 +53,38 @@ static NSUInteger numberOfIterations = 2500;
     }];
     XCTAssertEqualObjects(stringKeys, keys, @"-[LevelDB allKeys] should return the list of keys used to insert data");
     
-    snapshot = [db getSnapshot];
-    XCTAssertEqual([snapshot allKeys], @[],
-                   @"The list of keys should be empty after removing all objects from the database");
+    [db removeAllObjects];
+    XCTAssertEqual([db allKeys], @[], @"The list of keys should be empty after removing all objects from the database");
+}
+
+- (void)testRemovingKeysWithPrefix {
+    id value = @{@"foo": @"bar"};
+    [db setObject:value forKey:@"dict1"];
+    [db setObject:value forKey:@"dict2"];
+    [db setObject:value forKey:@"dict3"];
+    [db setObject:@[@1,@2,@3] forKey:@"array1"];
+    
+    [db removeAllObjectsWithPrefix:@"dict"];
+    XCTAssertEqual([[db allKeys] count], (NSUInteger)1,
+                   @"There should be only 1 key remaining after removing all those prefixed with 'dict'");
 }
 
 - (void)testDictionaryManipulations {
     NSDictionary *objects = @{
-                              @"key1": @[@1, @2],
-                              @"key2": @{@"foo": @"bar"},
-                              @"key3": @[@{}]
-                              };
+        @"key1": @[@1, @2],
+        @"key2": @{@"foo": @"bar"},
+        @"key3": @[@{}]
+    };
     [db addEntriesFromDictionary:objects];
     NSArray *keys = @[@"key1", @"key2", @"key3"];
     
-    snapshot = [db getSnapshot];
-    [db removeAllObjects];
-    
     for (id key in keys)
-        XCTAssertEqualObjects(snapshot[key], objects[key],
+        XCTAssertEqualObjects(db[key], objects[key],
                               @"Objects should match between dictionary and db");
     
     keys = @[@"key1", @"key2", @"key9"];
-    NSDictionary *extractedObjects = [NSDictionary dictionaryWithObjects:[snapshot objectsForKeys:keys
-                                                                                   notFoundMarker:[NSNull null]]
+    NSDictionary *extractedObjects = [NSDictionary dictionaryWithObjects:[db objectsForKeys:keys
+                                                                             notFoundMarker:[NSNull null]]
                                                                  forKeys:keys];
     for (id key in keys) {
         id val;
@@ -169,20 +125,18 @@ static NSUInteger numberOfIterations = 2500;
         [db setObject:@{@"price": @(price)} forKey:keyData];
     }
     [resultKeys sortUsingComparator:dataComparator];
-    snapshot = [db getSnapshot];
-    [db removeAllObjects];
     
-    XCTAssertEqualObjects([snapshot keysByFilteringWithPredicate:predicate],
+    XCTAssertEqualObjects([db keysByFilteringWithPredicate:predicate],
                           resultKeys,
                           @"Filtering db keys with a predicate should return the same list as expected");
     
-    NSDictionary *allObjects = [snapshot dictionaryByFilteringWithPredicate:predicate];
+    NSDictionary *allObjects = [db dictionaryByFilteringWithPredicate:predicate];
     XCTAssertEqualObjects([[allObjects allKeys] sortedArrayUsingComparator:dataComparator],
                           resultKeys,
                           @"A dictionary obtained by filtering with a predicate should yield the expected list of keys");
     
     __block int i = 0;
-    [snapshot enumerateKeysBackward:NO
+    [db enumerateKeysBackward:NO
                 startingAtKey:nil
           filteredByPredicate:predicate
                     andPrefix:nil
@@ -193,7 +147,7 @@ static NSUInteger numberOfIterations = 2500;
                    }];
     
     i = resultKeys.count - 1;
-    [snapshot enumerateKeysBackward:YES
+    [db enumerateKeysBackward:YES
                 startingAtKey:nil
           filteredByPredicate:predicate
                     andPrefix:nil
@@ -204,7 +158,7 @@ static NSUInteger numberOfIterations = 2500;
                    }];
     
     i = 0;
-    [snapshot enumerateKeysAndObjectsBackward:NO lazily:NO
+    [db enumerateKeysAndObjectsBackward:NO lazily:NO
                           startingAtKey:nil
                     filteredByPredicate:predicate
                               andPrefix:nil
@@ -217,7 +171,7 @@ static NSUInteger numberOfIterations = 2500;
                              }];
     
     i = resultKeys.count - 1;
-    [snapshot enumerateKeysAndObjectsBackward:YES lazily:NO
+    [db enumerateKeysAndObjectsBackward:YES lazily:NO
                           startingAtKey:nil
                     filteredByPredicate:predicate
                               andPrefix:nil
@@ -230,6 +184,30 @@ static NSUInteger numberOfIterations = 2500;
                              }];
 }
 
+- (NSArray *)nPairs:(NSUInteger)n {
+    NSMutableArray  *pairs = [NSMutableArray array];
+    
+    __block NSInteger r;
+    __block NSString *key;
+    __block NSArray *value;
+    
+    dispatch_apply(n, lvldb_test_queue, ^(size_t i) {
+        do {
+            r = arc4random_uniform(5000);
+            key = [NSString stringWithFormat:@"%d", r];
+        } while ([db objectExistsForKey:key]);
+        
+        value = @[@(r), @(i)];
+        [pairs addObject:@[key, value]];
+        [db setObject:value forKey:key];
+    });
+    
+    [pairs sortUsingComparator:^NSComparisonResult(NSArray *obj1, NSArray *obj2) {
+        return [obj1[0] compare:obj2[0]];
+    }];
+    return pairs;
+}
+
 - (void)testForwardKeyEnumerations {
     __block NSInteger r;
     __block NSString *key;
@@ -237,12 +215,9 @@ static NSUInteger numberOfIterations = 2500;
     
     NSArray *pairs = [self nPairs:numberOfIterations];
     
-    snapshot = [db getSnapshot];
-    [db removeAllObjects];
-    
     // Test that enumerating the whole set yields keys in the correct orders
     r = 0;
-    [snapshot enumerateKeysUsingBlock:^(LevelDBKey *lkey, BOOL *stop) {
+    [db enumerateKeysUsingBlock:^(LevelDBKey *lkey, BOOL *stop) {
         NSArray *pair = pairs[r];
         key = pair[0];
         value = pair[1];
@@ -254,7 +229,7 @@ static NSUInteger numberOfIterations = 2500;
     
     // Test that enumerating the set by starting at an offset yields keys in the correct orders
     r = 432;
-    [snapshot enumerateKeysBackward:NO
+    [db enumerateKeysBackward:NO
                 startingAtKey:pairs[r][0]
           filteredByPredicate:nil
                     andPrefix:nil
@@ -276,12 +251,9 @@ static NSUInteger numberOfIterations = 2500;
     
     NSArray *pairs = [self nPairs:numberOfIterations];
     
-    snapshot = [db getSnapshot];
-    [db removeAllObjects];
-    
     // Test that enumerating the whole set backwards yields keys in the correct orders
     r = [pairs count] - 1;
-    [snapshot enumerateKeysBackward:YES
+    [db enumerateKeysBackward:YES
                 startingAtKey:nil
           filteredByPredicate:nil
                     andPrefix:nil
@@ -296,7 +268,7 @@ static NSUInteger numberOfIterations = 2500;
     
     // Test that enumerating the set backwards at an offset yields keys in the correct orders
     r = 567;
-    [snapshot enumerateKeysBackward:YES
+    [db enumerateKeysBackward:YES
                 startingAtKey:pairs[r][0]
           filteredByPredicate:nil
                     andPrefix:nil
@@ -308,7 +280,7 @@ static NSUInteger numberOfIterations = 2500;
                                              @"Keys should be equal, given the ordering worked");
                        r--;
                    }];
-    
+
 }
 
 - (void)testForwardKeyAndValueEnumerations {
@@ -319,11 +291,7 @@ static NSUInteger numberOfIterations = 2500;
     NSArray *pairs = [self nPairs:numberOfIterations];
     // Test that enumerating the whole set yields pairs in the correct orders
     r = 0;
-    
-    snapshot = [db getSnapshot];
-    [db removeAllObjects];
-    
-    [snapshot enumerateKeysAndObjectsUsingBlock:^(LevelDBKey *lkey, id _value, BOOL *stop) {
+    [db enumerateKeysAndObjectsUsingBlock:^(LevelDBKey *lkey, id _value, BOOL *stop) {
         NSArray *pair = pairs[r];
         key = pair[0];
         value = pair[1];
@@ -337,7 +305,7 @@ static NSUInteger numberOfIterations = 2500;
     
     // Test that enumerating the set by starting at an offset yields pairs in the correct orders
     r = 432;
-    [snapshot enumerateKeysAndObjectsBackward:NO lazily:NO
+    [db enumerateKeysAndObjectsBackward:NO lazily:NO
                           startingAtKey:pairs[r][0]
                     filteredByPredicate:nil
                               andPrefix:nil
@@ -360,13 +328,9 @@ static NSUInteger numberOfIterations = 2500;
     __block NSArray *value;
     
     NSArray *pairs = [self nPairs:numberOfIterations];
-    
-    snapshot = [db getSnapshot];
-    [db removeAllObjects];
-    
     // Test that enumerating the whole set backwards yields pairs in the correct orders
     r = [pairs count] - 1;
-    [snapshot enumerateKeysAndObjectsBackward:YES lazily:NO
+    [db enumerateKeysAndObjectsBackward:YES lazily:NO
                           startingAtKey:nil
                     filteredByPredicate:nil
                               andPrefix:nil
@@ -383,7 +347,7 @@ static NSUInteger numberOfIterations = 2500;
     
     // Test that enumerating the set backwards at an offset yields pairs in the correct orders
     r = 567;
-    [snapshot enumerateKeysAndObjectsBackward:YES lazily:NO
+    [db enumerateKeysAndObjectsBackward:YES lazily:NO
                           startingAtKey:pairs[r][0]
                     filteredByPredicate:nil
                               andPrefix:nil
@@ -407,11 +371,7 @@ static NSUInteger numberOfIterations = 2500;
     NSArray *pairs = [self nPairs:numberOfIterations];
     // Test that enumerating the set backwards and lazily at an offset yields pairs in the correct orders
     r = 567;
-    
-    snapshot = [db getSnapshot];
-    [db removeAllObjects];
-    
-    [snapshot enumerateKeysAndObjectsBackward:YES lazily:YES
+    [db enumerateKeysAndObjectsBackward:YES lazily:YES
                           startingAtKey:pairs[r][0]
                     filteredByPredicate:nil
                               andPrefix:nil
@@ -428,6 +388,5 @@ static NSUInteger numberOfIterations = 2500;
     
     [db removeAllObjects];
 }
-
 
 @end
