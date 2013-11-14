@@ -13,7 +13,6 @@
 		D00862FA1835225500086A71 /* BaseTestClass.m in Sources */ = {isa = PBXBuildFile; fileRef = D00862F91835225500086A71 /* BaseTestClass.m */; };
 		D00862FB1835225500086A71 /* BaseTestClass.m in Sources */ = {isa = PBXBuildFile; fileRef = D00862F91835225500086A71 /* BaseTestClass.m */; };
 		D00862FE18354BF800086A71 /* WritebatchTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D00862FD18354BF800086A71 /* WritebatchTests.m */; };
-		D00862FF18354BF800086A71 /* WritebatchTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D00862FD18354BF800086A71 /* WritebatchTests.m */; };
 		D00F7D331834205800026A43 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00F7D321834205800026A43 /* XCTest.framework */; };
 		D00F7D351834205800026A43 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00F7D341834205800026A43 /* Foundation.framework */; };
 		D00F7D371834205800026A43 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00F7D361834205800026A43 /* UIKit.framework */; };
@@ -25,6 +24,7 @@
 		D00F7D511834207100026A43 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D00F7D4F1834207100026A43 /* InfoPlist.strings */; };
 		D05E0B0F18354C8600142436 /* SnapshotsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D00862F7183520E500086A71 /* SnapshotsTests.m */; };
 		D05E0B1018354C8D00142436 /* MainTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D00F7D3E1834205800026A43 /* MainTests.m */; };
+		D05E0B1118354EA400142436 /* WritebatchTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D00862FD18354BF800086A71 /* WritebatchTests.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -315,9 +315,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D05E0B1118354EA400142436 /* WritebatchTests.m in Sources */,
 				D05E0B1018354C8D00142436 /* MainTests.m in Sources */,
 				D05E0B0F18354C8600142436 /* SnapshotsTests.m in Sources */,
-				D00862FF18354BF800086A71 /* WritebatchTests.m in Sources */,
 				D00862FB1835225500086A71 /* BaseTestClass.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
