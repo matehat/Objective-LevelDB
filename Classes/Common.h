@@ -21,7 +21,7 @@
                                             : ([_key_ isKindOfClass:[NSData class]]) ? SliceFromData(_key_) \
                                             : NULL
 
-#define GenericKeyFromSlice(_slice_)        (LevelDBKey) { .data = _slice_.data(), .length = _slice_.size() }
+#define GenericKeyFromSlice(_slice_)        (LevelDBKey) { .data = _slice_.data(), .length = static_cast<int>(_slice_.size()) }
 #define GenericKeyFromNSDataOrString(_obj_) ([_obj_ isKindOfClass:[NSString class]]) ? \
                                                 (LevelDBKey) { \
                                                     .data   = [_obj_ cStringUsingEncoding:NSUTF8StringEncoding], \
