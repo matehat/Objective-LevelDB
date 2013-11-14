@@ -87,6 +87,8 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 
 - (void) pauseObserving;
 - (void) resumeObserving;
+- (void) deleteDatabaseFromDisk;
+- (void) close;
 
 #pragma mark - Setters
 
@@ -125,53 +127,20 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 #pragma mark - Enumeration
 
 - (void) enumerateKeysUsingBlock:(LevelDBKeyBlock)block;
-- (void) enumerateKeysBackwardUsingBlock:(LevelDBKeyBlock)block;
-
-- (void) enumerateKeysUsingBlock:(LevelDBKeyBlock)block
-                   startingAtKey:(id)key;
-
 - (void) enumerateKeysBackward:(BOOL)backward
-                    usingBlock:(LevelDBKeyBlock)block
                  startingAtKey:(id)key
            filteredByPredicate:(NSPredicate *)predicate
-                  withSnapshot:(Snapshot *)snapshot;
-
-- (void) enumerateKeysBackward:(BOOL)backward
-                    usingBlock:(LevelDBKeyBlock)block
-                 startingAtKey:(id)key
-           filteredByPredicate:(NSPredicate *)predicate
-                     andPrefix:(NSData *)prefix
-                  withSnapshot:(Snapshot *)snapshot;
+                     andPrefix:(id)prefix
+                  withSnapshot:(Snapshot *)snapshot
+                    usingBlock:(LevelDBKeyBlock)block;
 
 - (void) enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block;
-- (void) enumerateKeysAndObjectsBackwardUsingBlock:(LevelDBKeyValueBlock)block;
-
-- (void) enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block
-                             startingAtKey:(id)key;
-
-- (void) enumerateKeysAndObjectsBackward:(BOOL)backward
-                              usingBlock:(LevelDBKeyValueBlock)block
-                           startingAtKey:(id)key
-                     filteredByPredicate:(NSPredicate *)predicate
-                            withSnapshot:(Snapshot *)snapshot;
-
-- (void) enumerateKeysAndObjectsBackward:(BOOL)backward
-                        lazilyUsingBlock:(LevelDBLazyKeyValueBlock)block
-                           startingAtKey:(id)key
-                     filteredByPredicate:(NSPredicate *)predicate
-                            withSnapshot:(Snapshot *)snapshot;
-
 - (void) enumerateKeysAndObjectsBackward:(BOOL)backward
                                   lazily:(BOOL)lazily
-                              usingBlock:(id)block
                            startingAtKey:(id)key
                      filteredByPredicate:(NSPredicate *)predicate
-                               andPrefix:(NSData *)prefix
-                            withSnapshot:(Snapshot *)snapshot;
-
-#pragma mark - Bookkeeping
-
-- (void) deleteDatabaseFromDisk;
-- (void) close;
+                               andPrefix:(id)prefix
+                            withSnapshot:(Snapshot *)snapshot
+                              usingBlock:(id)block;
 
 @end
