@@ -33,6 +33,11 @@
 #define MoveCursor(_iter_, _backward_) \
     _backward_ ? iter->Prev() : iter->Next()
 
+#define EnsureNSData(_obj_) \
+    ([_obj_ isKindOfClass:[NSData class]]) ? _obj_ : \
+    ([_obj_ isKindOfClass:[NSString class]]) ? [NSData dataWithBytes:[_obj_ cStringUsingEncoding:NSUTF8StringEncoding] \
+                                                              length:[_obj_ lengthOfBytesUsingEncoding:NSUTF8StringEncoding]] : nil
+
 namespace {
     class BatchIterator : public leveldb::WriteBatch::Handler {
     public:
@@ -378,16 +383,16 @@ static NSNotificationCenter * _notificationCenter;
 - (void) removeAllObjects {
     [self removeAllObjectsWithPrefix:nil];
 }
-
-- (void)removeAllObjectsWithPrefix:(NSData *)prefix {
+- (void) removeAllObjectsWithPrefix:(id)prefix {
     leveldb::Iterator * iter = db->NewIterator(readOptions);
     leveldb::Slice lkey;
     
     const void *prefixPtr;
     size_t prefixLen;
+    prefix = EnsureNSData(prefix);
     if (prefix) {
-        prefixPtr = prefix.bytes;
-        prefixLen = prefix.length;
+        prefixPtr = [(NSData *)prefix bytes];
+        prefixLen = [(NSData *)prefix length];
     }
     
     if (_hasObservers) {
@@ -525,8 +530,8 @@ static NSNotificationCenter * _notificationCenter;
                     usingBlock:(LevelDBKeyBlock)block
                  startingAtKey:(id)key
            filteredByPredicate:(NSPredicate *)predicate
-                     andPrefix:(NSData *)prefix
                   withSnapshot:(Snapshot *)snapshot {
+                     andPrefix:(id)prefix
 
     MaybeAddSnapshotToOptions(readOptions, readOptionsPtr, snapshot);
     leveldb::Iterator* iter = db->NewIterator(*readOptionsPtr);
@@ -535,24 +540,26 @@ static NSNotificationCenter * _notificationCenter;
     
     const void *prefixPtr;
     size_t prefixLen;
+    
+    prefix = EnsureNSData(prefix);
     if (prefix) {
-        prefixPtr = prefix.bytes;
-        prefixLen = prefix.length;
+        prefixPtr = [(NSData *)prefix bytes];
+        prefixLen = [(NSData *)prefix length];
     }
     id starter = key != nil ? key : prefix;
     
     LevelDBKeyValueBlock iterate = (predicate != nil)
         ? ^(LevelDBKey *lk, id value, BOOL *stop) {
-            if ([predicate evaluateWithObject:value]) block(lk, stop);
+            if ([predicate evaluateWithObject:value])
+                block(lk, stop);
           }
-        
         : ^(LevelDBKey *lk, id value, BOOL *stop) {
             block(lk, stop);
           };
     
-    for (SeekToFirstOrKey(iter, starter, backward);
-         iter->Valid();
-         MoveCursor(iter, backward)) {
+    for (SeekToFirstOrKey(iter, starter, backward)
+         ; iter->Valid()
+         ; MoveCursor(iter, backward)) {
         
         lkey = iter->key();
         if (prefix && memcmp(lkey.data(), prefixPtr, prefixLen) != 0)
@@ -630,8 +637,8 @@ static NSNotificationCenter * _notificationCenter;
                               usingBlock:(id)block
                            startingAtKey:(id)key
                      filteredByPredicate:(NSPredicate *)predicate
-                               andPrefix:(NSData *)prefix
                             withSnapshot:(Snapshot *)snapshot {
+                               andPrefix:(id)prefix
     
     MaybeAddSnapshotToOptions(readOptions, readOptionsPtr, snapshot);
     leveldb::Iterator* iter = db->NewIterator(*readOptionsPtr);
@@ -639,8 +646,13 @@ static NSNotificationCenter * _notificationCenter;
     BOOL stop = false;
     
     LevelDBLazyKeyValueBlock iterate = (predicate != nil)
+    
+        // If there is a predicate:
         ? ^ (LevelDBKey *lk, LevelDBValueGetterBlock valueGetter, BOOL *stop) {
+            // We need to get the value, whether the `lazily` flag was set or not
             id value = valueGetter();
+            
+            // If the predicate yields positive, we call the block
             if ([predicate evaluateWithObject:value]) {
                 if (lazily)
                     ((LevelDBLazyKeyValueBlock)block)(lk, valueGetter, stop);
@@ -648,6 +660,8 @@ static NSNotificationCenter * _notificationCenter;
                     ((LevelDBKeyValueBlock)block)(lk, value, stop);
             }
         }
+    
+        // Otherwise, we call the block
         : ^ (LevelDBKey *lk, LevelDBValueGetterBlock valueGetter, BOOL *stop) {
             if (lazily)
                 ((LevelDBLazyKeyValueBlock)block)(lk, valueGetter, stop);
@@ -657,24 +671,27 @@ static NSNotificationCenter * _notificationCenter;
     
     const void *prefixPtr;
     size_t prefixLen;
+    prefix = EnsureNSData(prefix);
     if (prefix) {
-        prefixPtr = prefix.bytes;
-        prefixLen = prefix.length;
+        prefixPtr = [(NSData *)prefix bytes];
+        prefixLen = [(NSData *)prefix length];
     }
-    id starter = key != nil ? key : prefix;
     
-    for (SeekToFirstOrKey(iter, starter, backward);
-         iter->Valid();
-         MoveCursor(iter, backward)) {
+    id starter = key != nil ? key : prefix;
+    LevelDBValueGetterBlock getter;
+    for (SeekToFirstOrKey(iter, starter, backward)
+         ; iter->Valid()
+         ; MoveCursor(iter, backward)) {
         
         lkey = iter->key();
-        if (prefix && memcmp(lkey.data(), prefixPtr, prefixLen) != 0)
+        // If there is prefix provided, and the prefix and key don't match, we break out of iteration
+        if (prefix && memcmp(lkey.data(), prefixPtr, MIN(prefixLen, lkey.size())) != 0)
             break;
         
         __block LevelDBKey lk = GenericKeyFromSlice(lkey);
         __block id v = nil;
         
-        LevelDBValueGetterBlock getter = ^ id {
+        getter = ^ id {
             if (v) return v;
             v = DecodeFromSlice(iter->value(), &lk, _decoder);
             return v;

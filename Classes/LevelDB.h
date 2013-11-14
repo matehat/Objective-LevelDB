@@ -113,7 +113,7 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 - (void) removeObjectForKey:(id)key;
 - (void) removeObjectsForKeys:(NSArray *)keyArray;
 - (void) removeAllObjects;
-- (void) removeAllObjectsWithPrefix:(NSData *)prefix;
+- (void) removeAllObjectsWithPrefix:(id)prefix;
 
 #pragma mark - Selection
 
