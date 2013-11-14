@@ -9,6 +9,9 @@
 /* Begin PBXBuildFile section */
 		4503FB6413A44EEB9E1BC383 /* libPods-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 61ED4605BF1A47C5AD416854 /* libPods-osx.a */; };
 		5A1F412F722D43B29727499B /* libPods-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D401E14E01540F4939D76BF /* libPods-ios.a */; };
+		D00862F8183520E500086A71 /* iOS_SnapshotsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D00862F7183520E500086A71 /* iOS_SnapshotsTests.m */; };
+		D00862FA1835225500086A71 /* BaseTestClass.m in Sources */ = {isa = PBXBuildFile; fileRef = D00862F91835225500086A71 /* BaseTestClass.m */; };
+		D00862FB1835225500086A71 /* BaseTestClass.m in Sources */ = {isa = PBXBuildFile; fileRef = D00862F91835225500086A71 /* BaseTestClass.m */; };
 		D00F7D331834205800026A43 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00F7D321834205800026A43 /* XCTest.framework */; };
 		D00F7D351834205800026A43 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00F7D341834205800026A43 /* Foundation.framework */; };
 		D00F7D371834205800026A43 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00F7D361834205800026A43 /* UIKit.framework */; };
@@ -25,6 +28,9 @@
 		5D401E14E01540F4939D76BF /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		61ED4605BF1A47C5AD416854 /* libPods-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		62FB80A965694F8AAE93DC7F /* Pods-osx.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osx.xcconfig"; path = "Pods/Pods-osx.xcconfig"; sourceTree = "<group>"; };
+		D00862F7183520E500086A71 /* iOS_SnapshotsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = iOS_SnapshotsTests.m; sourceTree = "<group>"; };
+		D00862F91835225500086A71 /* BaseTestClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseTestClass.m; sourceTree = "<group>"; };
+		D00862FC1835228400086A71 /* BaseTestClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseTestClass.h; sourceTree = "<group>"; };
 		D00F7D2F1834205700026A43 /* iOS Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "iOS Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D00F7D321834205800026A43 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		D00F7D341834205800026A43 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
@@ -70,6 +76,8 @@
 		D0027B5A18341F8A002E8D7E = {
 			isa = PBXGroup;
 			children = (
+				D00862FC1835228400086A71 /* BaseTestClass.h */,
+				D00862F91835225500086A71 /* BaseTestClass.m */,
 				D00F7D381834205800026A43 /* iOS Tests */,
 				D00F7D4C1834207100026A43 /* OS X Tests */,
 				D00F7D311834205800026A43 /* Frameworks */,
@@ -103,6 +111,7 @@
 		D00F7D381834205800026A43 /* iOS Tests */ = {
 			isa = PBXGroup;
 			children = (
+				D00862F7183520E500086A71 /* iOS_SnapshotsTests.m */,
 				D00F7D3E1834205800026A43 /* iOS_Tests.m */,
 				D00F7D391834205800026A43 /* Supporting Files */,
 			);
@@ -292,7 +301,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D00862FA1835225500086A71 /* BaseTestClass.m in Sources */,
 				D00F7D3F1834205800026A43 /* iOS_Tests.m in Sources */,
+				D00862F8183520E500086A71 /* iOS_SnapshotsTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -301,6 +312,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D00F7D531834207100026A43 /* OS_X_Tests.m in Sources */,
+				D00862FB1835225500086A71 /* BaseTestClass.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
