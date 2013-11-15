@@ -1,25 +1,42 @@
-### Introduction
+## Introduction
 
-A feature-complete Objective-C wrapper for [Google's LevelDB](http://code.google.com/p/leveldb), a fast key-value store written by Google.
+A Objective-C database library built over [Google's LevelDB](http://code.google.com/p/leveldb), a fast embedded key-value store written by Google.
 
-### Instructions
+## Installation
 
-1. Drag all `.h` and `.mm` files into your project.
-2. Clone [Google's leveldb](http://code.google.com/p/leveldb/source/checkout), preferably as a submodule of your project
-3. In the leveldb library source directory, run `make PLATFORM=IOS` to build the library file
-4. Add libleveldb.a to your project as a dependency
-5. Add the leveldb/include path to your header path
+By far, the easiest way to integrate this library in your project is by using [CocoaPods][1] if you're not already.
 
-Although Google's leveldb library is written in C++, this wrapper was written in a way that you can import Objective-LevelDB into your Objective-C
-project without worrying about turning your `.m` files into `.mm`.
+### Instructions for iOS Projects
 
-### Examples
+1. Have [Cocoapods][1] installed
+2. In your Podfile, add the line 
+
+    pod 'Objective-LevelDB'
+
+3. Run `pod install`
+3. Make something awesome.
+
+### Instructions for OS X projects
+
+1. Have [Cocoapods][1] installed
+2. In your Podfile, add the line 
+
+    pod 'Objective-LevelDB'
+
+3. Run `pod install`
+4. From your project's root directory, go in `Pods/Objective-LevelDB/leveldb-library`
+5. Run `make clean && make CC=clang CXX=clang++`
+5. Make something awesome.
+
+## How to use
+
+### Creating/Opening a database file on disk
 
 ```objective-c
 LevelDB *ldb = [LevelDB databaseInLibraryWithName:@"test.ldb"];
 ```
 
-##### Custom Encoder/Decoder
+##### Setup Encoder/Decoder blocks
 
 ```objective-c
 ldb.encoder = ^ NSData * (LeveldBKey *key, id object) {
@@ -36,10 +53,10 @@ ldb.decoder = ^ id (LeveldBKey *key, NSData * data) {
 [ldb setObject:@"laval" forKey:@"string_test"];
 NSLog(@"String Value: %@", [ldb objectForKey:@"string_test"]);
 
-[ldb setObject:[NSDictionary dictionaryWithObjectsAndKeys:@"val1", @"key1", @"val2", @"key2", nil] forKey:@"dict_test"];
+[ldb setObject:@{@"key1" : @"val1", @"key2" : @"val2"} forKey:@"dict_test"];
 NSLog(@"Dictionary Value: %@", [ldb objectForKey:@"dict_test"]);
 ```
-All available methods can be found in its [header file](Classes/LevelDB.h#L87)
+All available methods can be found in its [header file](Classes/LevelDB.h) (documented).
 
 ##### Enumeration
 
@@ -50,42 +67,49 @@ All available methods can be found in its [header file](Classes/LevelDB.h#L87)
     // Do something clever
 }];
 
-// Start enumeration at a certain key
-[self enumerateKeysAndObjectsUsingBlock:^(LevelDBKey *key, id value, BOOL *stop) {
-    // Do something else clever
-}
-                          startingAtKey:key];
-                          
-// Filter with a NSPredicate instance
-[self enumerateKeysAndObjectsUsingBlock:^(LevelDBKey *key, id value, BOOL *stop) {
-    // Do something else clever, like really clever
-}
-                          startingAtKey:key
-                  filteredWithPredicate:predicate];
-                  
-// Iterate backward
+// Enumerate with options
+[self enumerateKeysAndObjectsBackward:TRUE
+                               lazily:TRUE       // Block below will have a block(void) instead of id argument for value
+                        startingAtKey:someKey    // Start iteration there (NSString or NSData)
+                  filteredByPredicate:predicate  // Only iterate over values matching NSPredicate
+                            andPrefix:prefix     // Only iterate over keys prefixed with something 
+                           usingBlock:^(LevelDBKey *key, ^(^valueGetter)(void), BOOL *stop) {
+                             
+    NSString *keyString = NSStringFromLevelDBKey(key);
+    id value = valueGetter();
+}]
 ```
-More iteration methods are available, just have a look at the [header section](Classes/LevelDB.h#L120)
+More iteration methods are available, just have a look at the [header section](Classes/LevelDB.h)
 
 ##### Snapshots, NSDictionary-like API (immutable)
-    
+
+A snapshot is a readonly interface to the database, permanently reflecting the state of 
+the database when it was created, even if the database changes afterwards.
+
 ```objective-c
-Snapshot *snap = [ldb getSnapshot];
+LDBSnapshot *snap = [ldb newSnapshot]; // You get ownership of this variable, so in non-ARC projects,
+                                       // you'll need to release/autorelease it eventually
 [ldb removeObjectForKey:@"string_test"];
 
-// These calls will reflect the state of ldb when the snapshot was taken
+// The result of these calls will reflect the state of ldb when the snapshot was taken
 NSLog(@"String Value: %@", [snap objectForKey:@"string_test"]);
 NSLog(@"Dictionary Value: %@", [ldb objectForKey:@"dict_test"]);
 
-// Dispose (automatically done in dealloc)
+// get rid of it (non-ARC)
 [snap release];
+// ARC
+snap = nil;
 ```
+
 All available methods can be found in its [header file](Classes/Snapshot.h)
 
-##### Writebatches, a set of atomic updates
+##### Write batches, atomic sets of updates
+
+Write batches are a mutable proxy to a `LevelDB` database, accumulating updates
+without applying them, until you do using `-[LDBWritebatch apply]`
 
 ```objective-c
-Writebatch *wb = [Writebatch writebatchFromDB:ldb];
+LDBWritebatch *wb = [ldb newWritebatch];
 [wb setObject:@{ @"foo" : @"bar" } forKey: @"another_test"];
 [wb removeObjectForKey:@"dict_test"];
 
@@ -93,6 +117,7 @@ Writebatch *wb = [Writebatch writebatchFromDB:ldb];
 // To apply them in batch, 
 [wb apply];
 ```
+
 All available methods can be found in its [header file](Classes/WriteBatch.h)
 
 ##### LevelDB options
@@ -120,25 +145,6 @@ db.safe = true; // Make sure to data was actually written to disk before returni
 db.safe = false; // Switch back to default
 
 db.useCache = false; // Do not use DB cache when reading data (default to true);
-```
-
-##### NSNotificationCenter-based observing
-
-```objective-c
-[ldb addObserver:self selector:@selector(valueChanged:) forKey:key];
-id observer = [ldb addObserverForKey:key queue:queue usingBlock:^(NSNotification *note){
-  NSString *key = note.userInfo[kLevelDBKey];
-  id value = note.userInfo[kLevelDBValue];
-  id changeType = note.userInfo[kLevelDBChangeType]; // Can be kLevelDBChangeTypePut or kLevelDBChangeTypeDelete
-}];
-
-[ldb pauseObserving];
-[ldb removeAllObjects];
-[ldb resumeObserving];
-
-// To avoid retain cycles, just like with NSNotificationCenter, you need to remove the observers when you don't need them anymore
-[ldb removeObserver:observer];
-[ldb removeObserver:self forKey:key];
 ```
 
 ### License
