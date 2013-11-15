@@ -1,31 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Workspace
    version = "1.0">
-   <Group
-      location = "group:Classes"
-      name = "Classes">
-      <FileRef
-         location = "group:Common.h">
-      </FileRef>
-      <FileRef
-         location = "group:LevelDB.h">
-      </FileRef>
-      <FileRef
-         location = "group:LevelDB.mm">
-      </FileRef>
-      <FileRef
-         location = "group:LDBSnapshot.h">
-      </FileRef>
-      <FileRef
-         location = "group:LDBSnapshot.mm">
-      </FileRef>
-      <FileRef
-         location = "group:LDBWriteBatch.h">
-      </FileRef>
-      <FileRef
-         location = "group:LDBWriteBatch.mm">
-      </FileRef>
-   </Group>
    <FileRef
       location = "group:Tests/Objective-LevelDB OS X Tests.xcodeproj">
    </FileRef>

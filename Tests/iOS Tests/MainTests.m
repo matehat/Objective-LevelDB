@@ -146,7 +146,7 @@ static NSUInteger numberOfIterations = 2500;
                        i++;
                    }];
     
-    i = resultKeys.count - 1;
+    i = (int)resultKeys.count - 1;
     [db enumerateKeysBackward:YES
                 startingAtKey:nil
           filteredByPredicate:predicate
@@ -170,7 +170,7 @@ static NSUInteger numberOfIterations = 2500;
                                  i++;
                              }];
     
-    i = resultKeys.count - 1;
+    i = (int)resultKeys.count - 1;
     [db enumerateKeysAndObjectsBackward:YES lazily:NO
                           startingAtKey:nil
                     filteredByPredicate:predicate
@@ -194,7 +194,7 @@ static NSUInteger numberOfIterations = 2500;
     dispatch_apply(n, lvldb_test_queue, ^(size_t i) {
         do {
             r = arc4random_uniform(5000);
-            key = [NSString stringWithFormat:@"%d", r];
+            key = [NSString stringWithFormat:@"%ld", (long)r];
         } while ([db objectExistsForKey:key]);
         
         value = @[@(r), @(i)];

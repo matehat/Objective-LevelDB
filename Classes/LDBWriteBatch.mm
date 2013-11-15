@@ -8,7 +8,7 @@
 #import <leveldb/db.h>
 #import <leveldb/write_batch.h>
 
-#import "WriteBatch.h"
+#import "LDBWriteBatch.h"
 #include "Common.h"
 
 @interface LDBWritebatch () {

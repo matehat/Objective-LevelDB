@@ -7,7 +7,7 @@
 //
 
 #import "BaseTestClass.h"
-#import <Objective-LevelDB/Snapshot.h>
+#import <Objective-LevelDB/LDBSnapshot.h>
 
 static NSUInteger numberOfIterations = 2500;
 
@@ -192,7 +192,7 @@ static NSUInteger numberOfIterations = 2500;
                        i++;
                    }];
     
-    i = resultKeys.count - 1;
+    i = (int)resultKeys.count - 1;
     [snapshot enumerateKeysBackward:YES
                 startingAtKey:nil
           filteredByPredicate:predicate
@@ -216,7 +216,7 @@ static NSUInteger numberOfIterations = 2500;
                                  i++;
                              }];
     
-    i = resultKeys.count - 1;
+    i = (int)resultKeys.count - 1;
     [snapshot enumerateKeysAndObjectsBackward:YES lazily:NO
                           startingAtKey:nil
                     filteredByPredicate:predicate
