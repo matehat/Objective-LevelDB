@@ -314,7 +314,7 @@ LevelDBOptions MakeLevelDBOptions() {
     prefix = EnsureNSData(prefix);
     if (prefix) {
         prefixPtr = [(NSData *)prefix bytes];
-        prefixLen = [(NSData *)prefix length];
+        prefixLen = (size_t)[(NSData *)prefix length];
     }
 
     for (SeekToFirstOrKey(iter, (id)prefix, NO)
@@ -414,7 +414,7 @@ LevelDBOptions MakeLevelDBOptions() {
     prefix = EnsureNSData(prefix);
     if (prefix) {
         prefixPtr = [(NSData *)prefix bytes];
-        prefixLen = [(NSData *)prefix length];
+        prefixLen = (size_t)[(NSData *)prefix length];
     }
     id starter = key != nil ? key : prefix;
     
@@ -512,7 +512,7 @@ LevelDBOptions MakeLevelDBOptions() {
     prefix = EnsureNSData(prefix);
     if (prefix) {
         prefixPtr = [(NSData *)prefix bytes];
-        prefixLen = [(NSData *)prefix length];
+        prefixLen = (size_t)[(NSData *)prefix length];
     }
     
     id starter = key != nil ? key : prefix;
