@@ -25,8 +25,6 @@ static NSUInteger numberOfIterations = 2500;
     XCTAssertNil([snapshot objectForKey:@"key"],
                  @"Fetching a key inserted after snapshot was taken should yield nil");
     
-    [snapshot close];
-    [snapshot close];
     snapshot = nil;
 }
 

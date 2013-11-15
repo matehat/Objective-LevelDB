@@ -16,7 +16,7 @@
 @implementation WritebatchTests
 
 - (void) testDatabaseIntegrity {
-    LDBWritebatch *wb = [LDBWritebatch writeBatchFromDB:db];
+    LDBWritebatch *wb = [db newWritebatch];
     
     id key = @"dict1";
     id value = @{@"foo": @"bar"};
