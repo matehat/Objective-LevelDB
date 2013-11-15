@@ -24,9 +24,12 @@ Pod::Spec.new do |s|
  
   s.pre_install do |pod, target_definition|
     Dir.chdir(pod.root + 'leveldb-library') do
-      # build static library
+      # build static library for iOS
       `make PLATFORM=IOS CC=clang CXX=clang++ libleveldb.a`
-      `make CC=clang CXX=clang++`
+      
+      # If you want it to work for OS X instead, go in leveldb-library subfolder, and do the following
+      # make clean
+      # make CC=clang CXX=clang++
     end
   end
 end
