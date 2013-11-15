@@ -11,7 +11,7 @@ By far, the easiest way to integrate this library in your project is by using [C
 1. Have [Cocoapods][1] installed
 2. In your Podfile, add the line 
 
-      pod 'Objective-LevelDB'
+        pod 'Objective-LevelDB'
 
 3. Run `pod install`
 3. Make something awesome.
@@ -21,7 +21,7 @@ By far, the easiest way to integrate this library in your project is by using [C
 1. Have [Cocoapods][1] installed
 2. In your Podfile, add the line 
 
-      pod 'Objective-LevelDB'
+        pod 'Objective-LevelDB'
 
 3. Run `pod install`
 4. From your project's root directory, go in `Pods/Objective-LevelDB/leveldb-library`
