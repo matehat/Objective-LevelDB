@@ -147,8 +147,32 @@ db.safe = false; // Switch back to default
 db.useCache = false; // Do not use DB cache when reading data (default to true);
 ```
 
+##### Concurrency
+
+As [Google's documentation states][2], updates and reads from a leveldb instance do not require external synchronization
+to be thread-safe. Write batches do, and we've taken care of it, by isolating every `LDBWritebatch` it inside a serial dispatch 
+queue, and making every request dispatch *synchronously* to it. So use it from wherever you want, it'll just work.
+
+However, if you are using something like JSONKit for encoding data to JSON in the database, and you are clever enough to 
+preallocate a `JSONDecoder` instance for all data decoding, beware that this particular object is *not* thread-safe, and you will
+need to take care of it manually.
+
+### Testing
+
+If you want to run the tests, you will need XCode 5, as the test suite uses the new XCTest. 
+
+Clone this repository and, once in it,
+
+```bash
+./setup-test.sh
+cd Tests && open Objective-LevelDB.xcworkspace
+```
+
+Currently, all tests were setup to work with the iOS test suite.
+
 ### License
 
 Distributed under the [MIT license](LICENSE)
 
 [1]: http://cocoapods.org
+[2]: http://leveldb.googlecode.com/svn/trunk/doc/index.html
