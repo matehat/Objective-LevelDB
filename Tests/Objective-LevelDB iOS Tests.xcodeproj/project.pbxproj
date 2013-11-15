@@ -16,12 +16,11 @@
 		D00F7D371834205800026A43 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00F7D361834205800026A43 /* UIKit.framework */; };
 		D00F7D3D1834205800026A43 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D00F7D3B1834205800026A43 /* InfoPlist.strings */; };
 		D00F7D3F1834205800026A43 /* MainTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D00F7D3E1834205800026A43 /* MainTests.m */; };
+		D0F44C7418366BDA00AC2F1A /* Dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0F44C7218366BDA00AC2F1A /* Dummy.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		5D401E14E01540F4939D76BF /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		61ED4605BF1A47C5AD416854 /* libPods-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		62FB80A965694F8AAE93DC7F /* Pods-osx.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osx.xcconfig"; path = "Pods/Pods-osx.xcconfig"; sourceTree = "<group>"; };
 		D00862F7183520E500086A71 /* SnapshotsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SnapshotsTests.m; path = "iOS Tests/SnapshotsTests.m"; sourceTree = "<group>"; };
 		D00862F91835225500086A71 /* BaseTestClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseTestClass.m; sourceTree = "<group>"; };
 		D00862FC1835228400086A71 /* BaseTestClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseTestClass.h; sourceTree = "<group>"; };
@@ -37,6 +36,8 @@
 		D00F7D4E1834207100026A43 /* OS X Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OS X Tests-Info.plist"; sourceTree = "<group>"; };
 		D00F7D501834207100026A43 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		D00F7D541834207100026A43 /* OS X Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OS X Tests-Prefix.pch"; sourceTree = "<group>"; };
+		D0F44C7218366BDA00AC2F1A /* Dummy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Dummy.cpp; sourceTree = "<group>"; };
+		D0F44C7318366BDA00AC2F1A /* Dummy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dummy.h; sourceTree = "<group>"; };
 		D61E108796804421ADC47415 /* Pods-ios.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.xcconfig"; path = "Pods/Pods-ios.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -58,6 +59,8 @@
 		D0027B5A18341F8A002E8D7E = {
 			isa = PBXGroup;
 			children = (
+				D0F44C7218366BDA00AC2F1A /* Dummy.cpp */,
+				D0F44C7318366BDA00AC2F1A /* Dummy.h */,
 				D00862FC1835228400086A71 /* BaseTestClass.h */,
 				D00862F91835225500086A71 /* BaseTestClass.m */,
 				D00862FD18354BF800086A71 /* WritebatchTests.m */,
@@ -68,7 +71,6 @@
 				D00F7D311834205800026A43 /* Frameworks */,
 				D00F7D301834205700026A43 /* Products */,
 				D61E108796804421ADC47415 /* Pods-ios.xcconfig */,
-				62FB80A965694F8AAE93DC7F /* Pods-osx.xcconfig */,
 			);
 			sourceTree = "<group>";
 		};
@@ -87,7 +89,6 @@
 				D00F7D341834205800026A43 /* Foundation.framework */,
 				D00F7D361834205800026A43 /* UIKit.framework */,
 				5D401E14E01540F4939D76BF /* libPods-ios.a */,
-				61ED4605BF1A47C5AD416854 /* libPods-osx.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -224,6 +225,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D0F44C7418366BDA00AC2F1A /* Dummy.cpp in Sources */,
 				D00862FE18354BF800086A71 /* WritebatchTests.m in Sources */,
 				D00862FA1835225500086A71 /* BaseTestClass.m in Sources */,
 				D00F7D3F1834205800026A43 /* MainTests.m in Sources */,
@@ -256,16 +258,16 @@
 		D0027B5F18341F8A002E8D7E /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "compiler-default";
 			};
 			name = Debug;
 		};
 		D0027B6018341F8A002E8D7E /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
-				CLANG_CXX_LIBRARY = "libstdc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "compiler-default";
 			};
 			name = Release;
 		};
@@ -275,8 +277,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
-				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
@@ -331,8 +333,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD_INCLUDING_64_BIT)";
-				CLANG_CXX_LANGUAGE_STANDARD = "c++0x";
-				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_CXX_LANGUAGE_STANDARD = "compiler-default";
+				CLANG_CXX_LIBRARY = "compiler-default";
 				CLANG_ENABLE_MODULES = YES;
 				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_BOOL_CONVERSION = YES;
