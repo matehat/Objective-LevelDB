@@ -14,6 +14,8 @@
 		D0358052183563C000EDBF93 /* BaseTestClass.m in Sources */ = {isa = PBXBuildFile; fileRef = D0E9809918356243000BD668 /* BaseTestClass.m */; };
 		D0E980A518356273000BD668 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0E980A418356273000BD668 /* XCTest.framework */; };
 		D0E980AB18356273000BD668 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D0E980A918356273000BD668 /* InfoPlist.strings */; };
+		D0F44C77183673AC00AC2F1A /* Dummy.cpp in Resources */ = {isa = PBXBuildFile; fileRef = D0F44C75183673AC00AC2F1A /* Dummy.cpp */; };
+		D0F44C78183673AC00AC2F1A /* Dummy.h in Resources */ = {isa = PBXBuildFile; fileRef = D0F44C76183673AC00AC2F1A /* Dummy.h */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +31,8 @@
 		D0E980A818356273000BD668 /* OS X Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OS X Tests-Info.plist"; sourceTree = "<group>"; };
 		D0E980AA18356273000BD668 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		D0E980AE18356273000BD668 /* OS X Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OS X Tests-Prefix.pch"; sourceTree = "<group>"; };
+		D0F44C75183673AC00AC2F1A /* Dummy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; path = Dummy.cpp; sourceTree = "<group>"; };
+		D0F44C76183673AC00AC2F1A /* Dummy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; path = Dummy.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +51,8 @@
 		D0E9809118356216000BD668 = {
 			isa = PBXGroup;
 			children = (
+				D0F44C75183673AC00AC2F1A /* Dummy.cpp */,
+				D0F44C76183673AC00AC2F1A /* Dummy.h */,
 				D0E980A618356273000BD668 /* OS X Tests */,
 				D0E980A318356273000BD668 /* Frameworks */,
 				D0E980A218356273000BD668 /* Products */,
@@ -146,6 +152,8 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D0F44C78183673AC00AC2F1A /* Dummy.h in Resources */,
+				D0F44C77183673AC00AC2F1A /* Dummy.cpp in Resources */,
 				D0E980AB18356273000BD668 /* InfoPlist.strings in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

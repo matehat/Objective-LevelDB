@@ -5,20 +5,18 @@ def import_pods
   pod 'Objective-LevelDB'
 end
 
-PLATFORM = :ios
-
-if PLATFORM == :ios
-  xcodeproj 'Objective-LevelDB iOS Tests'
-  target :ios do
-    platform :ios, '7.0'
-    link_with 'iOS Tests'
-    import_pods
-  end
-else
+if ENV["TEST_ENV"] == "OSX"
   xcodeproj 'Objective-LevelDB OS X Tests'
   target :osx do
     platform :osx, '10.9'
     link_with 'OS X Tests'
+    import_pods
+  end
+else
+  xcodeproj 'Objective-LevelDB iOS Tests'
+  target :ios do
+    platform :ios, '7.0'
+    link_with 'iOS Tests'
     import_pods
   end
 end
