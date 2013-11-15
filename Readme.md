@@ -69,13 +69,16 @@ All available methods can be found in its [header file](Classes/LevelDB.h) (docu
 
 // Enumerate with options
 [ldb enumerateKeysAndObjectsBackward:TRUE
-                               lazily:TRUE       // Block below will have a block(void) instead of id argument for value
-                        startingAtKey:someKey    // Start iteration there (NSString or NSData)
-                  filteredByPredicate:predicate  // Only iterate over values matching NSPredicate
-                            andPrefix:prefix     // Only iterate over keys prefixed with something 
-                           usingBlock:^(LevelDBKey *key, ^(^valueGetter)(void), BOOL *stop) {
+                              lazily:TRUE       // Block below will have a block(void) instead of id argument for value
+                       startingAtKey:someKey    // Start iteration there (NSString or NSData)
+                 filteredByPredicate:predicate  // Only iterate over values matching NSPredicate
+                           andPrefix:prefix     // Only iterate over keys prefixed with something 
+                          usingBlock:^(LevelDBKey *key, void(^valueGetter)(void), BOOL *stop) {
                              
     NSString *keyString = NSStringFromLevelDBKey(key);
+    
+    // If we had wanted the value directly instead of a valueGetter block, we would've set the 
+    // above 'lazily' argument to FALSE
     id value = valueGetter();
 }]
 ```
