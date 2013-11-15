@@ -8,10 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		B7F037D3138043C3BE1D1AA0 /* libPods-osx.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3B33EC4085AA4FB9AC528E97 /* libPods-osx.a */; };
-		D035804F183563B700EDBF93 /* MainTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D0E9809C18356243000BD668 /* MainTests.m */; };
-		D0358050183563BA00EDBF93 /* SnapshotsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D0E9809B18356243000BD668 /* SnapshotsTests.m */; };
 		D0358051183563BC00EDBF93 /* WritebatchTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D0E9809A18356243000BD668 /* WritebatchTests.m */; };
 		D0358052183563C000EDBF93 /* BaseTestClass.m in Sources */ = {isa = PBXBuildFile; fileRef = D0E9809918356243000BD668 /* BaseTestClass.m */; };
+		D0D21E171836A2E200BD1F98 /* MainTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D0D21E151836A2E200BD1F98 /* MainTests.m */; };
+		D0D21E181836A2E200BD1F98 /* SnapshotsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D0D21E161836A2E200BD1F98 /* SnapshotsTests.m */; };
 		D0E980A518356273000BD668 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D0E980A418356273000BD668 /* XCTest.framework */; };
 		D0E980AB18356273000BD668 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D0E980A918356273000BD668 /* InfoPlist.strings */; };
 		D0F44C77183673AC00AC2F1A /* Dummy.cpp in Resources */ = {isa = PBXBuildFile; fileRef = D0F44C75183673AC00AC2F1A /* Dummy.cpp */; };
@@ -21,18 +21,18 @@
 /* Begin PBXFileReference section */
 		3B33EC4085AA4FB9AC528E97 /* libPods-osx.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-osx.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		C699A1AAADEC458E8DD5A410 /* Pods-osx.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-osx.xcconfig"; path = "Pods/Pods-osx.xcconfig"; sourceTree = "<group>"; };
-		D0E9809818356243000BD668 /* BaseTestClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BaseTestClass.h; path = ../BaseTestClass.h; sourceTree = "<group>"; };
-		D0E9809918356243000BD668 /* BaseTestClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BaseTestClass.m; path = ../BaseTestClass.m; sourceTree = "<group>"; };
-		D0E9809A18356243000BD668 /* WritebatchTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = WritebatchTests.m; path = ../WritebatchTests.m; sourceTree = "<group>"; };
-		D0E9809B18356243000BD668 /* SnapshotsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SnapshotsTests.m; path = "../iOS Tests/SnapshotsTests.m"; sourceTree = "<group>"; };
-		D0E9809C18356243000BD668 /* MainTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MainTests.m; path = "../iOS Tests/MainTests.m"; sourceTree = "<group>"; };
+		D0D21E151836A2E200BD1F98 /* MainTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainTests.m; sourceTree = "<group>"; };
+		D0D21E161836A2E200BD1F98 /* SnapshotsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnapshotsTests.m; sourceTree = "<group>"; };
+		D0E9809818356243000BD668 /* BaseTestClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseTestClass.h; sourceTree = "<group>"; };
+		D0E9809918356243000BD668 /* BaseTestClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseTestClass.m; sourceTree = "<group>"; };
+		D0E9809A18356243000BD668 /* WritebatchTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WritebatchTests.m; sourceTree = "<group>"; };
 		D0E980A118356273000BD668 /* OS X Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "OS X Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		D0E980A418356273000BD668 /* XCTest.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = XCTest.framework; path = Library/Frameworks/XCTest.framework; sourceTree = DEVELOPER_DIR; };
 		D0E980A818356273000BD668 /* OS X Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OS X Tests-Info.plist"; sourceTree = "<group>"; };
 		D0E980AA18356273000BD668 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		D0E980AE18356273000BD668 /* OS X Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OS X Tests-Prefix.pch"; sourceTree = "<group>"; };
-		D0F44C75183673AC00AC2F1A /* Dummy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; path = Dummy.cpp; sourceTree = "<group>"; };
-		D0F44C76183673AC00AC2F1A /* Dummy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file; path = Dummy.h; sourceTree = "<group>"; };
+		D0F44C75183673AC00AC2F1A /* Dummy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Dummy.cpp; sourceTree = "<group>"; };
+		D0F44C76183673AC00AC2F1A /* Dummy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dummy.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -51,6 +51,11 @@
 		D0E9809118356216000BD668 = {
 			isa = PBXGroup;
 			children = (
+				D0E9809818356243000BD668 /* BaseTestClass.h */,
+				D0E9809918356243000BD668 /* BaseTestClass.m */,
+				D0D21E151836A2E200BD1F98 /* MainTests.m */,
+				D0D21E161836A2E200BD1F98 /* SnapshotsTests.m */,
+				D0E9809A18356243000BD668 /* WritebatchTests.m */,
 				D0F44C75183673AC00AC2F1A /* Dummy.cpp */,
 				D0F44C76183673AC00AC2F1A /* Dummy.h */,
 				D0E980A618356273000BD668 /* OS X Tests */,
@@ -80,11 +85,6 @@
 		D0E980A618356273000BD668 /* OS X Tests */ = {
 			isa = PBXGroup;
 			children = (
-				D0E9809818356243000BD668 /* BaseTestClass.h */,
-				D0E9809918356243000BD668 /* BaseTestClass.m */,
-				D0E9809A18356243000BD668 /* WritebatchTests.m */,
-				D0E9809B18356243000BD668 /* SnapshotsTests.m */,
-				D0E9809C18356243000BD668 /* MainTests.m */,
 				D0E980A718356273000BD668 /* Supporting Files */,
 			);
 			path = "OS X Tests";
@@ -198,9 +198,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D035804F183563B700EDBF93 /* MainTests.m in Sources */,
 				D0358051183563BC00EDBF93 /* WritebatchTests.m in Sources */,
-				D0358050183563BA00EDBF93 /* SnapshotsTests.m in Sources */,
+				D0D21E181836A2E200BD1F98 /* SnapshotsTests.m in Sources */,
+				D0D21E171836A2E200BD1F98 /* MainTests.m in Sources */,
 				D0358052183563C000EDBF93 /* BaseTestClass.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

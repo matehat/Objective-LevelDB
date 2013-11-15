@@ -8,20 +8,19 @@
 
 /* Begin PBXBuildFile section */
 		5A1F412F722D43B29727499B /* libPods-ios.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 5D401E14E01540F4939D76BF /* libPods-ios.a */; };
-		D00862F8183520E500086A71 /* SnapshotsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D00862F7183520E500086A71 /* SnapshotsTests.m */; };
 		D00862FA1835225500086A71 /* BaseTestClass.m in Sources */ = {isa = PBXBuildFile; fileRef = D00862F91835225500086A71 /* BaseTestClass.m */; };
 		D00862FE18354BF800086A71 /* WritebatchTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D00862FD18354BF800086A71 /* WritebatchTests.m */; };
 		D00F7D331834205800026A43 /* XCTest.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00F7D321834205800026A43 /* XCTest.framework */; };
 		D00F7D351834205800026A43 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00F7D341834205800026A43 /* Foundation.framework */; };
 		D00F7D371834205800026A43 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D00F7D361834205800026A43 /* UIKit.framework */; };
 		D00F7D3D1834205800026A43 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = D00F7D3B1834205800026A43 /* InfoPlist.strings */; };
-		D00F7D3F1834205800026A43 /* MainTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D00F7D3E1834205800026A43 /* MainTests.m */; };
+		D0D21E131836A2C500BD1F98 /* MainTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D0D21E111836A2C500BD1F98 /* MainTests.m */; };
+		D0D21E141836A2C500BD1F98 /* SnapshotsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = D0D21E121836A2C500BD1F98 /* SnapshotsTests.m */; };
 		D0F44C7418366BDA00AC2F1A /* Dummy.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D0F44C7218366BDA00AC2F1A /* Dummy.cpp */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		5D401E14E01540F4939D76BF /* libPods-ios.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ios.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		D00862F7183520E500086A71 /* SnapshotsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SnapshotsTests.m; path = "iOS Tests/SnapshotsTests.m"; sourceTree = "<group>"; };
 		D00862F91835225500086A71 /* BaseTestClass.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BaseTestClass.m; sourceTree = "<group>"; };
 		D00862FC1835228400086A71 /* BaseTestClass.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BaseTestClass.h; sourceTree = "<group>"; };
 		D00862FD18354BF800086A71 /* WritebatchTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = WritebatchTests.m; sourceTree = SOURCE_ROOT; };
@@ -31,11 +30,12 @@
 		D00F7D361834205800026A43 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		D00F7D3A1834205800026A43 /* iOS Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "iOS Tests-Info.plist"; sourceTree = "<group>"; };
 		D00F7D3C1834205800026A43 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
-		D00F7D3E1834205800026A43 /* MainTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; name = MainTests.m; path = "iOS Tests/MainTests.m"; sourceTree = "<group>"; };
 		D00F7D401834205800026A43 /* iOS Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "iOS Tests-Prefix.pch"; sourceTree = "<group>"; };
 		D00F7D4E1834207100026A43 /* OS X Tests-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "OS X Tests-Info.plist"; sourceTree = "<group>"; };
 		D00F7D501834207100026A43 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 		D00F7D541834207100026A43 /* OS X Tests-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OS X Tests-Prefix.pch"; sourceTree = "<group>"; };
+		D0D21E111836A2C500BD1F98 /* MainTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MainTests.m; sourceTree = "<group>"; };
+		D0D21E121836A2C500BD1F98 /* SnapshotsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SnapshotsTests.m; sourceTree = "<group>"; };
 		D0F44C7218366BDA00AC2F1A /* Dummy.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Dummy.cpp; sourceTree = "<group>"; };
 		D0F44C7318366BDA00AC2F1A /* Dummy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dummy.h; sourceTree = "<group>"; };
 		D61E108796804421ADC47415 /* Pods-ios.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ios.xcconfig"; path = "Pods/Pods-ios.xcconfig"; sourceTree = "<group>"; };
@@ -59,13 +59,13 @@
 		D0027B5A18341F8A002E8D7E = {
 			isa = PBXGroup;
 			children = (
-				D0F44C7218366BDA00AC2F1A /* Dummy.cpp */,
-				D0F44C7318366BDA00AC2F1A /* Dummy.h */,
 				D00862FC1835228400086A71 /* BaseTestClass.h */,
 				D00862F91835225500086A71 /* BaseTestClass.m */,
+				D0D21E111836A2C500BD1F98 /* MainTests.m */,
+				D0D21E121836A2C500BD1F98 /* SnapshotsTests.m */,
 				D00862FD18354BF800086A71 /* WritebatchTests.m */,
-				D00862F7183520E500086A71 /* SnapshotsTests.m */,
-				D00F7D3E1834205800026A43 /* MainTests.m */,
+				D0F44C7218366BDA00AC2F1A /* Dummy.cpp */,
+				D0F44C7318366BDA00AC2F1A /* Dummy.h */,
 				D00F7D381834205800026A43 /* iOS Tests */,
 				D00F7D4C1834207100026A43 /* OS X Tests */,
 				D00F7D311834205800026A43 /* Frameworks */,
@@ -227,9 +227,9 @@
 			files = (
 				D0F44C7418366BDA00AC2F1A /* Dummy.cpp in Sources */,
 				D00862FE18354BF800086A71 /* WritebatchTests.m in Sources */,
+				D0D21E141836A2C500BD1F98 /* SnapshotsTests.m in Sources */,
+				D0D21E131836A2C500BD1F98 /* MainTests.m in Sources */,
 				D00862FA1835225500086A71 /* BaseTestClass.m in Sources */,
-				D00F7D3F1834205800026A43 /* MainTests.m in Sources */,
-				D00862F8183520E500086A71 /* SnapshotsTests.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
