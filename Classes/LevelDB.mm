@@ -78,10 +78,12 @@ LevelDBOptions MakeLevelDBOptions() {
 }
 
 @interface LDBSnapshot ()
++ (id) snapshotFromDB:(LevelDB *)database;
 - (const leveldb::Snapshot *) getSnapshot;
 @end
 
 @interface LDBWritebatch ()
++ (instancetype) writeBatchFromDB:(id)db;
 - (leveldb::WriteBatch) writeBatch;
 @end
 

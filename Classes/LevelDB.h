@@ -169,7 +169,7 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 #pragma mark - Write batches
 
 /**
- Return an autoreleased LDBWritebatch instance for this database
+ Return an retained LDBWritebatch instance for this database
  */
 - (LDBWritebatch *) newWritebatch;
 
@@ -268,7 +268,7 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 - (NSDictionary *) dictionaryByFilteringWithPredicate:(NSPredicate *)predicate;
 
 /**
- Return an autoreleased LDBSnapshot instance for this database
+ Return an retained LDBSnapshot instance for this database
  
  LDBSnapshots are a way to "freeze" the state of the database. Write operation applied to the database after the
  snapshot was taken do not affect the snapshot. Most *read* methods available in the LevelDB class are also
@@ -278,14 +278,49 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 
 #pragma mark - Enumeration
 
+/**
+ Enumerate over the keys in the database, in order.
+ 
+ Same as `[self enumerateKeysBackward:FALSE startingAtKey:nil filteredByPredicate:nil andPrefix:nil usingBlock:block]`
+ 
+ @param block The enumeration block used when iterating over all the keys.
+ */
 - (void) enumerateKeysUsingBlock:(LevelDBKeyBlock)block;
+
+/**
+ Enumerate over the keys in the database, in direct or backward order, with some options to control the keys iterated over
+ 
+ @param backward A boolean value indicating whether the enumeration happens in direct or backward order
+ @param key (optional) The key at which to start iteration. If the key isn't present in the database, the enumeration starts at the key immediately greater than the provided one. The key can be a `NSData` or `NSString`
+ @param predicate A `NSPredicate` instance tested against the values. The iteration block will only be called for keys associated to values matching the predicate. If `nil`, this is ignored.
+ @param prefix A `NSString` or `NSData` prefix used to filter the keys. If provided, only the keys prefixed with this value will be iterated over.
+ @param block The enumeration block used when iterating over all the keys. It takes two arguments: the first is a pointer to a `LevelDBKey` struct. You can convert this to a `NSString` or `NSData` instance, using `NSDataFromLevelDBKey(LevelDBKey *key)` and `NSStringFromLevelDBKey(LevelDBKey *key)` respectively. The second arguments to the block is a `BOOL *` that can be used to stop enumeration at any time (e.g. `*stop = TRUE;`).
+ */
 - (void) enumerateKeysBackward:(BOOL)backward
                  startingAtKey:(id)key
            filteredByPredicate:(NSPredicate *)predicate
                      andPrefix:(id)prefix
                     usingBlock:(LevelDBKeyBlock)block;
 
+
+/**
+ Enumerate over the key value pairs in the database, in order.
+ 
+ Same as `[self enumerateKeysAndObjectsBackward:FALSE startingAtKey:nil filteredByPredicate:nil andPrefix:nil usingBlock:block]`
+ 
+ @param block The enumeration block used when iterating over all the key value pairs.
+ */
 - (void) enumerateKeysAndObjectsUsingBlock:(LevelDBKeyValueBlock)block;
+
+/**
+ Enumerate over the keys in the database, in direct or backward order, with some options to control the keys iterated over
+ 
+ @param backward A boolean value indicating whether the enumeration happens in direct or backward order
+ @param key (optional) The key at which to start iteration. If the key isn't present in the database, the enumeration starts at the key immediately greater than the provided one. The key can be a `NSData` or `NSString`
+ @param predicate A `NSPredicate` instance tested against the values. The iteration block will only be called for keys associated to values matching the predicate. If `nil`, this is ignored.
+ @param prefix A `NSString` or `NSData` prefix used to filter the keys. If provided, only the keys prefixed with this value will be iterated over.
+ @param block The enumeration block used when iterating over all the keys. It takes three arguments: the first is a pointer to a `LevelDBKey` struct. You can convert this to a `NSString` or `NSData` instance, using `NSDataFromLevelDBKey(LevelDBKey *key)` and `NSStringFromLevelDBKey(LevelDBKey *key)` respectively. The second argument is the value associated with the key. The third arguments to the block is a `BOOL *` that can be used to stop enumeration at any time (e.g. `*stop = TRUE;`).
+ */
 - (void) enumerateKeysAndObjectsBackward:(BOOL)backward
                                   lazily:(BOOL)lazily
                            startingAtKey:(id)key
