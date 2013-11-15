@@ -61,14 +61,14 @@ All available methods can be found in its [header file](Classes/LevelDB.h) (docu
 ##### Enumeration
 
 ```objective-c
-[self enumerateKeysAndObjectsUsingBlock:^(LevelDBKey *key, id value, BOOL *stop) {
+[ldb enumerateKeysAndObjectsUsingBlock:^(LevelDBKey *key, id value, BOOL *stop) {
     // This step is necessary since the key could be a string or raw data (use NSDataFromLevelDBKey in that case)
     NSString *keyString = NSStringFromLevelDBKey(key); // Assumes UTF-8 encoding
     // Do something clever
 }];
 
 // Enumerate with options
-[self enumerateKeysAndObjectsBackward:TRUE
+[ldb enumerateKeysAndObjectsBackward:TRUE
                                lazily:TRUE       // Block below will have a block(void) instead of id argument for value
                         startingAtKey:someKey    // Start iteration there (NSString or NSData)
                   filteredByPredicate:predicate  // Only iterate over values matching NSPredicate
