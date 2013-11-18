@@ -6,8 +6,6 @@ A Objective-C database library built over [Google's LevelDB](http://code.google.
 
 By far, the easiest way to integrate this library in your project is by using [CocoaPods][1] if you're not already.
 
-### Instructions for iOS Projects
-
 1. Have [Cocoapods][1] installed
 2. In your Podfile, add the line 
 
@@ -15,18 +13,6 @@ By far, the easiest way to integrate this library in your project is by using [C
 
 3. Run `pod install`
 3. Make something awesome.
-
-### Instructions for OS X projects
-
-1. Have [Cocoapods][1] installed
-2. In your Podfile, add the line 
-
-        pod 'Objective-LevelDB'
-
-3. Run `pod install`
-4. From your project's root directory, go in `Pods/Objective-LevelDB/leveldb-library`
-5. Run `make clean && make CC=clang CXX=clang++`
-5. Make something awesome.
 
 ## How to use
 
