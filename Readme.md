@@ -1,12 +1,12 @@
 ## Introduction
 
-A Objective-C database library built over [Google's LevelDB](http://code.google.com/p/leveldb), a fast embedded key-value store written by Google.
+An Objective-C database library built over [Google's LevelDB](http://code.google.com/p/leveldb), a fast embedded key-value store written by Google.
 
 ## Installation
 
-By far, the easiest way to integrate this library in your project is by using [CocoaPods][1] if you're not already.
+By far, the easiest way to integrate this library in your project is by using [CocoaPods][1].
 
-1. Have [Cocoapods][1] installed
+1. Have [Cocoapods][1] installed, if you're not already
 2. In your Podfile, add the line 
 
         pod 'Objective-LevelDB'
