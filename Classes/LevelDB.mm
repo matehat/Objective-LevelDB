@@ -372,6 +372,63 @@ LevelDBOptions MakeLevelDBOptions() {
 
 #pragma mark - Enumeration
 
+- (void) _startIterator:(leveldb::Iterator*)iter
+               backward:(BOOL)backward
+                 prefix:(id)prefix
+                  start:(id)key {
+    
+    const void *prefixPtr;
+    size_t prefixLen;
+    leveldb::Slice lkey;
+    
+    prefix = EnsureNSData(prefix);
+    if (prefix) {
+        prefixPtr = [(NSData *)prefix bytes];
+        prefixLen = (size_t)[(NSData *)prefix length];
+        
+        /*
+         * If a prefix is provided and the iteration is backwards
+         * we need to start on the next key (maybe discarding the first iteration)
+         */
+        if (backward) {
+            size_t i = prefixLen - 1;
+            void * startKey = malloc(prefixLen);
+            unsigned char *keyChar;
+            memcpy(startKey, prefixPtr, prefixLen);
+            while (1) {
+                if (i < 0) {
+                    iter->SeekToLast();
+                    break;
+                }
+                keyChar = (unsigned char *)startKey + i;
+                if (*keyChar < 255) {
+                    (*keyChar)++;
+                    iter->Seek(leveldb::Slice((char *)startKey, prefixLen));
+                    break;
+                }
+                i--;
+            };
+            free(startKey);
+            if (!iter->Valid())
+                return;
+            
+            lkey = iter->key();
+            if (prefix && memcmp(lkey.data(), prefixPtr, prefixLen) != 0) {
+                iter->Prev();
+            }
+        } else {
+            // Otherwise, we start at the provided prefix
+            iter->Seek(leveldb::Slice((char *)prefixPtr, prefixLen));
+        }
+    } else if (key) {
+        iter->Seek(KeyFromStringOrData(key));
+    } else if (backward) {
+        iter->SeekToLast();
+    } else {
+        iter->SeekToFirst();
+    }
+}
+
 - (void) enumerateKeysUsingBlock:(LevelDBKeyBlock)block {
     
     [self enumerateKeysBackward:FALSE
@@ -408,15 +465,7 @@ LevelDBOptions MakeLevelDBOptions() {
     leveldb::Slice lkey;
     BOOL stop = false;
     
-    const void *prefixPtr;
-    size_t prefixLen;
-    
-    prefix = EnsureNSData(prefix);
-    if (prefix) {
-        prefixPtr = [(NSData *)prefix bytes];
-        prefixLen = (size_t)[(NSData *)prefix length];
-    }
-    id starter = key != nil ? key : prefix;
+    NSData *prefixData = EnsureNSData(prefix);
     
     LevelDBKeyValueBlock iterate = (predicate != nil)
         ? ^(LevelDBKey *lk, id value, BOOL *stop) {
@@ -427,12 +476,12 @@ LevelDBOptions MakeLevelDBOptions() {
             block(lk, stop);
           };
     
-    for (SeekToFirstOrKey(iter, starter, backward)
+    for ([self _startIterator:iter backward:backward prefix:prefix start:key]
          ; iter->Valid()
          ; MoveCursor(iter, backward)) {
         
         lkey = iter->key();
-        if (prefix && memcmp(lkey.data(), prefixPtr, prefixLen) != 0)
+        if (prefix && memcmp(lkey.data(), [prefixData bytes], MIN((size_t)[prefixData length], lkey.size())) != 0)
             break;
         
         LevelDBKey lk = GenericKeyFromSlice(lkey);
@@ -507,23 +556,16 @@ LevelDBOptions MakeLevelDBOptions() {
                 ((LevelDBKeyValueBlock)block)(lk, valueGetter(), stop);
         };
     
-    const void *prefixPtr;
-    size_t prefixLen;
-    prefix = EnsureNSData(prefix);
-    if (prefix) {
-        prefixPtr = [(NSData *)prefix bytes];
-        prefixLen = (size_t)[(NSData *)prefix length];
-    }
+    NSData *prefixData = EnsureNSData(prefix);
     
-    id starter = key != nil ? key : prefix;
     LevelDBValueGetterBlock getter;
-    for (SeekToFirstOrKey(iter, starter, backward)
+    for ([self _startIterator:iter backward:backward prefix:prefix start:key]
          ; iter->Valid()
          ; MoveCursor(iter, backward)) {
         
         lkey = iter->key();
         // If there is prefix provided, and the prefix and key don't match, we break out of iteration
-        if (prefix && memcmp(lkey.data(), prefixPtr, MIN(prefixLen, lkey.size())) != 0)
+        if (prefix && memcmp(lkey.data(), [prefixData bytes], MIN((size_t)[prefixData length], lkey.size())) != 0)
             break;
         
         __block LevelDBKey lk = GenericKeyFromSlice(lkey);

@@ -283,6 +283,74 @@ static NSUInteger numberOfIterations = 2500;
 
 }
 
+- (void)testPrefixedEnumerations {
+    id(^valueFor)(int) = ^ id (int i) { return @{ @"key": @(i) }; };
+    NSDictionary *pairs = @{
+                            @"tess0": valueFor(0),
+                            @"test1": valueFor(1),
+                            @"test2": valueFor(2),
+                            @"test3": valueFor(3),
+                            @"test4": valueFor(4),
+                            @"tesu5": valueFor(5)
+                            };
+    
+    __block int i = 4;
+    [db addEntriesFromDictionary:pairs];
+    [db enumerateKeysBackward:YES
+                startingAtKey:nil
+          filteredByPredicate:nil
+                    andPrefix:@"test"
+                   usingBlock:^(LevelDBKey *lkey, BOOL *stop) {
+                       NSString *key = [NSString stringWithFormat:@"test%d", i];
+                       XCTAssertEqualObjects(NSStringFromLevelDBKey(lkey), key,
+                                             @"Keys should be restricted to the prefixed region");
+                       i--;
+                   }];
+    
+    i = 4;
+    [db enumerateKeysAndObjectsBackward:YES
+                                 lazily:NO
+                          startingAtKey:nil
+                    filteredByPredicate:nil
+                              andPrefix:@"test"
+                             usingBlock:^(LevelDBKey *lkey, NSDictionary *value, BOOL *stop) {
+                                 NSString *key = [NSString stringWithFormat:@"test%d", i];
+                                 XCTAssertEqualObjects(NSStringFromLevelDBKey(lkey), key,
+                                                       @"Keys should be restricted to the prefixed region");
+                                 XCTAssertEqualObjects(value[@"key"], @(i),
+                                                       @"Values should be restricted to the prefixed region");
+                                 i--;
+                             }];
+    
+    i = 1;
+    [db addEntriesFromDictionary:pairs];
+    [db enumerateKeysBackward:NO
+                startingAtKey:nil
+          filteredByPredicate:nil
+                    andPrefix:@"test"
+                   usingBlock:^(LevelDBKey *lkey, BOOL *stop) {
+                       NSString *key = [NSString stringWithFormat:@"test%d", i];
+                       XCTAssertEqualObjects(NSStringFromLevelDBKey(lkey), key,
+                                             @"Keys should be restricted to the prefixed region");
+                       i++;
+                   }];
+    
+    i = 1;
+    [db enumerateKeysAndObjectsBackward:NO
+                                 lazily:NO
+                          startingAtKey:nil
+                    filteredByPredicate:nil
+                              andPrefix:@"test"
+                             usingBlock:^(LevelDBKey *lkey, NSDictionary *value, BOOL *stop) {
+                                 NSString *key = [NSString stringWithFormat:@"test%d", i];
+                                 XCTAssertEqualObjects(NSStringFromLevelDBKey(lkey), key,
+                                                       @"Keys should be restricted to the prefixed region");
+                                 XCTAssertEqualObjects(value[@"key"], @(i),
+                                                       @"Values should be restricted to the prefixed region");
+                                 i++;
+                             }];
+}
+
 - (void)testForwardKeyAndValueEnumerations {
     __block NSInteger r;
     __block NSString *key;
