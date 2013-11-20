@@ -83,14 +83,9 @@ LDBSnapshot *snap = [ldb newSnapshot]; // You get ownership of this variable, so
 // The result of these calls will reflect the state of ldb when the snapshot was taken
 NSLog(@"String Value: %@", [snap objectForKey:@"string_test"]);
 NSLog(@"Dictionary Value: %@", [ldb objectForKey:@"dict_test"]);
-
-// get rid of it (non-ARC)
-[snap release];
-// ARC
-snap = nil;
 ```
 
-All available methods can be found in its [header file](Classes/Snapshot.h)
+All available methods can be found in its [header file](Classes/LDBSnapshot.h)
 
 ##### Write batches, atomic sets of updates
 
@@ -107,7 +102,7 @@ LDBWritebatch *wb = [ldb newWritebatch];
 [wb apply];
 ```
 
-All available methods can be found in its [header file](Classes/WriteBatch.h)
+All available methods can be found in its [header file](Classes/LDBWriteBatch.h)
 
 ##### LevelDB options
 
