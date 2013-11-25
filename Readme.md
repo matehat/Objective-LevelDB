@@ -12,7 +12,8 @@ By far, the easiest way to integrate this library in your project is by using [C
         pod 'Objective-LevelDB'
 
 3. Run `pod install`
-3. Make something awesome.
+4. Add the `libc++.dylib` Framework to your project.
+5. Make something awesome.
 
 ## How to use
 
