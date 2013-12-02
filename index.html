@@ -1,0 +1,209 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Objective-leveldb by matehat</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Objective-leveldb</h1>
+        <p>An Objective-C database library built over Google's LevelDB</p>
+
+        <p class="view"><a href="https://github.com/matehat/Objective-LevelDB">View the Project on GitHub <small>matehat/Objective-LevelDB</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/matehat/Objective-LevelDB/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/matehat/Objective-LevelDB/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/matehat/Objective-LevelDB">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h2>
+<a name="introduction" class="anchor" href="#introduction"><span class="octicon octicon-link"></span></a>Introduction</h2>
+
+<p>An Objective-C database library built over <a href="http://code.google.com/p/leveldb">Google's LevelDB</a>, a fast embedded key-value store written by Google.</p>
+
+<h2>
+<a name="installation" class="anchor" href="#installation"><span class="octicon octicon-link"></span></a>Installation</h2>
+
+<p>By far, the easiest way to integrate this library in your project is by using <a href="http://cocoapods.org">CocoaPods</a>.</p>
+
+<ol>
+<li>Have <a href="http://cocoapods.org">Cocoapods</a> installed, if you're not already</li>
+<li>
+<p>In your Podfile, add the line </p>
+
+<pre><code>pod 'Objective-LevelDB'
+</code></pre>
+</li>
+<li><p>Run <code>pod install</code></p></li>
+<li>Add the <code>libc++.dylib</code> Framework to your project.</li>
+<li>Make something awesome.</li>
+</ol><h2>
+<a name="how-to-use" class="anchor" href="#how-to-use"><span class="octicon octicon-link"></span></a>How to use</h2>
+
+<h3>
+<a name="creatingopening-a-database-file-on-disk" class="anchor" href="#creatingopening-a-database-file-on-disk"><span class="octicon octicon-link"></span></a>Creating/Opening a database file on disk</h3>
+
+<div class="highlight highlight-objective-c"><pre><span class="n">LevelDB</span> <span class="o">*</span><span class="n">ldb</span> <span class="o">=</span> <span class="p">[</span><span class="n">LevelDB</span> <span class="n">databaseInLibraryWithName</span><span class="o">:</span><span class="s">@"test.ldb"</span><span class="p">];</span>
+</pre></div>
+
+<h5>
+<a name="setup-encoderdecoder-blocks" class="anchor" href="#setup-encoderdecoder-blocks"><span class="octicon octicon-link"></span></a>Setup Encoder/Decoder blocks</h5>
+
+<div class="highlight highlight-objective-c"><pre><span class="n">ldb</span><span class="p">.</span><span class="n">encoder</span> <span class="o">=</span> <span class="o">^</span> <span class="n">NSData</span> <span class="o">*</span> <span class="p">(</span><span class="n">LeveldBKey</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span> <span class="kt">id</span> <span class="n">object</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// return some data, given an object</span>
+<span class="p">}</span>
+<span class="n">ldb</span><span class="p">.</span><span class="n">decoder</span> <span class="o">=</span> <span class="o">^</span> <span class="kt">id</span> <span class="p">(</span><span class="n">LeveldBKey</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span> <span class="n">NSData</span> <span class="o">*</span> <span class="n">data</span><span class="p">)</span> <span class="p">{</span>
+  <span class="c1">// return an object, given some data</span>
+<span class="p">}</span>
+</pre></div>
+
+<h5>
+<a name="nsmutabledictionary-like-api" class="anchor" href="#nsmutabledictionary-like-api"><span class="octicon octicon-link"></span></a>NSMutableDictionary-like API</h5>
+
+<div class="highlight highlight-objective-c"><pre><span class="p">[</span><span class="n">ldb</span> <span class="n">setObject</span><span class="o">:</span><span class="s">@"laval"</span> <span class="n">forKey</span><span class="o">:</span><span class="s">@"string_test"</span><span class="p">];</span>
+<span class="n">NSLog</span><span class="p">(</span><span class="s">@"String Value: %@"</span><span class="p">,</span> <span class="p">[</span><span class="n">ldb</span> <span class="n">objectForKey</span><span class="o">:</span><span class="s">@"string_test"</span><span class="p">]);</span>
+
+<span class="p">[</span><span class="n">ldb</span> <span class="n">setObject</span><span class="o">:</span><span class="err">@</span><span class="p">{</span><span class="s">@"key1"</span> <span class="o">:</span> <span class="s">@"val1"</span><span class="p">,</span> <span class="s">@"key2"</span> <span class="o">:</span> <span class="s">@"val2"</span><span class="p">}</span> <span class="n">forKey</span><span class="o">:</span><span class="s">@"dict_test"</span><span class="p">];</span>
+<span class="n">NSLog</span><span class="p">(</span><span class="s">@"Dictionary Value: %@"</span><span class="p">,</span> <span class="p">[</span><span class="n">ldb</span> <span class="n">objectForKey</span><span class="o">:</span><span class="s">@"dict_test"</span><span class="p">]);</span>
+</pre></div>
+
+<p>All available methods can be found in its <a href="Classes/LevelDB.h">header file</a> (documented).</p>
+
+<h5>
+<a name="enumeration" class="anchor" href="#enumeration"><span class="octicon octicon-link"></span></a>Enumeration</h5>
+
+<div class="highlight highlight-objective-c"><pre><span class="p">[</span><span class="n">ldb</span> <span class="n">enumerateKeysAndObjectsUsingBlock</span><span class="o">:^</span><span class="p">(</span><span class="n">LevelDBKey</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span> <span class="kt">id</span> <span class="n">value</span><span class="p">,</span> <span class="kt">BOOL</span> <span class="o">*</span><span class="n">stop</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// This step is necessary since the key could be a string or raw data (use NSDataFromLevelDBKey in that case)</span>
+    <span class="n">NSString</span> <span class="o">*</span><span class="n">keyString</span> <span class="o">=</span> <span class="n">NSStringFromLevelDBKey</span><span class="p">(</span><span class="n">key</span><span class="p">);</span> <span class="c1">// Assumes UTF-8 encoding</span>
+    <span class="c1">// Do something clever</span>
+<span class="p">}];</span>
+
+<span class="c1">// Enumerate with options</span>
+<span class="p">[</span><span class="n">ldb</span> <span class="n">enumerateKeysAndObjectsBackward</span><span class="o">:</span><span class="n">TRUE</span>
+                              <span class="nl">lazily:</span><span class="n">TRUE</span>       <span class="c1">// Block below will have a block(void) instead of id argument for value</span>
+                       <span class="nl">startingAtKey:</span><span class="n">someKey</span>    <span class="c1">// Start iteration there (NSString or NSData)</span>
+                 <span class="nl">filteredByPredicate:</span><span class="n">predicate</span>  <span class="c1">// Only iterate over values matching NSPredicate</span>
+                           <span class="nl">andPrefix:</span><span class="n">prefix</span>     <span class="c1">// Only iterate over keys prefixed with something </span>
+                          <span class="nl">usingBlock:</span><span class="o">^</span><span class="p">(</span><span class="n">LevelDBKey</span> <span class="o">*</span><span class="n">key</span><span class="p">,</span> <span class="kt">void</span><span class="p">(</span><span class="o">^</span><span class="n">valueGetter</span><span class="p">)(</span><span class="kt">void</span><span class="p">),</span> <span class="kt">BOOL</span> <span class="o">*</span><span class="n">stop</span><span class="p">)</span> <span class="p">{</span>
+
+    <span class="n">NSString</span> <span class="o">*</span><span class="n">keyString</span> <span class="o">=</span> <span class="n">NSStringFromLevelDBKey</span><span class="p">(</span><span class="n">key</span><span class="p">);</span>
+
+    <span class="c1">// If we had wanted the value directly instead of a valueGetter block, we would've set the </span>
+    <span class="c1">// above 'lazily' argument to FALSE</span>
+    <span class="kt">id</span> <span class="n">value</span> <span class="o">=</span> <span class="n">valueGetter</span><span class="p">();</span>
+<span class="p">}]</span>
+</pre></div>
+
+<p>More iteration methods are available, just have a look at the <a href="Classes/LevelDB.h">header section</a></p>
+
+<h5>
+<a name="snapshots-nsdictionary-like-api-immutable" class="anchor" href="#snapshots-nsdictionary-like-api-immutable"><span class="octicon octicon-link"></span></a>Snapshots, NSDictionary-like API (immutable)</h5>
+
+<p>A snapshot is a readonly interface to the database, permanently reflecting the state of 
+the database when it was created, even if the database changes afterwards.</p>
+
+<div class="highlight highlight-objective-c"><pre><span class="n">LDBSnapshot</span> <span class="o">*</span><span class="n">snap</span> <span class="o">=</span> <span class="p">[</span><span class="n">ldb</span> <span class="n">newSnapshot</span><span class="p">];</span> <span class="c1">// You get ownership of this variable, so in non-ARC projects,</span>
+                                       <span class="c1">// you'll need to release/autorelease it eventually</span>
+<span class="p">[</span><span class="n">ldb</span> <span class="n">removeObjectForKey</span><span class="o">:</span><span class="s">@"string_test"</span><span class="p">];</span>
+
+<span class="c1">// The result of these calls will reflect the state of ldb when the snapshot was taken</span>
+<span class="n">NSLog</span><span class="p">(</span><span class="s">@"String Value: %@"</span><span class="p">,</span> <span class="p">[</span><span class="n">snap</span> <span class="n">objectForKey</span><span class="o">:</span><span class="s">@"string_test"</span><span class="p">]);</span>
+<span class="n">NSLog</span><span class="p">(</span><span class="s">@"Dictionary Value: %@"</span><span class="p">,</span> <span class="p">[</span><span class="n">ldb</span> <span class="n">objectForKey</span><span class="o">:</span><span class="s">@"dict_test"</span><span class="p">]);</span>
+</pre></div>
+
+<p>All available methods can be found in its <a href="Classes/LDBSnapshot.h">header file</a></p>
+
+<h5>
+<a name="write-batches-atomic-sets-of-updates" class="anchor" href="#write-batches-atomic-sets-of-updates"><span class="octicon octicon-link"></span></a>Write batches, atomic sets of updates</h5>
+
+<p>Write batches are a mutable proxy to a <code>LevelDB</code> database, accumulating updates
+without applying them, until you do using <code>-[LDBWritebatch apply]</code></p>
+
+<div class="highlight highlight-objective-c"><pre><span class="n">LDBWritebatch</span> <span class="o">*</span><span class="n">wb</span> <span class="o">=</span> <span class="p">[</span><span class="n">ldb</span> <span class="n">newWritebatch</span><span class="p">];</span>
+<span class="p">[</span><span class="n">wb</span> <span class="n">setObject</span><span class="o">:</span><span class="err">@</span><span class="p">{</span> <span class="s">@"foo"</span> <span class="o">:</span> <span class="s">@"bar"</span> <span class="p">}</span> <span class="n">forKey</span><span class="o">:</span> <span class="s">@"another_test"</span><span class="p">];</span>
+<span class="p">[</span><span class="n">wb</span> <span class="n">removeObjectForKey</span><span class="o">:</span><span class="s">@"dict_test"</span><span class="p">];</span>
+
+<span class="c1">// Those changes aren't yet applied to ldb</span>
+<span class="c1">// To apply them in batch, </span>
+<span class="p">[</span><span class="n">wb</span> <span class="n">apply</span><span class="p">];</span>
+</pre></div>
+
+<p>All available methods can be found in its <a href="Classes/LDBWriteBatch.h">header file</a></p>
+
+<h5>
+<a name="leveldb-options" class="anchor" href="#leveldb-options"><span class="octicon octicon-link"></span></a>LevelDB options</h5>
+
+<div class="highlight highlight-objective-c"><pre><span class="c1">// The following values are the default</span>
+<span class="n">LevelDBOptions</span> <span class="n">options</span> <span class="o">=</span> <span class="p">[</span><span class="n">LevelDB</span> <span class="n">makeOptions</span><span class="p">];</span>
+<span class="n">options</span><span class="p">.</span><span class="n">createIfMissing</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+<span class="n">options</span><span class="p">.</span><span class="n">errorIfExists</span>   <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+<span class="n">options</span><span class="p">.</span><span class="n">paranoidCheck</span>   <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+<span class="n">options</span><span class="p">.</span><span class="n">compression</span>     <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+<span class="n">options</span><span class="p">.</span><span class="n">filterPolicy</span>    <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>      <span class="c1">// Size in bits per key, allocated for a bloom filter, used in testing presence of key</span>
+<span class="n">options</span><span class="p">.</span><span class="n">cacheSize</span>       <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>      <span class="c1">// Size in bytes, allocated for a LRU cache used for speeding up lookups</span>
+
+<span class="c1">// Then, you can provide it when initializing a db instance.</span>
+<span class="n">LevelDB</span> <span class="o">*</span><span class="n">ldb</span> <span class="o">=</span> <span class="p">[</span><span class="n">LevelDB</span> <span class="n">databaseInLibraryWithName</span><span class="o">:</span><span class="s">@"test.ldb"</span> <span class="n">andOptions</span><span class="o">:</span><span class="n">options</span><span class="p">];</span>
+</pre></div>
+
+<h5>
+<a name="per-request-options" class="anchor" href="#per-request-options"><span class="octicon octicon-link"></span></a>Per-request options</h5>
+
+<div class="highlight highlight-objective-c"><pre><span class="n">db</span><span class="p">.</span><span class="n">safe</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span> <span class="c1">// Make sure to data was actually written to disk before returning from write operations.</span>
+<span class="p">[</span><span class="n">ldb</span> <span class="n">setObject</span><span class="o">:</span><span class="s">@"laval"</span> <span class="n">forKey</span><span class="o">:</span><span class="s">@"string_test"</span><span class="p">];</span>
+<span class="p">[</span><span class="n">ldb</span> <span class="n">setObject</span><span class="o">:</span><span class="p">[</span><span class="n">NSDictionary</span> <span class="n">dictionaryWithObjectsAndKeys</span><span class="o">:</span><span class="s">@"val1"</span><span class="p">,</span> <span class="s">@"key1"</span><span class="p">,</span> <span class="s">@"val2"</span><span class="p">,</span> <span class="s">@"key2"</span><span class="p">,</span> <span class="nb">nil</span><span class="p">]</span> <span class="n">forKey</span><span class="o">:</span><span class="s">@"dict_test"</span><span class="p">];</span>
+<span class="n">db</span><span class="p">.</span><span class="n">safe</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span> <span class="c1">// Switch back to default</span>
+
+<span class="n">db</span><span class="p">.</span><span class="n">useCache</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span> <span class="c1">// Do not use DB cache when reading data (default to true);</span>
+</pre></div>
+
+<h5>
+<a name="concurrency" class="anchor" href="#concurrency"><span class="octicon octicon-link"></span></a>Concurrency</h5>
+
+<p>As <a href="http://leveldb.googlecode.com/svn/trunk/doc/index.html">Google's documentation states</a>, updates and reads from a leveldb instance do not require external synchronization
+to be thread-safe. Write batches do, and we've taken care of it, by isolating every <code>LDBWritebatch</code> it inside a serial dispatch 
+queue, and making every request dispatch <em>synchronously</em> to it. So use it from wherever you want, it'll just work.</p>
+
+<p>However, if you are using something like JSONKit for encoding data to JSON in the database, and you are clever enough to 
+preallocate a <code>JSONDecoder</code> instance for all data decoding, beware that this particular object is <em>not</em> thread-safe, and you will
+need to take care of it manually.</p>
+
+<h3>
+<a name="testing" class="anchor" href="#testing"><span class="octicon octicon-link"></span></a>Testing</h3>
+
+<p>If you want to run the tests, you will need XCode 5, as the test suite uses the new XCTest. </p>
+
+<p>Clone this repository and, once in it,</p>
+
+<div class="highlight highlight-bash"><pre>./setup-test.sh
+<span class="nb">cd </span>Tests <span class="o">&amp;&amp;</span> open Objective-LevelDB.xcworkspace
+</pre></div>
+
+<p>Currently, all tests were setup to work with the iOS test suite.</p>
+
+<h3>
+<a name="license" class="anchor" href="#license"><span class="octicon octicon-link"></span></a>License</h3>
+
+<p>Distributed under the <a href="LICENSE">MIT license</a></p>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/matehat">matehat</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
