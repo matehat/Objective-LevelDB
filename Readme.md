@@ -43,7 +43,7 @@ NSLog(@"String Value: %@", [ldb objectForKey:@"string_test"]);
 [ldb setObject:@{@"key1" : @"val1", @"key2" : @"val2"} forKey:@"dict_test"];
 NSLog(@"Dictionary Value: %@", [ldb objectForKey:@"dict_test"]);
 ```
-All available methods can be found in its [header file](Classes/LevelDB.h) (documented).
+All available methods can be found in its [header file](https://github.com/matehat/Objective-LevelDB/blob/master/Classes/LevelDB.h) (documented).
 
 ##### Enumeration
 
@@ -69,7 +69,7 @@ All available methods can be found in its [header file](Classes/LevelDB.h) (docu
     id value = valueGetter();
 }]
 ```
-More iteration methods are available, just have a look at the [header section](Classes/LevelDB.h)
+More iteration methods are available, just have a look at the [header section](https://github.com/matehat/Objective-LevelDB/blob/master/Classes/LevelDB.h)
 
 ##### Snapshots, NSDictionary-like API (immutable)
 
@@ -86,7 +86,7 @@ NSLog(@"String Value: %@", [snap objectForKey:@"string_test"]);
 NSLog(@"Dictionary Value: %@", [ldb objectForKey:@"dict_test"]);
 ```
 
-All available methods can be found in its [header file](Classes/LDBSnapshot.h)
+All available methods can be found in its [header file](https://github.com/matehat/Objective-LevelDB/blob/master/Classes/LDBSnapshot.h)
 
 ##### Write batches, atomic sets of updates
 
@@ -103,7 +103,7 @@ LDBWritebatch *wb = [ldb newWritebatch];
 [wb apply];
 ```
 
-All available methods can be found in its [header file](Classes/LDBWriteBatch.h)
+All available methods can be found in its [header file](https://github.com/matehat/Objective-LevelDB/blob/master/Classes/LDBWriteBatch.h)
 
 ##### LevelDB options
 
