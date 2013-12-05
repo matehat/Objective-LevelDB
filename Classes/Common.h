@@ -22,8 +22,7 @@
 #define EncodeToSlice(_object_, _key_, _e)  SliceFromData(_e(_key_, _object_))
 
 #define KeyFromStringOrData(_key_)          ([_key_ isKindOfClass:[NSString class]]) ? SliceFromString(_key_) \
-                                            : ([_key_ isKindOfClass:[NSData class]]) ? SliceFromData(_key_) \
-                                            : NULL
+                                            : SliceFromData(_key_)
 
 #define GenericKeyFromSlice(_slice_)        (LevelDBKey) { .data = _slice_.data(), .length = _slice_.size() }
 #define GenericKeyFromNSDataOrString(_obj_) ([_obj_ isKindOfClass:[NSString class]]) ? \
@@ -31,8 +30,7 @@
                                                     .data   = [_obj_ cStringUsingEncoding:NSUTF8StringEncoding], \
                                                     .length = [_obj_ lengthOfBytesUsingEncoding:NSUTF8StringEncoding] \
                                                 } \
-                                            : ([_obj_ isKindOfClass:[NSData class]])   ? \
-                                                (LevelDBKey) { \
-                                                            .data = [_obj_ bytes], .length = [_obj_ length] \
-                                                } \
-                                            : NULL
+                                            :   (LevelDBKey) { \
+                                                    .data = [_obj_ bytes], \
+                                                    .length = [_obj_ length] \
+                                                }
