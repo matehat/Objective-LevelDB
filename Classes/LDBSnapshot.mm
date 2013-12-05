@@ -80,7 +80,7 @@
         return [super valueForKey:[key stringByReplacingCharactersInRange:(NSRange){0, 1}
                                                                withString:@""]];
     } else
-        return [self objectForKey:key];
+        return [_db objectForKey:key withSnapshot:self];
 }
 
 - (NSArray *)allKeys {

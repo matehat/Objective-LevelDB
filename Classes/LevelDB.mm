@@ -271,7 +271,7 @@ LevelDBOptions MakeLevelDBOptions() {
         return [self objectForKey:key];
 }
 - (id)objectForKeyedSubscript:(id)key {
-    return [self objectForKey:key];
+    return [self objectForKey:key withSnapshot:nil];
 }
 
 - (BOOL) objectExistsForKey:(id)key {
