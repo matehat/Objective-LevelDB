@@ -1,31 +1,18 @@
 ## Introduction
 
-A Objective-C database library built over [Google's LevelDB](http://code.google.com/p/leveldb), a fast embedded key-value store written by Google.
+An Objective-C database library built over [Google's LevelDB](http://code.google.com/p/leveldb), a fast embedded key-value store written by Google.
 
 ## Installation
 
-By far, the easiest way to integrate this library in your project is by using [CocoaPods][1] if you're not already.
+By far, the easiest way to integrate this library in your project is by using [CocoaPods][1].
 
-### Instructions for iOS Projects
-
-1. Have [Cocoapods][1] installed
+1. Have [Cocoapods][1] installed, if you're not already
 2. In your Podfile, add the line 
 
         pod 'Objective-LevelDB'
 
 3. Run `pod install`
-3. Make something awesome.
-
-### Instructions for OS X projects
-
-1. Have [Cocoapods][1] installed
-2. In your Podfile, add the line 
-
-        pod 'Objective-LevelDB'
-
-3. Run `pod install`
-4. From your project's root directory, go in `Pods/Objective-LevelDB/leveldb-library`
-5. Run `make clean && make CC=clang CXX=clang++`
+4. Add the `libc++.dylib` Framework to your project.
 5. Make something awesome.
 
 ## How to use
@@ -56,7 +43,7 @@ NSLog(@"String Value: %@", [ldb objectForKey:@"string_test"]);
 [ldb setObject:@{@"key1" : @"val1", @"key2" : @"val2"} forKey:@"dict_test"];
 NSLog(@"Dictionary Value: %@", [ldb objectForKey:@"dict_test"]);
 ```
-All available methods can be found in its [header file](Classes/LevelDB.h) (documented).
+All available methods can be found in its [header file](https://github.com/matehat/Objective-LevelDB/blob/master/Classes/LevelDB.h) (documented).
 
 ##### Enumeration
 
@@ -82,7 +69,7 @@ All available methods can be found in its [header file](Classes/LevelDB.h) (docu
     id value = valueGetter();
 }]
 ```
-More iteration methods are available, just have a look at the [header section](Classes/LevelDB.h)
+More iteration methods are available, just have a look at the [header section](https://github.com/matehat/Objective-LevelDB/blob/master/Classes/LevelDB.h)
 
 ##### Snapshots, NSDictionary-like API (immutable)
 
@@ -97,14 +84,9 @@ LDBSnapshot *snap = [ldb newSnapshot]; // You get ownership of this variable, so
 // The result of these calls will reflect the state of ldb when the snapshot was taken
 NSLog(@"String Value: %@", [snap objectForKey:@"string_test"]);
 NSLog(@"Dictionary Value: %@", [ldb objectForKey:@"dict_test"]);
-
-// get rid of it (non-ARC)
-[snap release];
-// ARC
-snap = nil;
 ```
 
-All available methods can be found in its [header file](Classes/Snapshot.h)
+All available methods can be found in its [header file](https://github.com/matehat/Objective-LevelDB/blob/master/Classes/LDBSnapshot.h)
 
 ##### Write batches, atomic sets of updates
 
@@ -121,7 +103,7 @@ LDBWritebatch *wb = [ldb newWritebatch];
 [wb apply];
 ```
 
-All available methods can be found in its [header file](Classes/WriteBatch.h)
+All available methods can be found in its [header file](https://github.com/matehat/Objective-LevelDB/blob/master/Classes/LDBWriteBatch.h)
 
 ##### LevelDB options
 
