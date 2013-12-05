@@ -408,7 +408,7 @@ LevelDBOptions MakeLevelDBOptions() {
          * we need to start on the next key (maybe discarding the first iteration)
          */
         if (backward) {
-            size_t i = prefixLen - 1;
+            signed long long i = prefixLen - 1;
             void * startKey = malloc(prefixLen);
             unsigned char *keyChar;
             memcpy(startKey, prefixPtr, prefixLen);

@@ -22,7 +22,7 @@ typedef struct LevelDBOptions {
 
 typedef struct {
     const char * data;
-    int          length;
+    NSUInteger   length;
 } LevelDBKey;
 
 typedef NSData * (^LevelDBEncoderBlock) (LevelDBKey * key, id object);
