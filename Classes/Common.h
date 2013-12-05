@@ -8,6 +8,10 @@
 
 #pragma once
 
+
+#define AssertKeyType(_key_)\
+    NSParameterAssert([_key_ isKindOfClass:[NSString class]] || [_key_ isKindOfClass:[NSData class]])
+
 #define SliceFromString(_string_)           leveldb::Slice((char *)[_string_ UTF8String], [_string_ lengthOfBytesUsingEncoding:NSUTF8StringEncoding])
 #define StringFromSlice(_slice_)            [[[NSString alloc] initWithBytes:_slice_.data() length:_slice_.size() encoding:NSUTF8StringEncoding] autorelease]
 

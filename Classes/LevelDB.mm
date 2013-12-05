@@ -38,6 +38,9 @@
     ([_obj_ isKindOfClass:[NSString class]]) ? [NSData dataWithBytes:[_obj_ cStringUsingEncoding:NSUTF8StringEncoding] \
                                                               length:[_obj_ lengthOfBytesUsingEncoding:NSUTF8StringEncoding]] : nil
 
+#define AssertDBExists(_db_) \
+    NSAssert(_db_ != NULL, @"Database reference is not existent (it has probably been closed)");
+
 namespace {
     class BatchIterator : public leveldb::WriteBatch::Handler {
     public:
@@ -190,6 +193,10 @@ LevelDBOptions MakeLevelDBOptions() {
 #pragma mark - Setters
 
 - (void) setObject:(id)value forKey:(id)key {
+    AssertDBExists(db);
+    AssertKeyType(key);
+    NSParameterAssert(value != nil);
+    
     leveldb::Slice k = KeyFromStringOrData(key);
     LevelDBKey lkey = GenericKeyFromSlice(k);
     leveldb::Slice v = EncodeToSlice(value, &lkey, _encoder);
@@ -231,6 +238,8 @@ LevelDBOptions MakeLevelDBOptions() {
 - (id) objectForKey:(id)key
        withSnapshot:(LDBSnapshot *)snapshot {
     
+    AssertDBExists(db);
+    AssertKeyType(key);
     std::string v_string;
     MaybeAddSnapshotToOptions(readOptions, readOptionsPtr, snapshot);
     leveldb::Slice k = KeyFromStringOrData(key);
@@ -270,6 +279,9 @@ LevelDBOptions MakeLevelDBOptions() {
 }
 - (BOOL) objectExistsForKey:(id)key
                withSnapshot:(LDBSnapshot *)snapshot {
+    
+    AssertDBExists(db);
+    AssertKeyType(key);
     std::string v_string;
     MaybeAddSnapshotToOptions(readOptions, readOptionsPtr, snapshot);
     leveldb::Slice k = KeyFromStringOrData(key);
@@ -289,6 +301,9 @@ LevelDBOptions MakeLevelDBOptions() {
 #pragma mark - Removers
 
 - (void) removeObjectForKey:(id)key {
+    AssertDBExists(db);
+    AssertKeyType(key);
+    
     leveldb::Slice k = KeyFromStringOrData(key);
     leveldb::Status status = db->Delete(writeOptions, k);
     
@@ -306,6 +321,8 @@ LevelDBOptions MakeLevelDBOptions() {
     [self removeAllObjectsWithPrefix:nil];
 }
 - (void) removeAllObjectsWithPrefix:(id)prefix {
+    AssertDBExists(db);
+    
     leveldb::Iterator * iter = db->NewIterator(readOptions);
     leveldb::Slice lkey;
     
@@ -459,7 +476,8 @@ LevelDBOptions MakeLevelDBOptions() {
                      andPrefix:(id)prefix
                   withSnapshot:(LDBSnapshot *)snapshot
                     usingBlock:(LevelDBKeyBlock)block {
-
+    
+    AssertDBExists(db);
     MaybeAddSnapshotToOptions(readOptions, readOptionsPtr, snapshot);
     leveldb::Iterator* iter = db->NewIterator(*readOptionsPtr);
     leveldb::Slice lkey;
@@ -527,6 +545,7 @@ LevelDBOptions MakeLevelDBOptions() {
                             withSnapshot:(LDBSnapshot *)snapshot
                               usingBlock:(id)block{
     
+    AssertDBExists(db);
     MaybeAddSnapshotToOptions(readOptions, readOptionsPtr, snapshot);
     leveldb::Iterator* iter = db->NewIterator(*readOptionsPtr);
     leveldb::Slice lkey;

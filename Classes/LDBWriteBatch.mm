@@ -53,6 +53,7 @@
 }
 
 - (void) removeObjectForKey:(id)key {
+    AssertKeyType(key);
     leveldb::Slice k = KeyFromStringOrData(key);
     dispatch_sync(_serial_queue, ^{
         _writeBatch.Delete(k);
@@ -70,11 +71,14 @@
 }
 
 - (void) setData:(NSData *)data forKey:(id)key {
+    AssertKeyType(key);
     dispatch_sync(_serial_queue, ^{
-        _writeBatch.Put(KeyFromStringOrData(key), SliceFromData(data));
+        leveldb::Slice lkey = KeyFromStringOrData(key);
+        _writeBatch.Put(lkey, SliceFromData(data));
     });
 }
 - (void) setObject:(id)value forKey:(id)key {
+    AssertKeyType(key);
     dispatch_sync(_serial_queue, ^{
         leveldb::Slice k = KeyFromStringOrData(key);
         LevelDBKey lkey = GenericKeyFromSlice(k);
