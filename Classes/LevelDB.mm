@@ -161,6 +161,17 @@ LevelDBOptions MakeLevelDBOptions() {
         if(!status.ok()) {
             NSLog(@"Problem creating LevelDB database: %s", status.ToString().c_str());
         }
+        
+        self.encoder = ^ NSData * (LevelDBKey *key, id object) {
+            NSParameterAssert([object isKindOfClass:[NSData class]]);
+#ifdef DEBUG
+            NSLog(@"No encoder block was set for this database [%@]", name);
+#endif
+            return object;
+        };
+        self.decoder = ^ id (LevelDBKey *key, NSData * data) {
+            return data;
+        };
     }
     
     return self;
