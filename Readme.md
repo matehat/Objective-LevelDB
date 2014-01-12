@@ -6,7 +6,7 @@ An Objective-C database library built over [Google's LevelDB](http://code.google
 
 By far, the easiest way to integrate this library in your project is by using [CocoaPods][1].
 
-1. Have [Cocoapods][1] installed, if you're not already
+1. Have [Cocoapods][1] installed, if you don't already
 2. In your Podfile, add the line 
 
         pod 'Objective-LevelDB'
@@ -17,7 +17,7 @@ By far, the easiest way to integrate this library in your project is by using [C
 
 ## How to use
 
-### Creating/Opening a database file on disk
+#### Creating/Opening a database file on disk
 
 ```objective-c
 LevelDB *ldb = [LevelDB databaseInLibraryWithName:@"test.ldb"];
