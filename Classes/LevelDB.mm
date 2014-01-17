@@ -164,8 +164,12 @@ LevelDBOptions MakeLevelDBOptions() {
         
         self.encoder = ^ NSData * (LevelDBKey *key, id object) {
             NSParameterAssert([object isKindOfClass:[NSData class]]);
+            
 #ifdef DEBUG
-            NSLog(@"No encoder block was set for this database [%@]", name);
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken, ^{
+                NSLog(@"No encoder block was set for this database [%@]", name);
+            });
 #endif
             return object;
         };
