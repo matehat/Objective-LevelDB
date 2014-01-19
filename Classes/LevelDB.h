@@ -17,7 +17,7 @@ typedef struct LevelDBOptions {
     BOOL paranoidCheck   ;
     BOOL compression     ;
     int  filterPolicy    ;
-    unsigned long long cacheSize;
+    size_t cacheSize;
 } LevelDBOptions;
 
 typedef struct {
