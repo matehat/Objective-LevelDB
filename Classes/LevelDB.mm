@@ -162,19 +162,18 @@ LevelDBOptions MakeLevelDBOptions() {
             NSLog(@"Problem creating LevelDB database: %s", status.ToString().c_str());
         }
         
-        self.encoder = ^ NSData * (LevelDBKey *key, id object) {
-            NSParameterAssert([object isKindOfClass:[NSData class]]);
-            
+        self.encoder = ^ NSData *(LevelDBKey *key, id object) {
 #ifdef DEBUG
             static dispatch_once_t onceToken;
             dispatch_once(&onceToken, ^{
                 NSLog(@"No encoder block was set for this database [%@]", name);
+                NSLog(@"Using a convenience encoder/decoder pair using NSKeyedArchiver.");
             });
 #endif
-            return object;
+            return [NSKeyedArchiver archivedDataWithRootObject:object];
         };
-        self.decoder = ^ id (LevelDBKey *key, NSData * data) {
-            return data;
+        self.decoder = ^ id (LevelDBKey *key, NSData *data) {
+            return [NSKeyedUnarchiver unarchiveObjectWithData:data];
         };
     }
     
