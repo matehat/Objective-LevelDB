@@ -434,8 +434,11 @@ LevelDBOptions MakeLevelDBOptions() {
                 }
                 keyChar = (unsigned char *)startKey + i;
                 if (*keyChar < 255) {
-                    (*keyChar)++;
+                    *keyChar = *keyChar + 1;
                     iter->Seek(leveldb::Slice((char *)startKey, prefixLen));
+                    if (!iter->Valid()) {
+                        iter->SeekToLast();
+                    }
                     break;
                 }
                 i--;
