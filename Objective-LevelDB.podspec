@@ -10,8 +10,6 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '5.0'
   s.osx.deployment_target = '10.7'
   
-  s.library      = 'c++'
-  
   s.source       =  { :git => 'https://github.com/matehat/Objective-LevelDB.git', :tag => 'v2.0.5', :submodules => true }
   
   s.subspec 'leveldb' do |sp|
@@ -23,7 +21,8 @@ Pod::Spec.new do |s|
       'CC'  => 'clang',
       'CXX' => 'clang++',
       'HEADER_SEARCH_PATHS' => '"${PODS_ROOT}/Objective-LevelDB/leveldb-library"',
-      'GCC_PREPROCESSOR_DEFINITIONS' => 'LEVELDB_PLATFORM_POSIX=1 OS_MACOSX=1'
+      'GCC_PREPROCESSOR_DEFINITIONS' => 'LEVELDB_PLATFORM_POSIX=1 OS_MACOSX=1',
+      'OTHER_LDFLAGS' => '-lc++'
     }
   end
   
