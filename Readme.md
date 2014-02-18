@@ -25,6 +25,8 @@ LevelDB *ldb = [LevelDB databaseInLibraryWithName:@"test.ldb"];
 
 ##### Setup Encoder/Decoder blocks
 
+By default, any object you store will be encoded and decoded using `NSKeyedArchiver`/`NSKeyedUnarchiver`. You can customize this by providing `encoder` and `decoder` blocks, like this:
+
 ```objective-c
 ldb.encoder = ^ NSData * (LeveldBKey *key, id object) {
   // return some data, given an object
