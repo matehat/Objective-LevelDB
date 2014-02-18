@@ -10,6 +10,8 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = '5.0'
   s.osx.deployment_target = '10.7'
   
+  s.library      = 'c++'
+  
   s.source       =  { :git => 'https://github.com/matehat/Objective-LevelDB.git', :tag => 'v2.0.5', :submodules => true }
   
   s.subspec 'leveldb' do |sp|
