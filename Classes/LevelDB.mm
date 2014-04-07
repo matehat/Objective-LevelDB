@@ -410,31 +410,39 @@ LevelDBOptions MakeLevelDBOptions() {
     
     const void *prefixPtr;
     size_t prefixLen;
-    leveldb::Slice lkey;
+    leveldb::Slice lkey, startingKey;
     
     prefix = EnsureNSData(prefix);
     if (prefix) {
         prefixPtr = [(NSData *)prefix bytes];
         prefixLen = (size_t)[(NSData *)prefix length];
+        startingKey = leveldb::Slice((char *)prefixPtr, prefixLen);
+        
+        if (key) {
+            leveldb::Slice skey = KeyFromStringOrData(key);
+            if (skey.size() > prefixLen && memcmp(skey.data(), prefixPtr, prefixLen) == 0) {
+                startingKey = skey;
+            }
+        }
         
         /*
          * If a prefix is provided and the iteration is backwards
          * we need to start on the next key (maybe discarding the first iteration)
          */
         if (backward) {
-            signed long long i = prefixLen - 1;
-            void * startKey = malloc(prefixLen);
+            signed long long i = startingKey.size() - 1;
+            void * startingKeyPtr = malloc(startingKey.size());
             unsigned char *keyChar;
-            memcpy(startKey, prefixPtr, prefixLen);
+            memcpy(startingKeyPtr, startingKey.data(), startingKey.size());
             while (1) {
                 if (i < 0) {
                     iter->SeekToLast();
                     break;
                 }
-                keyChar = (unsigned char *)startKey + i;
+                keyChar = (unsigned char *)startingKeyPtr + i;
                 if (*keyChar < 255) {
                     *keyChar = *keyChar + 1;
-                    iter->Seek(leveldb::Slice((char *)startKey, prefixLen));
+                    iter->Seek(leveldb::Slice((char *)startingKeyPtr, prefixLen));
                     if (!iter->Valid()) {
                         iter->SeekToLast();
                     }
@@ -442,7 +450,7 @@ LevelDBOptions MakeLevelDBOptions() {
                 }
                 i--;
             };
-            free(startKey);
+            free(startingKeyPtr);
             if (!iter->Valid())
                 return;
             
@@ -452,7 +460,7 @@ LevelDBOptions MakeLevelDBOptions() {
             }
         } else {
             // Otherwise, we start at the provided prefix
-            iter->Seek(leveldb::Slice((char *)prefixPtr, prefixLen));
+            iter->Seek(startingKey);
         }
     } else if (key) {
         iter->Seek(KeyFromStringOrData(key));
