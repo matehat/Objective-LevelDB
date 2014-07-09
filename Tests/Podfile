@@ -2,7 +2,7 @@ workspace '../Objective-LevelDB'
 inhibit_all_warnings!
 
 def import_pods
-  pod 'Objective-LevelDB'
+  pod "Objective-LevelDB", :path => "../Objective-LevelDB.podspec"
 end
 
 if ENV["TEST_ENV"] == "OSX"
