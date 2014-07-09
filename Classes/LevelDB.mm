@@ -213,7 +213,9 @@ LevelDBOptions MakeLevelDBOptions() {
     
     leveldb::Slice k = KeyFromStringOrData(key);
     LevelDBKey lkey = GenericKeyFromSlice(k);
-    leveldb::Slice v = EncodeToSlice(value, &lkey, _encoder);
+
+    NSData *data = _encoder(&lkey, value);
+    leveldb::Slice v = SliceFromData(data);
     
     leveldb::Status status = db->Put(writeOptions, k, v);
     
