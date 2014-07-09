@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         =  'Objective-LevelDB'
-  s.version      =  '2.0.7'
+  s.version      =  '2.0.8'
   s.license      =  'MIT'
   s.summary      =  'A feature-complete wrapper for LevelDB in Objective-C.'
   s.description  =  'This is a feature-complete wrapper for Google\'s LevelDB. LevelDB is a fast key-value store written by Google.'
