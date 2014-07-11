@@ -226,6 +226,9 @@ LevelDBOptions MakeLevelDBOptions() {
 - (void) setValue:(id)value forKey:(NSString *)key {
     [self setObject:value forKey:key];
 }
+- (void) setObject:(id)value forKeyedSubscript:(id)key {
+    [self setObject:value forKey:key];
+}
 - (void) addEntriesFromDictionary:(NSDictionary *)dictionary {
     [dictionary enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop) {
         [self setObject:obj forKey:key];
@@ -286,7 +289,7 @@ LevelDBOptions MakeLevelDBOptions() {
     } else
         return [self objectForKey:key];
 }
-- (id)objectForKeyedSubscript:(id)key {
+- (id) objectForKeyedSubscript:(id)key {
     return [self objectForKey:key withSnapshot:nil];
 }
 
