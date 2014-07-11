@@ -1,0 +1,3 @@
+[submodule "leveldb-library"]
+	path = leveldb-library
+	url = https://code.google.com/p/leveldb/
