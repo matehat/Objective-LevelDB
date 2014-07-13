@@ -82,7 +82,10 @@
     dispatch_sync(_serial_queue, ^{
         leveldb::Slice k = KeyFromStringOrData(key);
         LevelDBKey lkey = GenericKeyFromSlice(k);
-        leveldb::Slice v = EncodeToSlice(value, &lkey, ((LevelDB *)_db).encoder);
+        
+        NSData *data = ((LevelDB *)_db).encoder(&lkey, value);
+        leveldb::Slice v = SliceFromData(data);
+        
         _writeBatch.Put(k, v);
     });
 }

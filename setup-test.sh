@@ -5,4 +5,4 @@ rm -fR Pods
 pod install && rm -fR Pods/Objective-LevelDB/Classes
 
 cd ..
-ln -s $ROOT/Classes $ROOT/Tests/Pods/Objective-LevelDB
+ln -nfs $ROOT $ROOT/Tests/Pods/Objective-LevelDB

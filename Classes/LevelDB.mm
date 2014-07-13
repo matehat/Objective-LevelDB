@@ -213,7 +213,9 @@ LevelDBOptions MakeLevelDBOptions() {
     
     leveldb::Slice k = KeyFromStringOrData(key);
     LevelDBKey lkey = GenericKeyFromSlice(k);
-    leveldb::Slice v = EncodeToSlice(value, &lkey, _encoder);
+
+    NSData *data = _encoder(&lkey, value);
+    leveldb::Slice v = SliceFromData(data);
     
     leveldb::Status status = db->Put(writeOptions, k, v);
     
@@ -222,6 +224,9 @@ LevelDBOptions MakeLevelDBOptions() {
     }
 }
 - (void) setValue:(id)value forKey:(NSString *)key {
+    [self setObject:value forKey:key];
+}
+- (void) setObject:(id)value forKeyedSubscript:(id)key {
     [self setObject:value forKey:key];
 }
 - (void) addEntriesFromDictionary:(NSDictionary *)dictionary {
@@ -284,7 +289,7 @@ LevelDBOptions MakeLevelDBOptions() {
     } else
         return [self objectForKey:key];
 }
-- (id)objectForKeyedSubscript:(id)key {
+- (id) objectForKeyedSubscript:(id)key {
     return [self objectForKey:key withSnapshot:nil];
 }
 
