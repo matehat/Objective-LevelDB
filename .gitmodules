@@ -1,3 +1,3 @@
 [submodule "leveldb-library"]
 	path = leveldb-library
-	url = https://github.com/cybertk/leveldb.git
+	url = https://github.com/google/leveldb.git
