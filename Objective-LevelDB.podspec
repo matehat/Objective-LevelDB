@@ -20,7 +20,7 @@ Pod::Spec.new do |s|
     sp.xcconfig = {
       'CC'  => 'clang',
       'CXX' => 'clang++',
-      'HEADER_SEARCH_PATHS' => '"${PODS_ROOT}/Headers/Public/Objective-LevelDB/include"',
+      'HEADER_SEARCH_PATHS' => '"${PODS_ROOT}/Headers/Public/Objective-LevelDB/include" "${PODS_ROOT}/Objective-LevelDB/leveldb-library"',
       'GCC_PREPROCESSOR_DEFINITIONS' => 'LEVELDB_PLATFORM_POSIX=1 OS_MACOSX=1 NDEBUG=1',
       'OTHER_LDFLAGS' => '-lc++'
     }
