@@ -17,11 +17,13 @@ Pod::Spec.new do |s|
     sp.source_files = 'leveldb-library/include/leveldb/*', 'leveldb-library/*/*.h', *leveldb_obj_files
     sp.header_mappings_dir = 'leveldb-library'
     sp.header_dir = 'leveldb'
+    sp.private_header_files = 'leveldb-library/*/*.h'
     sp.preserve_path = 'leveldb-library'
     sp.xcconfig = {
       'CC'  => 'clang',
       'CXX' => 'clang++',
-      'HEADER_SEARCH_PATHS' => '"${PODS_ROOT}/Headers/Public/Objective-LevelDB/leveldb/include" "${PODS_ROOT}/Headers/Public/Objective-LevelDB/leveldb"',
+      'HEADER_SEARCH_PATHS' => '"${PODS_ROOT}/Headers/Public/Objective-LevelDB/leveldb/include"',
+      'USER_HEADER_SEARCH_PATHS' => '"${PODS_ROOT}/Headers/Build/Objective-LevelDB/leveldb"',
       'GCC_PREPROCESSOR_DEFINITIONS' => 'LEVELDB_PLATFORM_POSIX=1 OS_MACOSX=1 NDEBUG=1',
       'OTHER_LDFLAGS' => '-lc++'
     }
