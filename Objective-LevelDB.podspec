@@ -12,26 +12,7 @@ Pod::Spec.new do |s|
 
   s.source       =  { :git => 'https://github.com/matehat/Objective-LevelDB.git', :tag => s.version.to_s, :submodules => true }
 
-  s.subspec 'leveldb' do |sp|
-    sp.source       = { :git => 'https://github.com/google/leveldb.git' }
-
-    leveldb_obj_files = %w{ db/builder.cc db/c.cc db/db_impl.cc db/db_iter.cc db/dbformat.cc db/filename.cc db/log_reader.cc db/log_writer.cc db/memtable.cc db/repair.cc db/table_cache.cc db/version_edit.cc db/version_set.cc db/write_batch.cc table/block.cc table/block_builder.cc table/filter_block.cc table/format.cc table/iterator.cc table/merger.cc table/table.cc table/table_builder.cc table/two_level_iterator.cc util/arena.cc util/bloom.cc util/cache.cc util/coding.cc util/comparator.cc util/crc32c.cc util/env.cc util/env_posix.cc util/filter_policy.cc util/hash.cc util/histogram.cc util/logging.cc util/options.cc util/status.cc  port/port_posix.cc }.map { |f| File.join "leveldb-library", f }
-    sp.source_files = 'include/leveldb/*', '*/*.h', *leveldb_obj_files
-    sp.header_mappings_dir = '.'
-    sp.header_dir = 'leveldb'
-    sp.private_header_files = '*/*.h'
-    sp.preserve_path = '.'
-    sp.xcconfig = {
-      'CC'  => 'clang',
-      'CXX' => 'clang++',
-      'HEADER_SEARCH_PATHS' => '"${PODS_ROOT}/Headers/Public/Objective-LevelDB/leveldb/include"',
-      'USER_HEADER_SEARCH_PATHS' => '"${PODS_ROOT}/Headers/Build/Objective-LevelDB/leveldb"',
-      'GCC_PREPROCESSOR_DEFINITIONS' => 'LEVELDB_PLATFORM_POSIX=1 OS_MACOSX=1 NDEBUG=1',
-      'OTHER_LDFLAGS' => '-lc++'
-    }
-    sp.requires_arc = false
-  end
-
   s.source_files = 'Classes/*.{h,m,mm}'
+  s.dependency "leveldb-library", "~> 1.18"
   s.requires_arc = false
 end
