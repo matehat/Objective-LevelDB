@@ -121,4 +121,10 @@
                                andPrefix:(id)prefix
                               usingBlock:(id)block;
 
+/**
+ Close the snapshot.
+ 
+ @warning The instance cannot be used to perform any query after it has been closed.
+ */
+- (void) close;
 @end
