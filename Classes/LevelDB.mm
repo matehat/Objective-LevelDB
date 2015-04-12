@@ -146,6 +146,7 @@ LevelDBOptions MakeLevelDBOptions() {
                                                error:&crError];
             if (!success) {
                 NSLog(@"Problem creating parent directory: %@", crError);
+                return nil;
             }
         }
         
@@ -160,6 +161,7 @@ LevelDBOptions MakeLevelDBOptions() {
         
         if(!status.ok()) {
             NSLog(@"Problem creating LevelDB database: %s", status.ToString().c_str());
+            return nil;
         }
         
         self.encoder = ^ NSData *(LevelDBKey *key, id object) {
