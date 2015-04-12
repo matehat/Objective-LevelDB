@@ -53,6 +53,11 @@
 - (void) setObject:(id)value forKey:(id)key;
 
 /**
+ *  Same as `[self setObject:forKey:]`
+ *   */
+- (void) setObject:(id)value forKeyedSubscript:(id)key;
+
+/**
  Same as `[self setObject:forKey:]`
  */
 - (void) setValue:(id)value forKey:(NSString *)key;
