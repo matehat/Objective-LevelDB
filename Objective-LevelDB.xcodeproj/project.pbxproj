@@ -1,0 +1,331 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		921683BA1B268BD100561211 /* Common.h in Headers */ = {isa = PBXBuildFile; fileRef = 921683B11B268BD100561211 /* Common.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		921683BC1B268BD100561211 /* LDBSnapshot.h in Headers */ = {isa = PBXBuildFile; fileRef = 921683B31B268BD100561211 /* LDBSnapshot.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		921683BD1B268BD100561211 /* LDBSnapshot.mm in Sources */ = {isa = PBXBuildFile; fileRef = 921683B41B268BD100561211 /* LDBSnapshot.mm */; };
+		921683BE1B268BD100561211 /* LDBWriteBatch.h in Headers */ = {isa = PBXBuildFile; fileRef = 921683B51B268BD100561211 /* LDBWriteBatch.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		921683BF1B268BD100561211 /* LDBWriteBatch.mm in Sources */ = {isa = PBXBuildFile; fileRef = 921683B61B268BD100561211 /* LDBWriteBatch.mm */; };
+		921683C01B268BD100561211 /* LevelDB.h in Headers */ = {isa = PBXBuildFile; fileRef = 921683B71B268BD100561211 /* LevelDB.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		921683C11B268BD100561211 /* LevelDB.mm in Sources */ = {isa = PBXBuildFile; fileRef = 921683B81B268BD100561211 /* LevelDB.mm */; };
+		921683C21B268BD100561211 /* Objective-LevelDB.h in Headers */ = {isa = PBXBuildFile; fileRef = 921683B91B268BD100561211 /* Objective-LevelDB.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		921683C41B268E9F00561211 /* leveldb.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 921683C31B268E9F00561211 /* leveldb.framework */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		921683951B268B8400561211 /* ObjectiveLevelDB.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = ObjectiveLevelDB.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		921683B11B268BD100561211 /* Common.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Common.h; path = Classes/Common.h; sourceTree = SOURCE_ROOT; };
+		921683B21B268BD100561211 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Classes/Info.plist; sourceTree = SOURCE_ROOT; };
+		921683B31B268BD100561211 /* LDBSnapshot.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LDBSnapshot.h; path = Classes/LDBSnapshot.h; sourceTree = SOURCE_ROOT; };
+		921683B41B268BD100561211 /* LDBSnapshot.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = LDBSnapshot.mm; path = Classes/LDBSnapshot.mm; sourceTree = SOURCE_ROOT; };
+		921683B51B268BD100561211 /* LDBWriteBatch.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LDBWriteBatch.h; path = Classes/LDBWriteBatch.h; sourceTree = SOURCE_ROOT; };
+		921683B61B268BD100561211 /* LDBWriteBatch.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = LDBWriteBatch.mm; path = Classes/LDBWriteBatch.mm; sourceTree = SOURCE_ROOT; };
+		921683B71B268BD100561211 /* LevelDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LevelDB.h; path = Classes/LevelDB.h; sourceTree = SOURCE_ROOT; };
+		921683B81B268BD100561211 /* LevelDB.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = LevelDB.mm; path = Classes/LevelDB.mm; sourceTree = SOURCE_ROOT; };
+		921683B91B268BD100561211 /* Objective-LevelDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Objective-LevelDB.h"; path = "Classes/Objective-LevelDB.h"; sourceTree = SOURCE_ROOT; };
+		921683C31B268E9F00561211 /* leveldb.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = leveldb.framework; path = Carthage/Build/iOS/leveldb.framework; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		921683911B268B8400561211 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				921683C41B268E9F00561211 /* leveldb.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		9216838B1B268B8400561211 = {
+			isa = PBXGroup;
+			children = (
+				921683C31B268E9F00561211 /* leveldb.framework */,
+				921683971B268B8400561211 /* Objective-LevelDB */,
+				921683961B268B8400561211 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		921683961B268B8400561211 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				921683951B268B8400561211 /* ObjectiveLevelDB.framework */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		921683971B268B8400561211 /* Objective-LevelDB */ = {
+			isa = PBXGroup;
+			children = (
+				921683B11B268BD100561211 /* Common.h */,
+				921683B31B268BD100561211 /* LDBSnapshot.h */,
+				921683B41B268BD100561211 /* LDBSnapshot.mm */,
+				921683B51B268BD100561211 /* LDBWriteBatch.h */,
+				921683B61B268BD100561211 /* LDBWriteBatch.mm */,
+				921683B71B268BD100561211 /* LevelDB.h */,
+				921683B81B268BD100561211 /* LevelDB.mm */,
+				921683B91B268BD100561211 /* Objective-LevelDB.h */,
+				921683981B268B8400561211 /* Supporting Files */,
+			);
+			path = "Objective-LevelDB";
+			sourceTree = "<group>";
+		};
+		921683981B268B8400561211 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				921683B21B268BD100561211 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		921683921B268B8400561211 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				921683BE1B268BD100561211 /* LDBWriteBatch.h in Headers */,
+				921683C01B268BD100561211 /* LevelDB.h in Headers */,
+				921683BA1B268BD100561211 /* Common.h in Headers */,
+				921683BC1B268BD100561211 /* LDBSnapshot.h in Headers */,
+				921683C21B268BD100561211 /* Objective-LevelDB.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		921683941B268B8400561211 /* ObjectiveLevelDB */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 921683AB1B268B8400561211 /* Build configuration list for PBXNativeTarget "ObjectiveLevelDB" */;
+			buildPhases = (
+				921683901B268B8400561211 /* Sources */,
+				921683911B268B8400561211 /* Frameworks */,
+				921683921B268B8400561211 /* Headers */,
+				921683931B268B8400561211 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ObjectiveLevelDB;
+			productName = "Objective-LevelDB";
+			productReference = 921683951B268B8400561211 /* ObjectiveLevelDB.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		9216838C1B268B8400561211 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0630;
+				ORGANIZATIONNAME = org;
+				TargetAttributes = {
+					921683941B268B8400561211 = {
+						CreatedOnToolsVersion = 6.3.1;
+					};
+				};
+			};
+			buildConfigurationList = 9216838F1B268B8400561211 /* Build configuration list for PBXProject "Objective-LevelDB" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 9216838B1B268B8400561211;
+			productRefGroup = 921683961B268B8400561211 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				921683941B268B8400561211 /* ObjectiveLevelDB */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		921683931B268B8400561211 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		921683901B268B8400561211 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				921683BD1B268BD100561211 /* LDBSnapshot.mm in Sources */,
+				921683BF1B268BD100561211 /* LDBWriteBatch.mm in Sources */,
+				921683C11B268BD100561211 /* LevelDB.mm in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		921683A91B268B8400561211 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		921683AA1B268B8400561211 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 8.3;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		921683AC1B268B8400561211 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = "$(SRCROOT)/Classes/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		921683AD1B268B8400561211 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_ARC = NO;
+				DEFINES_MODULE = YES;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/Carthage/Build/iOS",
+				);
+				INFOPLIST_FILE = "$(SRCROOT)/Classes/Info.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		9216838F1B268B8400561211 /* Build configuration list for PBXProject "Objective-LevelDB" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				921683A91B268B8400561211 /* Debug */,
+				921683AA1B268B8400561211 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		921683AB1B268B8400561211 /* Build configuration list for PBXNativeTarget "ObjectiveLevelDB" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				921683AC1B268B8400561211 /* Debug */,
+				921683AD1B268B8400561211 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 9216838C1B268B8400561211 /* Project object */;
+}
