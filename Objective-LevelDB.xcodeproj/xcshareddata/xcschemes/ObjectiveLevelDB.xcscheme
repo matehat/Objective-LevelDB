@@ -20,20 +20,6 @@
                ReferencedContainer = "container:Objective-LevelDB.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "9216839F1B268B8400561211"
-               BuildableName = "Objective-LevelDBTests.xctest"
-               BlueprintName = "Objective-LevelDBTests"
-               ReferencedContainer = "container:Objective-LevelDB.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
       </BuildActionEntries>
    </BuildAction>
    <TestAction
@@ -43,15 +29,6 @@
       buildConfiguration = "Debug">
       <Testables>
       </Testables>
-      <MacroExpansion>
-         <BuildableReference
-            BuildableIdentifier = "primary"
-            BlueprintIdentifier = "921683941B268B8400561211"
-            BuildableName = "ObjectiveLevelDB.framework"
-            BlueprintName = "ObjectiveLevelDB"
-            ReferencedContainer = "container:Objective-LevelDB.xcodeproj">
-         </BuildableReference>
-      </MacroExpansion>
    </TestAction>
    <LaunchAction
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"

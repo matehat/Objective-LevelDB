@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		921683BA1B268BD100561211 /* Common.h in Headers */ = {isa = PBXBuildFile; fileRef = 921683B11B268BD100561211 /* Common.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		921683BC1B268BD100561211 /* LDBSnapshot.h in Headers */ = {isa = PBXBuildFile; fileRef = 921683B31B268BD100561211 /* LDBSnapshot.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		921683BD1B268BD100561211 /* LDBSnapshot.mm in Sources */ = {isa = PBXBuildFile; fileRef = 921683B41B268BD100561211 /* LDBSnapshot.mm */; };
 		921683BE1B268BD100561211 /* LDBWriteBatch.h in Headers */ = {isa = PBXBuildFile; fileRef = 921683B51B268BD100561211 /* LDBWriteBatch.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -96,7 +95,6 @@
 				921683C01B268BD100561211 /* LevelDB.h in Headers */,
 				921683BC1B268BD100561211 /* LDBSnapshot.h in Headers */,
 				921683C21B268BD100561211 /* ObjectiveLevelDB.h in Headers */,
-				921683BA1B268BD100561211 /* Common.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
