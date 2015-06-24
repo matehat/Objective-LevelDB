@@ -7,14 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		921683BA1B268BD100561211 /* Common.h in Headers */ = {isa = PBXBuildFile; fileRef = 921683B11B268BD100561211 /* Common.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		921683BA1B268BD100561211 /* Common.h in Headers */ = {isa = PBXBuildFile; fileRef = 921683B11B268BD100561211 /* Common.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		921683BC1B268BD100561211 /* LDBSnapshot.h in Headers */ = {isa = PBXBuildFile; fileRef = 921683B31B268BD100561211 /* LDBSnapshot.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		921683BD1B268BD100561211 /* LDBSnapshot.mm in Sources */ = {isa = PBXBuildFile; fileRef = 921683B41B268BD100561211 /* LDBSnapshot.mm */; };
 		921683BE1B268BD100561211 /* LDBWriteBatch.h in Headers */ = {isa = PBXBuildFile; fileRef = 921683B51B268BD100561211 /* LDBWriteBatch.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		921683BF1B268BD100561211 /* LDBWriteBatch.mm in Sources */ = {isa = PBXBuildFile; fileRef = 921683B61B268BD100561211 /* LDBWriteBatch.mm */; };
 		921683C01B268BD100561211 /* LevelDB.h in Headers */ = {isa = PBXBuildFile; fileRef = 921683B71B268BD100561211 /* LevelDB.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		921683C11B268BD100561211 /* LevelDB.mm in Sources */ = {isa = PBXBuildFile; fileRef = 921683B81B268BD100561211 /* LevelDB.mm */; };
-		921683C21B268BD100561211 /* Objective-LevelDB.h in Headers */ = {isa = PBXBuildFile; fileRef = 921683B91B268BD100561211 /* Objective-LevelDB.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		921683C21B268BD100561211 /* ObjectiveLevelDB.h in Headers */ = {isa = PBXBuildFile; fileRef = 921683B91B268BD100561211 /* ObjectiveLevelDB.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		921683C41B268E9F00561211 /* leveldb.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 921683C31B268E9F00561211 /* leveldb.framework */; };
 /* End PBXBuildFile section */
 
@@ -28,7 +28,7 @@
 		921683B61B268BD100561211 /* LDBWriteBatch.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = LDBWriteBatch.mm; path = Classes/LDBWriteBatch.mm; sourceTree = SOURCE_ROOT; };
 		921683B71B268BD100561211 /* LevelDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LevelDB.h; path = Classes/LevelDB.h; sourceTree = SOURCE_ROOT; };
 		921683B81B268BD100561211 /* LevelDB.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = LevelDB.mm; path = Classes/LevelDB.mm; sourceTree = SOURCE_ROOT; };
-		921683B91B268BD100561211 /* Objective-LevelDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "Objective-LevelDB.h"; path = "Classes/Objective-LevelDB.h"; sourceTree = SOURCE_ROOT; };
+		921683B91B268BD100561211 /* ObjectiveLevelDB.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ObjectiveLevelDB.h; path = Classes/ObjectiveLevelDB.h; sourceTree = SOURCE_ROOT; };
 		921683C31B268E9F00561211 /* leveldb.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = leveldb.framework; path = Carthage/Build/iOS/leveldb.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -71,7 +71,7 @@
 				921683B61B268BD100561211 /* LDBWriteBatch.mm */,
 				921683B71B268BD100561211 /* LevelDB.h */,
 				921683B81B268BD100561211 /* LevelDB.mm */,
-				921683B91B268BD100561211 /* Objective-LevelDB.h */,
+				921683B91B268BD100561211 /* ObjectiveLevelDB.h */,
 				921683981B268B8400561211 /* Supporting Files */,
 			);
 			path = "Objective-LevelDB";
@@ -94,9 +94,9 @@
 			files = (
 				921683BE1B268BD100561211 /* LDBWriteBatch.h in Headers */,
 				921683C01B268BD100561211 /* LevelDB.h in Headers */,
-				921683BA1B268BD100561211 /* Common.h in Headers */,
 				921683BC1B268BD100561211 /* LDBSnapshot.h in Headers */,
-				921683C21B268BD100561211 /* Objective-LevelDB.h in Headers */,
+				921683C21B268BD100561211 /* ObjectiveLevelDB.h in Headers */,
+				921683BA1B268BD100561211 /* Common.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

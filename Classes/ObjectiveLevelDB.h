@@ -16,4 +16,4 @@ FOUNDATION_EXPORT const unsigned char Objective_LevelDBVersionString[];
 
 #import "LevelDB.h"
 #import "LDBSnapshot.h"
-#import "LDBWriteBatch.h
+#import "LDBWriteBatch.h"
