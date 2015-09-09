@@ -183,6 +183,11 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
  */
 - (void) applyWritebatch:(LDBWritebatch *)writeBatch;
 
+/**
+ Create new writebatch, apply the operations in block from a writebatch into the current database
+ */
+- (void) performWritebatch:(void (^)(LDBWritebatch *wb))block;
+
 #pragma mark - Getters
 
 /**
