@@ -251,6 +251,12 @@ LevelDBOptions MakeLevelDBOptions() {
     }
 }
 
+- (void)performWritebatch:(void (^)(LDBWritebatch *wb))block {
+    LDBWritebatch *wb = [self newWritebatch];
+    block(wb);
+    [wb apply];
+}
+
 #pragma mark - Getters
 
 - (id) objectForKey:(id)key {
