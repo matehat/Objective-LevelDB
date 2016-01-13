@@ -294,7 +294,7 @@ static NSUInteger numberOfIterations = 2500;
                             @"test:4": valueFor(4)
                             };
     
-    __block int i = 2;
+    __block int i = 3;
     [db addEntriesFromDictionary:pairs];
     [db enumerateKeysBackward:YES
                 startingAtKey:@"test:3"
