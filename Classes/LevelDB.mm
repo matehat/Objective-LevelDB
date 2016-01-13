@@ -455,7 +455,7 @@ LevelDBOptions MakeLevelDBOptions() {
                 keyChar = (unsigned char *)startingKeyPtr + i;
                 if (*keyChar < 255) {
                     *keyChar = *keyChar + 1;
-                    iter->Seek(leveldb::Slice((char *)startingKeyPtr, prefixLen));
+                    iter->Seek(leveldb::Slice((char *)startingKeyPtr, startingKey.size()));
                     if (!iter->Valid()) {
                         iter->SeekToLast();
                     }
@@ -468,8 +468,11 @@ LevelDBOptions MakeLevelDBOptions() {
                 return;
             
             lkey = iter->key();
-            if (prefix && memcmp(lkey.data(), prefixPtr, prefixLen) != 0) {
-                iter->Prev();
+            if (startingKey.size() && prefix) {
+                signed int cmp = memcmp(lkey.data(), startingKey.data(), startingKey.size());
+                if (cmp > 0) {
+                    iter->Prev();
+                }
             }
         } else {
             // Otherwise, we start at the provided prefix

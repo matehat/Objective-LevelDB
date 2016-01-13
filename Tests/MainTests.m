@@ -283,6 +283,32 @@ static NSUInteger numberOfIterations = 2500;
 
 }
 
+- (void)testBackwardPrefixedEnumerationsWithStartingKey {
+    id(^valueFor)(int) = ^ id (int i) { return @{ @"key": @(i) }; };
+    NSDictionary *pairs = @{
+                            @"tess:0": valueFor(0),
+                            @"tesa:0": valueFor(0),
+                            @"test:1": valueFor(1),
+                            @"test:2": valueFor(2),
+                            @"test:3": valueFor(3),
+                            @"test:4": valueFor(4)
+                            };
+    
+    __block int i = 3;
+    [db addEntriesFromDictionary:pairs];
+    [db enumerateKeysBackward:YES
+                startingAtKey:@"test:3"
+          filteredByPredicate:nil
+                    andPrefix:@"test"
+                   usingBlock:^(LevelDBKey *lkey, BOOL *stop) {
+                       NSString *key = [NSString stringWithFormat:@"test:%d", i];
+                       XCTAssertEqualObjects(NSStringFromLevelDBKey(lkey), key,
+                                             @"Keys should be restricted to the prefixed region");
+                       i--;
+                   }];
+    XCTAssertEqual(i, 0, @"");
+}
+
 - (void)testPrefixedEnumerations {
     id(^valueFor)(int) = ^ id (int i) { return @{ @"key": @(i) }; };
     NSDictionary *pairs = @{
