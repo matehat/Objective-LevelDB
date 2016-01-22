@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name         =  'Objective-LevelDB'
-  s.version      =  '2.1.4'
+  s.version      =  '2.1.5'
   s.license      =  'MIT'
   s.summary      =  'A feature-complete wrapper for LevelDB in Objective-C.'
   s.description  =  'This is a feature-complete wrapper for Google\'s LevelDB. LevelDB is a fast key-value store written by Google.'
@@ -13,6 +13,6 @@ Pod::Spec.new do |s|
   s.source       =  { :git => 'https://github.com/matehat/Objective-LevelDB.git', :tag => s.version.to_s, :submodules => true }
 
   s.source_files = 'Classes/*.{h,m,mm}'
-  s.dependency "leveldb-library", "~> 1.18"
+  s.dependency "leveldb-library", "~> 1.18.2"
   s.requires_arc = false
 end
