@@ -149,7 +149,7 @@ need to take care of it manually.
 
 ### Testing
 
-If you want to run the tests, you will need XCode 5, as the test suite uses the new XCTest. 
+If you want to run the tests, you will need Xcode 5, as the test suite uses the new XCTest. 
 
 Clone this repository and, once in it,
 
