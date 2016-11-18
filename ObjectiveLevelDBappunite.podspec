@@ -1,5 +1,5 @@
 Pod::Spec.new do |s|
-  s.name         =  'Objective-LevelDB'
+  s.name         =  'ObjectiveLevelDBappunite'
   s.version      =  '2.1.4'
   s.license      =  'MIT'
   s.summary      =  'A feature-complete wrapper for LevelDB in Objective-C.'
