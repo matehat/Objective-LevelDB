@@ -600,7 +600,7 @@ LevelDBOptions MakeLevelDBOptions() {
             id value = valueGetter();
             
             // If the predicate yields positive, we call the block
-            if ([predicate evaluateWithObject:value]) {
+            if ([value isKindOfClass:[NSDictionary class]] && [predicate evaluateWithObject:value]) {
                 if (lazily)
                     ((LevelDBLazyKeyValueBlock)block)(lk, valueGetter, stop);
                 else
