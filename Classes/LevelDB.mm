@@ -117,8 +117,8 @@ LevelDBOptions MakeLevelDBOptions() {
 - (id) initWithPath:(NSString *)path name:(NSString *)name andOptions:(LevelDBOptions)opts {
     self = [super init];
     if (self) {
-        _name = name;
-        _path = path;
+        _name = [name retain];
+        _path = [path retain];
         
         leveldb::Options options;
         
@@ -255,6 +255,7 @@ LevelDBOptions MakeLevelDBOptions() {
     LDBWritebatch *wb = [self newWritebatch];
     block(wb);
     [wb apply];
+    [wb release];
 }
 
 #pragma mark - Getters
@@ -672,6 +673,8 @@ LevelDBOptions MakeLevelDBOptions() {
     return db == NULL;
 }
 - (void) dealloc {
+    if (_path) [_path release];
+    if (_name) [_name release];
     [self close];
     [super dealloc];
 }
