@@ -146,6 +146,8 @@ LevelDBOptions MakeLevelDBOptions() {
                                                error:&crError];
             if (!success) {
                 NSLog(@"Problem creating parent directory: %@", crError);
+                [_name release];
+                [_path release];
                 return nil;
             }
         }
@@ -161,6 +163,8 @@ LevelDBOptions MakeLevelDBOptions() {
         
         if(!status.ok()) {
             NSLog(@"Problem creating LevelDB database: %s", status.ToString().c_str());
+            [_name release];
+            [_path release];
             return nil;
         }
         
@@ -673,6 +677,8 @@ LevelDBOptions MakeLevelDBOptions() {
     return db == NULL;
 }
 - (void) dealloc {
+    if (self.encoder) [self.encoder release];
+    if (self.decoder) [self.decoder release];
     if (_path) [_path release];
     if (_name) [_name release];
     [self close];
