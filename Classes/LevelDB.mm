@@ -117,8 +117,8 @@ LevelDBOptions MakeLevelDBOptions() {
 - (id) initWithPath:(NSString *)path name:(NSString *)name andOptions:(LevelDBOptions)opts {
     self = [super init];
     if (self) {
-        _name = name;
-        _path = path;
+        _name = [name retain];
+        _path = [path retain];
         
         leveldb::Options options;
         
@@ -145,6 +145,8 @@ LevelDBOptions MakeLevelDBOptions() {
                                           attributes:nil
                                                error:&crError];
             if (!success) {
+                [_name release];
+                [_path release];
                 NSLog(@"Problem creating parent directory: %@", crError);
                 return nil;
             }
@@ -160,6 +162,8 @@ LevelDBOptions MakeLevelDBOptions() {
         writeOptions.sync = false;
         
         if(!status.ok()) {
+            [_name release];
+            [_path release];
             NSLog(@"Problem creating LevelDB database: %s", status.ToString().c_str());
             return nil;
         }
@@ -255,6 +259,7 @@ LevelDBOptions MakeLevelDBOptions() {
     LDBWritebatch *wb = [self newWritebatch];
     block(wb);
     [wb apply];
+    [wb release];
 }
 
 #pragma mark - Getters
@@ -673,6 +678,10 @@ LevelDBOptions MakeLevelDBOptions() {
 }
 - (void) dealloc {
     [self close];
+    if (_path) [_path release];
+    if (_name) [_name release];
+    if (_encoder) [_encoder release];
+    if (_decoder) [_decoder release];
     [super dealloc];
 }
 
