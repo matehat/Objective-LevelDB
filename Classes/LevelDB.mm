@@ -117,6 +117,8 @@ LevelDBOptions MakeLevelDBOptions() {
 - (id) initWithPath:(NSString *)path name:(NSString *)name andOptions:(LevelDBOptions)opts {
     self = [super init];
     if (self) {
+        _path = path;
+        _name = name;
         leveldb::Options options;
         
         options.create_if_missing = opts.createIfMissing;
