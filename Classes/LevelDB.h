@@ -60,12 +60,12 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
 /**
  The path of the database on disk
  */
-@property (nonatomic, retain) NSString *path;
+@property (nonatomic, copy) NSString *path;
 
 /**
  The name of the database.
  */
-@property (nonatomic, retain) NSString *name;
+@property (nonatomic, copy) NSString *name;
 
 /**
  A boolean value indicating whether write operations should be synchronous (flush to disk before returning).

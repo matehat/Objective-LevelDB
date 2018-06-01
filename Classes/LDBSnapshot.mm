@@ -47,7 +47,7 @@
 @implementation LDBSnapshot 
 
 + (LDBSnapshot *) snapshotFromDB:(LevelDB *)database {
-    LDBSnapshot *snapshot = [[[LDBSnapshot alloc] init] autorelease];
+    LDBSnapshot *snapshot = [[LDBSnapshot alloc] init];
     snapshot->_snapshot = [database db]->GetSnapshot();
     snapshot->_db = database;
     return snapshot;
@@ -84,14 +84,14 @@
 }
 
 - (NSArray *)allKeys {
-    NSMutableArray *keys = [[[NSMutableArray alloc] init] autorelease];
+    NSMutableArray *keys = [[NSMutableArray alloc] init];
     [self enumerateKeysUsingBlock:^(LevelDBKey *key, BOOL *stop) {
         [keys addObject:NSDataFromLevelDBKey(key)];
     }];
     return [NSArray arrayWithArray:keys];
 }
 - (NSArray *)keysByFilteringWithPredicate:(NSPredicate *)predicate {
-    NSMutableArray *keys = [[[NSMutableArray alloc] init] autorelease];
+    NSMutableArray *keys = [[NSMutableArray alloc] init];
     [self enumerateKeysBackward:NO
                   startingAtKey:nil
             filteredByPredicate:predicate
@@ -170,7 +170,6 @@
 }
 - (void) dealloc {
     [self close];
-    [super dealloc];
 }
 
 @end

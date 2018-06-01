@@ -13,7 +13,6 @@
 
 @interface LDBWritebatch () {
     leveldb::WriteBatch _writeBatch;
-    id _db;
 }
 
 @property (readonly) leveldb::WriteBatch writeBatch;
@@ -28,8 +27,8 @@
 @synthesize db = _db;
 
 + (instancetype) writeBatchFromDB:(id)db {
-    id wb = [[[self alloc] init] autorelease];
-    ((LDBWritebatch *)wb)->_db = [db retain];
+    id wb = [[self alloc] init];
+    ((LDBWritebatch *)wb)->_db = db;
     return wb;
 }
 
@@ -42,14 +41,11 @@
 }
 - (void)dealloc {
     if (_serial_queue) {
-        dispatch_release(_serial_queue);
         _serial_queue = nil;
     }
     if (_db) {
-        [_db release];
         _db = nil;
     }
-    [super dealloc];
 }
 
 - (void) removeObjectForKey:(id)key {
