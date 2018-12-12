@@ -91,11 +91,11 @@ LevelDBOptions MakeLevelDBOptions() {
 @end
 
 @interface LevelDB () {
-    leveldb::DB * db;
+    leveldb::DB *db;
     leveldb::ReadOptions readOptions;
     leveldb::WriteOptions writeOptions;
-    const leveldb::Cache * cache;
-    const leveldb::FilterPolicy * filterPolicy;
+    const leveldb::Cache *cache;
+    const leveldb::FilterPolicy *filterPolicy;
 }
 
 @property (nonatomic, readonly) leveldb::DB * db;
@@ -660,13 +660,12 @@ LevelDBOptions MakeLevelDBOptions() {
     @synchronized(self) {
         if (db) {
             delete db;
-            
-            if (cache)
+            if (cache) {
                 delete cache;
-            
-            if (filterPolicy)
+            }
+            if (filterPolicy) {
                 delete filterPolicy;
-            
+            }
             db = NULL;
         }
     }
