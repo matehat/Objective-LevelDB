@@ -5,7 +5,7 @@
       location = "group:Classes"
       name = "Classes">
       <FileRef
-         location = "group:Common.h">
+         location = "group:LDBCommon.h">
       </FileRef>
       <FileRef
          location = "group:LDBSnapshot.h">
