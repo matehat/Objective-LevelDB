@@ -118,7 +118,7 @@ LevelDBOptions MakeLevelDBOptions() {
     self = [super init];
     if (self) {
         _name = [name retain];
-        _path = [path retain];
+        _path = [[path stringByAppendingPathComponent:name] retain];
         
         leveldb::Options options;
         
@@ -136,11 +136,10 @@ LevelDBOptions MakeLevelDBOptions() {
             readOptions.fill_cache = false;
         
         if (opts.createIntermediateDirectories) {
-            NSString *dirpath = [path stringByDeletingLastPathComponent];
             NSFileManager *fm = [NSFileManager defaultManager];
             NSError *crError;
             
-            BOOL success = [fm createDirectoryAtPath:dirpath
+            BOOL success = [fm createDirectoryAtPath:path
                          withIntermediateDirectories:true
                                           attributes:nil
                                                error:&crError];
@@ -192,8 +191,7 @@ LevelDBOptions MakeLevelDBOptions() {
 }
 + (id) databaseInLibraryWithName:(NSString *)name
                       andOptions:(LevelDBOptions)opts {
-    NSString *path = [getLibraryPath() stringByAppendingPathComponent:name];
-    LevelDB *ldb = [[[self alloc] initWithPath:path name:name andOptions:opts] autorelease];
+    LevelDB *ldb = [[[self alloc] initWithPath:getLibraryPath() name:name andOptions:opts] autorelease];
     return ldb;
 }
 
