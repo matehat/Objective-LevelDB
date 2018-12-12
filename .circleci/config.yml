@@ -26,11 +26,6 @@ jobs:
             -destination 'platform=iOS Simulator,name=iPhone 8'
             test"
 
-      - store_test_results:
-          path: output/scan
-      - store_artifacts:
-          path: output
-
 workflows:
   version: 2
   build-and-test:

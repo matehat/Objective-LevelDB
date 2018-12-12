@@ -1,3 +1,5 @@
+[![CircleCI](https://circleci.com/gh/matehat/Objective-LevelDB.svg?style=svg)](https://circleci.com/gh/matehat/Objective-LevelDB)
+
 ## Introduction
 
 An Objective-C database library built over [Google's LevelDB](http://code.google.com/p/leveldb), a fast embedded key-value store written by Google.
