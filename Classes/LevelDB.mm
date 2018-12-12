@@ -57,9 +57,9 @@ namespace {
 }
 
 NSString * NSStringFromLevelDBKey(LevelDBKey * key) {
-    return [[[NSString alloc] initWithBytes:key->data
+    return [[NSString alloc] initWithBytes:key->data
                                     length:key->length
-                                  encoding:NSUTF8StringEncoding] autorelease];
+                                  encoding:NSUTF8StringEncoding];
 }
 NSData   * NSDataFromLevelDBKey(LevelDBKey * key) {
     return [NSData dataWithBytes:key->data length:key->length];
@@ -117,9 +117,8 @@ LevelDBOptions MakeLevelDBOptions() {
 - (id) initWithPath:(NSString *)path name:(NSString *)name andOptions:(LevelDBOptions)opts {
     self = [super init];
     if (self) {
-        _name = [name retain];
-        _path = [path retain];
-        
+        _path = path;
+        _name = name;
         leveldb::Options options;
         
         options.create_if_missing = opts.createIfMissing;
@@ -145,8 +144,6 @@ LevelDBOptions MakeLevelDBOptions() {
                                           attributes:nil
                                                error:&crError];
             if (!success) {
-                [_name release];
-                [_path release];
                 NSLog(@"Problem creating parent directory: %@", crError);
                 return nil;
             }
@@ -162,8 +159,6 @@ LevelDBOptions MakeLevelDBOptions() {
         writeOptions.sync = false;
         
         if(!status.ok()) {
-            [_name release];
-            [_path release];
             NSLog(@"Problem creating LevelDB database: %s", status.ToString().c_str());
             return nil;
         }
@@ -193,7 +188,7 @@ LevelDBOptions MakeLevelDBOptions() {
 + (id) databaseInLibraryWithName:(NSString *)name
                       andOptions:(LevelDBOptions)opts {
     NSString *path = [getLibraryPath() stringByAppendingPathComponent:name];
-    LevelDB *ldb = [[[self alloc] initWithPath:path name:name andOptions:opts] autorelease];
+    LevelDB *ldb = [[self alloc] initWithPath:path name:name andOptions:opts];
     return ldb;
 }
 
@@ -244,7 +239,7 @@ LevelDBOptions MakeLevelDBOptions() {
 #pragma mark - Write batches
 
 - (LDBWritebatch *)newWritebatch {
-    return [[LDBWritebatch writeBatchFromDB:self] retain];
+    return [LDBWritebatch writeBatchFromDB:self];
 }
 
 - (void) applyWritebatch:(LDBWritebatch *)writeBatch {
@@ -259,7 +254,6 @@ LevelDBOptions MakeLevelDBOptions() {
     LDBWritebatch *wb = [self newWritebatch];
     block(wb);
     [wb apply];
-    [wb release];
 }
 
 #pragma mark - Getters
@@ -382,14 +376,14 @@ LevelDBOptions MakeLevelDBOptions() {
 #pragma mark - Selection
 
 - (NSArray *)allKeys {
-    NSMutableArray *keys = [[[NSMutableArray alloc] init] autorelease];
+    NSMutableArray *keys = [[NSMutableArray alloc] init];
     [self enumerateKeysUsingBlock:^(LevelDBKey *key, BOOL *stop) {
         [keys addObject:NSDataFromLevelDBKey(key)];
     }];
     return [NSArray arrayWithArray:keys];
 }
 - (NSArray *)keysByFilteringWithPredicate:(NSPredicate *)predicate {
-    NSMutableArray *keys = [[[NSMutableArray alloc] init] autorelease];
+    NSMutableArray *keys = [[NSMutableArray alloc] init];
     [self enumerateKeysAndObjectsBackward:NO lazily:NO
                             startingAtKey:nil
                       filteredByPredicate:predicate
@@ -416,7 +410,7 @@ LevelDBOptions MakeLevelDBOptions() {
 }
 
 - (LDBSnapshot *) newSnapshot {
-    return [[LDBSnapshot snapshotFromDB:self] retain];
+    return [LDBSnapshot snapshotFromDB:self];
 }
 
 #pragma mark - Enumeration
@@ -678,11 +672,6 @@ LevelDBOptions MakeLevelDBOptions() {
 }
 - (void) dealloc {
     [self close];
-    if (_path) [_path release];
-    if (_name) [_name release];
-    if (_encoder) [_encoder release];
-    if (_decoder) [_decoder release];
-    [super dealloc];
 }
 
 @end
