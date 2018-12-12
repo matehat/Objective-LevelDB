@@ -13,6 +13,6 @@ Pod::Spec.new do |s|
   s.source       =  { :git => 'https://github.com/matehat/Objective-LevelDB.git', :tag => s.version.to_s, :submodules => true }
 
   s.source_files = 'Classes/*.{h,m,mm}'
-  s.dependency "leveldb-library", "~> 1.18.2"
+  s.dependency "leveldb-library"
   s.requires_arc = false
 end
