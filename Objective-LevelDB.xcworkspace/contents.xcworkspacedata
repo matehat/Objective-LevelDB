@@ -35,4 +35,7 @@
    <FileRef
       location = "group:Tests/Pods/Pods.xcodeproj">
    </FileRef>
+   <FileRef
+      location = "group:Objective-LevelDB.xcodeproj">
+   </FileRef>
 </Workspace>
