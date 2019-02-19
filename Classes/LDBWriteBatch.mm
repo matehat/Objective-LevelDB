@@ -9,7 +9,7 @@
 #import <leveldb/write_batch.h>
 
 #import "LDBWriteBatch.h"
-#include "Common.h"
+#include "LDBCommon.h"
 
 @interface LDBWritebatch () {
     leveldb::WriteBatch _writeBatch;

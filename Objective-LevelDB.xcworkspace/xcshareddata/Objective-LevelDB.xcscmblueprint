@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "AB7BFB0E68DAB4502B1D5CEB6E939577D0ADDBBA",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "AB7BFB0E68DAB4502B1D5CEB6E939577D0ADDBBA" : 0,
+    "BDF394AD00F0672C031FDA5A297CD80086AC8A54" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "C600B2B7-541A-4157-9339-92EF1F3371B3",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "AB7BFB0E68DAB4502B1D5CEB6E939577D0ADDBBA" : "Objective-LevelDB",
+    "BDF394AD00F0672C031FDA5A297CD80086AC8A54" : "Objective-LevelDB\/leveldb-library"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "Objective-LevelDB",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Objective-LevelDB.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "ssh:\/\/github.com\/matehat\/Objective-LevelDB.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "AB7BFB0E68DAB4502B1D5CEB6E939577D0ADDBBA"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/google\/leveldb.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "BDF394AD00F0672C031FDA5A297CD80086AC8A54"
+    }
+  ]
+}

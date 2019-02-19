@@ -15,7 +15,7 @@
 #import <leveldb/filter_policy.h>
 #import <leveldb/write_batch.h>
 
-#include "Common.h"
+#include "LDBCommon.h"
 
 #define MaybeAddSnapshotToOptions(_from_, _to_, _snap_) \
     leveldb::ReadOptions __to_;\
@@ -91,11 +91,11 @@ LevelDBOptions MakeLevelDBOptions() {
 @end
 
 @interface LevelDB () {
-    leveldb::DB * db;
+    leveldb::DB *db;
     leveldb::ReadOptions readOptions;
     leveldb::WriteOptions writeOptions;
-    const leveldb::Cache * cache;
-    const leveldb::FilterPolicy * filterPolicy;
+    const leveldb::Cache *cache;
+    const leveldb::FilterPolicy *filterPolicy;
 }
 
 @property (nonatomic, readonly) leveldb::DB * db;
@@ -117,8 +117,8 @@ LevelDBOptions MakeLevelDBOptions() {
 - (id) initWithPath:(NSString *)path name:(NSString *)name andOptions:(LevelDBOptions)opts {
     self = [super init];
     if (self) {
-        _name = name;
-        _path = path;
+        _name = [name retain];
+        _path = [[path stringByAppendingPathComponent:name] retain];
         
         leveldb::Options options;
         
@@ -136,15 +136,16 @@ LevelDBOptions MakeLevelDBOptions() {
             readOptions.fill_cache = false;
         
         if (opts.createIntermediateDirectories) {
-            NSString *dirpath = [path stringByDeletingLastPathComponent];
             NSFileManager *fm = [NSFileManager defaultManager];
             NSError *crError;
             
-            BOOL success = [fm createDirectoryAtPath:dirpath
+            BOOL success = [fm createDirectoryAtPath:path
                          withIntermediateDirectories:true
                                           attributes:nil
                                                error:&crError];
             if (!success) {
+                [_name release];
+                [_path release];
                 NSLog(@"Problem creating parent directory: %@", crError);
                 return nil;
             }
@@ -160,6 +161,8 @@ LevelDBOptions MakeLevelDBOptions() {
         writeOptions.sync = false;
         
         if(!status.ok()) {
+            [_name release];
+            [_path release];
             NSLog(@"Problem creating LevelDB database: %s", status.ToString().c_str());
             return nil;
         }
@@ -188,8 +191,7 @@ LevelDBOptions MakeLevelDBOptions() {
 }
 + (id) databaseInLibraryWithName:(NSString *)name
                       andOptions:(LevelDBOptions)opts {
-    NSString *path = [getLibraryPath() stringByAppendingPathComponent:name];
-    LevelDB *ldb = [[[self alloc] initWithPath:path name:name andOptions:opts] autorelease];
+    LevelDB *ldb = [[[self alloc] initWithPath:getLibraryPath() name:name andOptions:opts] autorelease];
     return ldb;
 }
 
@@ -249,6 +251,13 @@ LevelDBOptions MakeLevelDBOptions() {
     if(!status.ok()) {
         NSLog(@"Problem applying the write batch in database: %s", status.ToString().c_str());
     }
+}
+
+- (void)performWritebatch:(void (^)(LDBWritebatch *wb))block {
+    LDBWritebatch *wb = [self newWritebatch];
+    block(wb);
+    [wb apply];
+    [wb release];
 }
 
 #pragma mark - Getters
@@ -449,7 +458,7 @@ LevelDBOptions MakeLevelDBOptions() {
                 keyChar = (unsigned char *)startingKeyPtr + i;
                 if (*keyChar < 255) {
                     *keyChar = *keyChar + 1;
-                    iter->Seek(leveldb::Slice((char *)startingKeyPtr, prefixLen));
+                    iter->Seek(leveldb::Slice((char *)startingKeyPtr, startingKey.size()));
                     if (!iter->Valid()) {
                         iter->SeekToLast();
                     }
@@ -462,8 +471,11 @@ LevelDBOptions MakeLevelDBOptions() {
                 return;
             
             lkey = iter->key();
-            if (prefix && memcmp(lkey.data(), prefixPtr, prefixLen) != 0) {
-                iter->Prev();
+            if (startingKey.size() && prefix) {
+                signed int cmp = memcmp(lkey.data(), startingKey.data(), startingKey.size());
+                if (cmp > 0) {
+                    iter->Prev();
+                }
             }
         } else {
             // Otherwise, we start at the provided prefix
@@ -648,13 +660,12 @@ LevelDBOptions MakeLevelDBOptions() {
     @synchronized(self) {
         if (db) {
             delete db;
-            
-            if (cache)
+            if (cache) {
                 delete cache;
-            
-            if (filterPolicy)
+            }
+            if (filterPolicy) {
                 delete filterPolicy;
-            
+            }
             db = NULL;
         }
     }
@@ -664,6 +675,10 @@ LevelDBOptions MakeLevelDBOptions() {
 }
 - (void) dealloc {
     [self close];
+    if (_path) [_path release];
+    if (_name) [_name release];
+    if (_encoder) [_encoder release];
+    if (_decoder) [_decoder release];
     [super dealloc];
 }
 
