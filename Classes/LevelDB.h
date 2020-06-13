@@ -333,9 +333,9 @@ NSData   * NSDataFromLevelDBKey  (LevelDBKey * key);
  */
 - (void) enumerateKeysAndObjectsBackward:(BOOL)backward
                                   lazily:(BOOL)lazily
-                           startingAtKey:(id)key
-                     filteredByPredicate:(NSPredicate *)predicate
-                               andPrefix:(id)prefix
-                              usingBlock:(id)block;
+                           startingAtKey:(id _Nullable)key
+                     filteredByPredicate:(NSPredicate * _Nullable )predicate
+                               andPrefix:(id _Nullable)prefix
+                              usingBlock:(void(^ _Nonnull)(LevelDBKey * _Nonnull key, id _Nonnull value, BOOL * _Nonnull stop))block;
 
 @end
